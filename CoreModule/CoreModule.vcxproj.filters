@@ -3,8 +3,28 @@
   <ItemGroup>
     <ClInclude Include="Object.h" />
     <ClInclude Include="CoreDefine.h" />
+    <ClInclude Include="GameObject.h">
+      <Filter>00. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>01. Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="GameObject.cpp">
+      <Filter>00. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>01. Component</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="00. GameObject">
+      <UniqueIdentifier>{d01c3b75-55cb-42b7-9747-05f7b03cbd0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Component">
+      <UniqueIdentifier>{68ddca6e-d351-4dfb-91d9-33c7cd96d328}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

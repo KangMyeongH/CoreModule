@@ -20,6 +20,7 @@ namespace GameEngine
         void 			SetName(const std::string& name) { mName = name; }
         std::string 	GetName() const { return mName; }
         int 			GetInstanceID() const { return mID; }
+
         static void 	Destroy(std::shared_ptr<Object>& obj)
         {
             if (obj && !obj->mIsDestroyed)
