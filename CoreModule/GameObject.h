@@ -2,18 +2,17 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "Component.h"
 #include "Object.h"
-
-class Component;
-
-using Component_Map = std::unordered_map<std::type_index, std::vector<std::shared_ptr<Component>>>;
 
 namespace GameEngine
 {
+	using Component_Map = std::unordered_map<std::type_index, std::vector<std::shared_ptr<Component>>>;
+
 	class COREMODULE_API GameObject final : public Object
 	{
-	private:
-		GameObject();
+	public:
+		GameObject() = default;
 
 	public:
 		template <typename T, typename... Args>
@@ -34,6 +33,7 @@ namespace GameEngine
 			{
 				return &it->second;
 			}
+
 			return nullptr;
 		}
 

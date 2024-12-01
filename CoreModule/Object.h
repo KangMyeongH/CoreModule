@@ -9,7 +9,7 @@ namespace GameEngine
 {
     class COREMODULE_API Object : public std::enable_shared_from_this<Object>
     {
-    protected:
+    public:
         explicit 	Object(std::string name = "Unnamed Object") : mID(sIDGenerator++), mName(std::move(name)), mIsDestroyed(false) {}
         virtual 	~Object() = default;
 
@@ -37,7 +37,5 @@ namespace GameEngine
         std::string 			mName;          // 객체 이름
         bool 					mIsDestroyed;   // 삭제 플래그
     };
-
-    std::atomic<int> Object::sIDGenerator{ 0 };
 }
 

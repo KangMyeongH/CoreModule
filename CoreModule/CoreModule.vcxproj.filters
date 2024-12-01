@@ -3,11 +3,11 @@
   <ItemGroup>
     <ClInclude Include="Object.h" />
     <ClInclude Include="CoreDefine.h" />
-    <ClInclude Include="GameObject.h">
-      <Filter>00. GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>01. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>00. GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
