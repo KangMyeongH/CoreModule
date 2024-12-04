@@ -135,11 +135,14 @@
     <ClInclude Include="CoreDefine.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

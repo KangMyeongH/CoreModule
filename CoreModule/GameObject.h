@@ -5,6 +5,19 @@
 #include "Component.h"
 #include "Object.h"
 
+<<<<<<< Updated upstream
+=======
+
+// 게임 오브젝트의 생성을 호출 즉시 바로
+// 게임 오브젝트의 삭제는 삭제 호출 시 비활성화 후 프레임의 끝에서 삭제해줌
+// 게임 오브젝트는 Transform Component를 반드시 소유함.
+
+
+class Component;
+
+using Component_Map = std::unordered_map<std::type_index, std::vector<std::shared_ptr<Component>>>;
+
+>>>>>>> Stashed changes
 namespace GameEngine
 {
 	using Component_Map = std::unordered_map<std::type_index, std::vector<std::shared_ptr<Component>>>;
