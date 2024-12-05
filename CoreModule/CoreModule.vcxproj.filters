@@ -1,43 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="CoreDefine.h" />
-    <ClInclude Include="Component.h">
-      <Filter>01. Component</Filter>
-    </ClInclude>
-<<<<<<< Updated upstream
-    <ClInclude Include="GameObject.h">
-      <Filter>00. GameObject</Filter>
-    </ClInclude>
-=======
-    <ClInclude Include="Scene.h">
-      <Filter>02. Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h" />
->>>>>>> Stashed changes
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="GameObject.cpp">
-      <Filter>00. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>01. Component</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>02. Scene</Filter>
+      <Filter>00. Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="00. GameObject">
-      <UniqueIdentifier>{d01c3b75-55cb-42b7-9747-05f7b03cbd0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Component">
-      <UniqueIdentifier>{68ddca6e-d351-4dfb-91d9-33c7cd96d328}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Scene">
-      <UniqueIdentifier>{a5a377ee-c8ef-4f91-ad6a-9e984e272c34}</UniqueIdentifier>
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CoreDefine.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Scene.h">
+      <Filter>00. Scene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="00. Scene">
+      <UniqueIdentifier>{ec9d3467-e228-42b7-8471-4d3a75d17a58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -2,5 +2,5 @@
 
 bool GameEngine::Scene::Initialize()
 {
-	
+	return true;
 }
