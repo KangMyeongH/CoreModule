@@ -49,7 +49,8 @@ namespace GameEngine
 
 	private:
 		Component_Map 	mComponentMap;
-		bool 			mActiveSelf;		
+		bool 			mActiveSelf;
+		bool			mbStatic;
 	};
 }
 

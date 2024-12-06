@@ -1,26 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene.cpp">
       <Filter>00. Scene</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>01. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>01. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>02. Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="CoreDefine.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="core_define.h" />
     <ClInclude Include="Scene.h">
       <Filter>00. Scene</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>01. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>01. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="core_math.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Scene">
       <UniqueIdentifier>{ec9d3467-e228-42b7-8471-4d3a75d17a58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameObject">
+      <UniqueIdentifier>{77d5da2b-961f-40c1-8bce-63fa08c82b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Component">
+      <UniqueIdentifier>{b4dcafe1-055f-4870-a7c9-83bba6a91c76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

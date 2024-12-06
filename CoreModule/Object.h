@@ -2,8 +2,7 @@
 #include <string>
 #include <memory>
 #include <atomic>
-
-#include "CoreDefine.h"
+#include "core_define.h"
 
 namespace GameEngine
 {
