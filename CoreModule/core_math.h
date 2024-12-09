@@ -18,8 +18,6 @@ namespace GameEngine
 		// Vector2 쓸까...? 안쓸거같은데...ㄹ놈얾ㄴ와ㅓㅣㄹㄴㅁ와ㅓㅣㅁㄴㅇ롸ㅓ 일단 API때 쓴거 개선 없는 버전으로
 		// TODO : 추후에 쓸거 같으면 개선 및 수정
 	public:
-		int test;
-	public:
 		//======================================//
 		//				constructor				//
 		//======================================//
@@ -138,6 +136,7 @@ namespace GameEngine
 	public:
 		float x, y;
 	};
+
 	struct Vector3
 	{
 	public:
@@ -333,6 +332,7 @@ namespace GameEngine
 	public:
 		float x, y, z;
 	};
+
 	struct AnimationCurve
 	{
 		#define PI 3.141592f
