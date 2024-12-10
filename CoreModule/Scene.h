@@ -1,6 +1,9 @@
 #pragma once
 #include <list>
+#include <memory>
 #include <string>
+
+#include "core_define.h"
 // 직렬화,,,, 역직렬화,,,, 어캐 하냐 << 끗
 // Serialize 관련 매니저를 하나 둬야하나? << 둬야함
 // GameObject를 이곳 저곳에 저장하는건 메모리 낭비 같은데 << 맞음 그래서 그전에 짠 프레임 워크가 매우 비효율적
@@ -15,21 +18,36 @@
 namespace GameEngine
 {
 	class GameObject;
-}
 
-namespace GameEngine
-{
-	class Scene
+	using GameObjectList = std::list<std::shared_ptr<GameObject>>;
+
+	class COREMODULE_API Scene
 	{
-	public:
+	private:
+		//======================================//
+		//				constructor				//
+		//======================================//
 		Scene();
 		~Scene();
+	public:
+		DECLARE_SINGLETON(Scene)
 
+	public:
+		//======================================//
+		//				  method				//
+		//======================================//
+		// Scene management
 		bool Initialize();
+		void Release();
+		bool LoadScene(std::string sceneName);
 
+		// GameObject management
+		std::weak_ptr<GameObject> AddGameObject();
+		std::weak_ptr<GameObject> Find(const std::string& name);
+		
 	private:
-		std::string 				mName;
-		std::list<GameObject*> 		mGameObjects;
+		GameObjectList	mGameObjects;
+		std::string 	mName;
 	};
 
 }
