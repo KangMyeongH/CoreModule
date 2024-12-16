@@ -1,5 +1,15 @@
 #pragma once
 #include "Component.h"
+#include "core_types.h"
+
+
+//	1. 부모의 월드 트랜스폼이 변경된 경우 << worldDirtyFlags On 그리고 자식의 worldDirtyFlags On
+//	2. 나의 로컬 트랜스폼이 변경된 경우   << 나의 worldDirtyFlags On
+//	3. 나의 월드 트랜스폼이 변경된 경우   << 나의 localDirtyFlags on
+//	4. 기존에 설정된 부모를 버리고 새로운 부모로 편입하는 경우 <<
+//		4.1. 내가 최상단의 루트가 되는 경우 << 나의 local = world 자식의 dirty는 필요없다.
+//		4.2. 새로운 부모가 편입 되는경우 << 나의 localDirtyFlags ON
+
 
 namespace GameEngine
 {
@@ -14,9 +24,7 @@ namespace GameEngine
 		explicit Transform(GameObject* _owner) :
 			Component(_owner), m_Parent(nullptr), m_LocalPosition(0.0f, 0.0f, 0.0f),
 			m_LocalRotation(0.0f, 0.0f, 0.0f),
-			m_LocalScale(1.f, 1.f, 1.f), m_bDirty(true)
-		{
-		}
+			m_LocalScale(1.f, 1.f, 1.f), m_DirtyFlags(TransformDirtyFlags::WorldDirty), m_bDirty(true) {}
 
 		~Transform() override = default;
 		Transform(const Transform&) = default;
@@ -144,6 +152,83 @@ namespace GameEngine
 				}
 			}
 		}
+
+		// world space를 새로 얻어야할 때
+		void update_LocalToWorld()
+		{
+			if (!m_bDirty)
+				return;
+
+			D3DXMATRIX matScale, matRot, matTrans;
+
+			// scale
+			D3DXMatrixScaling(&matScale, m_LocalScale.x, m_LocalScale.y, m_LocalScale.z);
+
+			// rotation
+			D3DXQuaternionNormalize(&m_LocalQuaternionRotation, &m_LocalQuaternionRotation);
+			D3DXMatrixRotationQuaternion(&matRot, &m_LocalQuaternionRotation);
+			D3DXMatrixTranslation(&matTrans, m_LocalPosition.x, m_LocalPosition.y, m_LocalPosition.z);
+
+			D3DXMATRIX matLocal = matScale * matRot * matTrans;
+
+			if (m_Parent)
+			{
+				D3DXMATRIX matParent = m_Parent->Get_WorldMatrix();
+				m_WorldMatrix = matParent * matLocal;
+
+				D3DXMatrixDecompose(&m_WorldScale, &m_WorldQuaternionRotation, &m_WorldPosition, &m_WorldMatrix);
+
+			}
+
+			else
+			{
+				m_WorldMatrix = matLocal;
+				m_WorldPosition = m_LocalPosition;
+				m_WorldQuaternionRotation = m_LocalQuaternionRotation;
+				m_WorldScale = m_LocalScale;
+			}
+
+			m_bDirty = false;
+		}
+
+		// local space를 새로 얻어야할 때
+		void update_WorldToLocal()
+		{
+			if (!m_bDirty)
+				return;
+			
+			if (m_Parent)
+			{
+				D3DXMATRIX matParent = m_Parent->Get_WorldMatrix();
+				D3DXMatrixInverse(&matParent, nullptr, &matParent);
+
+				D3DXMATRIX matLocal = matParent * m_WorldMatrix;
+				D3DXMatrixDecompose(&m_LocalScale, &m_LocalQuaternionRotation, &m_LocalPosition, &matLocal);
+			}
+
+			else
+			{
+				m_LocalPosition = m_WorldPosition;
+				m_LocalQuaternionRotation = m_WorldQuaternionRotation;
+				m_LocalScale = m_WorldScale;
+			}
+
+			m_bDirty = false;
+		}
+
+		void add_Child(Transform* _child) { m_Children.push_back(_child); }
+		void remove_Child(Transform* _child)
+		{
+			const auto it = std::remove(m_Children.begin(), m_Children.end(), _child);
+			if (it != m_Children.end())
+			{
+				m_Children.erase(it, m_Children.end());
+			}
+		}
+
+		void Destroy() override {}
+
+		// 레거시 코드 안쓸 확률 높음
 		void update_MatrixIfNeeded()
 		{
 			if (!m_bDirty)
@@ -201,17 +286,6 @@ namespace GameEngine
 
 			m_bDirty = false;
 		}
-		void add_Child(Transform* _child) { m_Children.push_back(_child); }
-		void remove_Child(Transform* _child)
-		{
-			const auto it = std::remove(m_Children.begin(), m_Children.end(), _child);
-			if (it != m_Children.end())
-			{
-				m_Children.erase(it, m_Children.end());
-			}
-		}
-
-		void Destroy() override {}
 
 	private:
 		Transform*					m_Parent;
@@ -220,12 +294,17 @@ namespace GameEngine
 		// world space
 		D3DXMATRIX 	m_WorldMatrix;
 		Vector3 	m_WorldPosition;
+		D3DXQUATERNION m_WorldQuaternionRotation;
 		Vector3 	m_WorldRotation;
 		Vector3 	m_WorldScale;
+
 		// local space
 		Vector3 	m_LocalPosition;
+		D3DXQUATERNION m_LocalQuaternionRotation;
 		Vector3 	m_LocalRotation;
 		Vector3 	m_LocalScale;
+
+		TransformDirtyFlags m_DirtyFlags;
 
 		bool m_bDirty;
 	};

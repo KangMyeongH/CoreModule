@@ -39,7 +39,7 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 {
 	for(auto& go : m_GameObjects)
 	{
-		if (go->GetName() == _name)
+		if (go->Get_Name() == _name)
 		{
 			return go;
 		}
