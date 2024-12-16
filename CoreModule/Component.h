@@ -10,22 +10,24 @@ namespace GameEngine
 	class COREMODULE_API Component : public Object
 	{
 	public:
-		explicit Component(const std::weak_ptr<GameObject>& owner) : mOwner(owner) {}
+		explicit Component(GameObject* _owner) : m_Owner(_owner) {}
 		~Component() override = default;
 		Component(const Component&) = default;
-		Component& operator=(const Component& rhs) = default;
+		Component& operator=(const Component&) = default;
 		Component(Component&&) = delete;
 		Component& operator=(Component&&) = delete;
 
 		// Component를 소유하고 있는 GameObject를 반환
-		std::weak_ptr<GameObject> GetGameObject() const { return mOwner; }
+		GameObject* Get_GameObject() const { return m_Owner; }
+		void Set_Owner(GameObject* _owner) { m_Owner = _owner; }
 
-		void SetOwner(const std::weak_ptr<GameObject>& owner) { mOwner = owner; }
-		virtual std::shared_ptr<Component> Clone(GameObject* newOwner) const = 0;
+		Transform& 	Get_Transform() const;
+
+		virtual Component* Clone(GameObject* _newOwner) const = 0;
 
 
 	protected:
-		std::weak_ptr<GameObject> mOwner;
+		GameObject* m_Owner;
 	};
 
 }

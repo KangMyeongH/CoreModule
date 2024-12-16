@@ -13,9 +13,14 @@
     <ClCompile Include="Component.cpp">
       <Filter>02. Component</Filter>
     </ClCompile>
+    <ClCompile Include="MonoBehaviour.cpp">
+      <Filter>02. Component\02. MonoBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="MonoBehaviourManager.cpp">
+      <Filter>03. Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core_define.h" />
     <ClInclude Include="Scene.h">
       <Filter>00. Scene</Filter>
     </ClInclude>
@@ -28,8 +33,30 @@
     <ClInclude Include="Component.h">
       <Filter>02. Component</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="core_math.h" />
+    <ClInclude Include="Transform.h">
+      <Filter>02. Component\00. Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="core_math.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core_define.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core_include.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Behaviour.h">
+      <Filter>02. Component\01. Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="MonoBehaviour.h">
+      <Filter>02. Component\02. MonoBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="MonoBehaviourManager.h">
+      <Filter>03. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Scene">
@@ -40,6 +67,21 @@
     </Filter>
     <Filter Include="02. Component">
       <UniqueIdentifier>{b4dcafe1-055f-4870-a7c9-83bba6a91c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Component\00. Transform">
+      <UniqueIdentifier>{ceb2ba1d-647e-4ed7-8797-e216a316a45a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{9631a28d-dc0e-463a-b8dc-e7c101d13b8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Component\01. Behaviour">
+      <UniqueIdentifier>{9cab66f3-f059-48e5-abb4-20f4d3f4df3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Component\02. MonoBehaviour">
+      <UniqueIdentifier>{68f951b8-2908-4113-9947-175a6b98560f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Manager">
+      <UniqueIdentifier>{e6dc595c-9b5f-40d2-94d6-d1c3b248716c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

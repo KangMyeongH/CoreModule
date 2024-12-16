@@ -2,5 +2,5 @@
 
 namespace GameEngine
 {
-	std::atomic<int> Object::sIDGenerator{ 0 };
+	std::atomic<int> Object::s_IdGenerator{ 0 };
 }

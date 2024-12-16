@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <d3dx9math.h>
 
 #include "cmath"
 
@@ -137,23 +138,19 @@ namespace GameEngine
 		float x, y;
 	};
 
-	struct Vector3
+	struct Vector3 : D3DXVECTOR3
 	{
 	public:
 		//======================================//
 		//				constructor				//
 		//======================================//
-		explicit Vector3() : x(0.f), y(0.f), z(0.f) {}
-		explicit Vector3(const float _x, const float _y, const float _z) : x(_x), y(_y), z(_z) {}
-		~Vector3() = default;
-		Vector3(const Vector3&) = default;
-		Vector3(Vector3&&) = default;
-		Vector3& operator=(const Vector3&) = default;
-		Vector3& operator=(Vector3&&) = default;
+		 Vector3() { x = 0.f; y = 0.f; z = 0.f; }
+		explicit Vector3(const float _x, const float _y, const float _z) { x = _x; y = _y; z = _z; }
 
 		//======================================//
 		//				operators				//
 		//======================================//
+
 		Vector3 	operator+(const Vector3& rhs) const
 		{
 			return Vector3(x + rhs.x, y + rhs.y, z + rhs.z);
@@ -318,19 +315,16 @@ namespace GameEngine
 		// 두 벡터의 가장 큰 요소로만 이루어진 벡터를 반환
 		static Vector3	Max(const Vector3& lhs, const Vector3& rhs)
 		{
-			return Vector3(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z));
+			return Vector3((std::max)(lhs.x, rhs.x), (std::max)(lhs.y, rhs.y), (std::max)(lhs.z, rhs.z));
 		}
 
 		// 두 벡터의 가장 작은 요소로만 이루어진 벡터를 반환
 		static Vector3	Min(const Vector3& lhs, const Vector3& rhs)
 		{
-			return Vector3(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z));
+			return Vector3((std::min)(lhs.x, rhs.x), (std::min)(lhs.y, rhs.y), (std::min)(lhs.z, rhs.z));
 		}
 
 		// TODO : ADD MORE STATIC METHOD!!! (Project(), Angle(), Slerp(), SmoothDamp())
-
-	public:
-		float x, y, z;
 	};
 
 	struct AnimationCurve

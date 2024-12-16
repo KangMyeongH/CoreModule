@@ -29,21 +29,21 @@ bool GameEngine::Scene::LoadScene(std::string sceneName)
 	return false;
 }
 
-std::weak_ptr<GameEngine::GameObject> GameEngine::Scene::AddGameObject()
+GameEngine::GameObject* GameEngine::Scene::AddGameObject()
 {
 
-	return {};
+	return nullptr;
 }
 
-std::weak_ptr<GameEngine::GameObject> GameEngine::Scene::Find(const std::string& name)
+GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 {
-	for(auto& go : mGameObjects)
+	for(auto& go : m_GameObjects)
 	{
-		if (go->GetName() == name)
+		if (go->GetName() == _name)
 		{
 			return go;
 		}
 	}
 
-	return {};
+	return nullptr;
 }

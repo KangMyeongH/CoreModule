@@ -19,7 +19,7 @@ namespace GameEngine
 {
 	class GameObject;
 
-	using GameObjectList = std::list<std::shared_ptr<GameObject>>;
+	using GameObjectList = std::list<GameObject*>;
 
 	class COREMODULE_API Scene
 	{
@@ -42,12 +42,12 @@ namespace GameEngine
 		bool LoadScene(std::string sceneName);
 
 		// GameObject management
-		std::weak_ptr<GameObject> AddGameObject();
-		std::weak_ptr<GameObject> Find(const std::string& name);
+		GameObject* AddGameObject();
+		GameObject* Find(const std::string& _name);
 		
 	private:
-		GameObjectList	mGameObjects;
-		std::string 	mName;
+		GameObjectList	m_GameObjects;
+		std::string 	m_Name;
 	};
 
 }

@@ -6,39 +6,39 @@
 
 namespace GameEngine
 {
-    class COREMODULE_API Object : public std::enable_shared_from_this<Object>
+    class COREMODULE_API Object
     {
     public:
         //======================================//
         //				constructor				//
         //======================================//
-        explicit Object(std::string name = "Unnamed Object") : mID(sIDGenerator++), mName(std::move(name)), mIsDestroyed(false) {}
+        explicit Object(std::string _name = "Unnamed Object") : m_ID(s_IdGenerator++), m_Name(std::move(_name)), m_bDestroyed(false) {}
         virtual ~Object() = default;
-        Object(const Object& rhs) : mID(sIDGenerator++), mName(rhs.mName), mIsDestroyed(rhs.mIsDestroyed) {}
-        Object(Object&& rhs) noexcept
+        Object(const Object& _rhs) : m_ID(s_IdGenerator++), m_Name(_rhs.m_Name), m_bDestroyed(_rhs.m_bDestroyed) {}
+        Object(Object&& _rhs) noexcept
         {
-            mID = rhs.mID;
-            mName = rhs.mName;
-            mIsDestroyed = rhs.mIsDestroyed;
-            rhs.mID = NULL;
-            rhs.mName = {};
-            rhs.mIsDestroyed = NULL;
+            m_ID = _rhs.m_ID;
+            m_Name = _rhs.m_Name;
+            m_bDestroyed = _rhs.m_bDestroyed;
+            _rhs.m_ID = NULL;
+            _rhs.m_Name = {};
+            _rhs.m_bDestroyed = NULL;
         }
-        Object& operator=(const Object& rhs)
+        Object& operator=(const Object& _rhs)
         {
-            mID = sIDGenerator++;
-            mName = rhs.mName;
-            mIsDestroyed = rhs.mIsDestroyed;
+            m_ID = s_IdGenerator++;
+            m_Name = _rhs.m_Name;
+            m_bDestroyed = _rhs.m_bDestroyed;
             return *this;
         }
-        Object& operator=(Object&& rhs) noexcept
+        Object& operator=(Object&& _rhs) noexcept
         {
-            mID = rhs.mID;
-            mName = rhs.mName;
-            mIsDestroyed = rhs.mIsDestroyed;
-            rhs.mID = NULL;
-            rhs.mName = {};
-            rhs.mIsDestroyed = NULL;
+            m_ID = _rhs.m_ID;
+            m_Name = _rhs.m_Name;
+            m_bDestroyed = _rhs.m_bDestroyed;
+            _rhs.m_ID = NULL;
+            _rhs.m_Name = {};
+            _rhs.m_bDestroyed = NULL;
             return *this;
         }
 
@@ -46,29 +46,29 @@ namespace GameEngine
         //======================================//
         //				  method				//
         //======================================//
-        void 			SetName(const std::string& name) { mName = name; }
-        std::string 	GetName() const { return mName; }
-        int 			GetInstanceID() const { return mID; }
+        void 			SetName(const std::string& _name) { m_Name = _name; }
+        std::string 	GetName() const { return m_Name; }
+        int 			GetInstanceID() const { return m_ID; }
 
     public:
         //======================================//
         //			   static method			//
         //======================================//
-        static void 	Destroy(const std::shared_ptr<Object>& obj)
+        static void 	Destroy(Object* _obj)
         {
-            if (obj && !obj->mIsDestroyed)
+            if (_obj && !_obj->m_bDestroyed)
             {
                 // TODO : 삭제 대기 큐에 넣는다??
                 // TODO : PendingDestroy 플래그만 활성화 해준다?? 그럼 Object타입별로 처리해줘야 하는데.... GameObject Component MonoBehaviour등
-                obj->mIsDestroyed = true;
+                _obj->m_bDestroyed = true;
             }
         }
 
     private:
-        static std::atomic<int> sIDGenerator; 	// 고유 ID 생성기
-        int 					mID;            // 각 객체의 고유 ID
-        std::string 			mName;          // 객체 이름
-        bool 					mIsDestroyed;   // 삭제 플래그
+        static std::atomic<int> s_IdGenerator; 	// 고유 ID 생성기
+        int 					m_ID;            // 각 객체의 고유 ID
+        std::string 			m_Name;          // 객체 이름
+        bool 					m_bDestroyed;   // 삭제 플래그
     };
 }
 
