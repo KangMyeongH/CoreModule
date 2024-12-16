@@ -33,6 +33,8 @@ namespace GameEngine
 				m_bEnabled = _enabled;
 			}
 		}
+
+		void Destroy() override;
 	};
 }
 

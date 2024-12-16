@@ -7,3 +7,7 @@ GameEngine::GameObject::GameObject(): m_Transform(this), m_bActiveSelf(true), m_
 GameEngine::GameObject::~GameObject()
 {
 }
+
+void GameEngine::GameObject::Destroy()
+{
+}

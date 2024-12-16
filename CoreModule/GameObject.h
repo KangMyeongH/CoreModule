@@ -99,6 +99,8 @@ namespace GameEngine
 		}
 		Transform& Get_Transform() { return m_Transform; }
 
+		void Destroy() override;
+
 		//======================================//
 		//			   static method			//
 		//======================================//

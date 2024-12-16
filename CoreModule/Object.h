@@ -46,29 +46,16 @@ namespace GameEngine
         //======================================//
         //				  method				//
         //======================================//
-        void 			SetName(const std::string& _name) { m_Name = _name; }
-        std::string 	GetName() const { return m_Name; }
-        int 			GetInstanceID() const { return m_ID; }
-
-    public:
-        //======================================//
-        //			   static method			//
-        //======================================//
-        static void 	Destroy(Object* _obj)
-        {
-            if (_obj && !_obj->m_bDestroyed)
-            {
-                // TODO : 삭제 대기 큐에 넣는다??
-                // TODO : PendingDestroy 플래그만 활성화 해준다?? 그럼 Object타입별로 처리해줘야 하는데.... GameObject Component MonoBehaviour등
-                _obj->m_bDestroyed = true;
-            }
-        }
+        void 			Set_Name(const std::string& _name) { m_Name = _name; }
+        std::string 	Get_Name() const { return m_Name; }
+        int 			Get_InstanceID() const { return m_ID; }
+        virtual void    Destroy() = 0;
 
     private:
-        static std::atomic<int> s_IdGenerator; 	// 고유 ID 생성기
-        int 					m_ID;            // 각 객체의 고유 ID
-        std::string 			m_Name;          // 객체 이름
-        bool 					m_bDestroyed;   // 삭제 플래그
+        static std::atomic<int> s_IdGenerator; 		// 고유 ID 생성기
+        int 					m_ID;            	// 각 객체의 고유 ID
+        std::string 			m_Name;          	// 객체 이름
+        bool 					m_bDestroyed;   	// 삭제 플래그
     };
 }
 

@@ -93,5 +93,4 @@ namespace GameEngine
 		std::list<MonoBehaviour*>		m_PendingQueue;
 		std::list<MonoBehaviour*>		m_DestroyQueue;
 	};
-
 }

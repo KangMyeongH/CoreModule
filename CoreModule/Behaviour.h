@@ -15,6 +15,7 @@ namespace GameEngine
 		}
 		bool 			Is_Enabled() const { return m_bEnabled; }
 		Component* 		Clone(GameObject* _newOwner) const override = 0;
+		void 			Destroy() override = 0;
 
 	protected:
 		bool m_bEnabled;

@@ -211,6 +211,8 @@ namespace GameEngine
 			}
 		}
 
+		void Destroy() override {}
+
 	private:
 		Transform*					m_Parent;
 		std::vector<Transform*> 	m_Children;
