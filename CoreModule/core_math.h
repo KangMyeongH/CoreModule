@@ -3,6 +3,7 @@
 #include <d3dx9math.h>
 
 #include "cmath"
+#include "json.hpp"
 
 namespace GameEngine
 {
@@ -325,6 +326,20 @@ namespace GameEngine
 		}
 
 		// TODO : ADD MORE STATIC METHOD!!! (Project(), Angle(), Slerp(), SmoothDamp())
+
+	public:
+		// json º¯È¯
+		friend void to_json(nlohmann::json& j, const Vector3& v)
+		 {
+			j = nlohmann::json{ {"x", v.x}, {"y", v.y}, {"z", v.z} };
+		 }
+
+		friend void from_json(const nlohmann::json& j, Vector3& v)
+		 {
+			j.at("x").get_to(v.x);
+			j.at("y").get_to(v.y);
+			j.at("z").get_to(v.z);
+		 }
 	};
 
 	struct AnimationCurve

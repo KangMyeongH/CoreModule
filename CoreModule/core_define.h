@@ -1,34 +1,34 @@
 #pragma once
 
-namespace GameEngine
-{
-	#pragma warning(disable : 4251)
+#include "core_include.h"
+#include "core_math.h"
+#include "core_types.h"
 
-	#ifdef COREMODULE_EXPORTS
-	#define COREMODULE_API __declspec(dllexport)
-	#else
-	#define COREMODULE_API __declspec(dllimport)
-	#endif
+#pragma warning(disable : 4251)
 
-	#pragma region Singleton
-	#define NO_COPY(ClassName)							\
-	ClassName(const ClassName&) = delete; 				\
-	ClassName(ClassName&&) = delete;					\
-	ClassName& operator=(const ClassName&) = delete; 	\
-	ClassName& operator=(ClassName&&) = delete; 		
+#ifdef COREMODULE_EXPORTS
+#define COREMODULE_API __declspec(dllexport)
+#else
+#define COREMODULE_API __declspec(dllimport)
+#endif
 
-	#define DECLARE_SINGLETON(ClassName)				\
-			NO_COPY(ClassName)							\
-	public:												\
-		static ClassName& GetInstance();
+#pragma region Singleton
+#define NO_COPY(ClassName)							\
+ClassName(const ClassName&) = delete; 				\
+ClassName(ClassName&&) = delete;					\
+ClassName& operator=(const ClassName&) = delete; 	\
+ClassName& operator=(ClassName&&) = delete; 		
+
+#define DECLARE_SINGLETON(ClassName)				\
+			NO_COPY(ClassName)						\
+public:												\
+	static ClassName& GetInstance();
 
 
-	#define IMPLEMENT_SINGLETON(ClassName)				\
-	ClassName& ClassName::GetInstance()					\
-	{													\
-		static ClassName sClass;						\
-		return sClass;									\
-	}
-	#pragma endregion Singleton
-
+#define IMPLEMENT_SINGLETON(ClassName)				\
+ClassName& ClassName::GetInstance()					\
+{													\
+	static ClassName sClass;						\
+	return sClass;									\
 }
+#pragma endregion Singleton

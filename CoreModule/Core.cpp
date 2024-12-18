@@ -1,17 +1,22 @@
 #include "Core.h"
 
-void Core::Initialize(LPDIRECT3DDEVICE9 device)
+GameEngine::Core::~Core()
+{
+
+}
+
+void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
 {
 	device->AddRef();
 
 }
 
-void Core::Progress()
+void GameEngine::Core::Progress()
 {
 
 }
 
-void Core::Release()
+void GameEngine::Core::Release()
 {
 	if (m_Device)
 	{

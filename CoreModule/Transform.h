@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "core_include.h"
 #include "core_types.h"
 
 
@@ -134,7 +135,6 @@ namespace GameEngine
 		//======================================//
 		//				  method				//
 		//======================================//
-		Component* 			Clone(GameObject* _newOwner) const override;
 
 	private:
 		//======================================//
@@ -287,6 +287,25 @@ namespace GameEngine
 			m_bDirty = false;
 		}
 
+
+	public:
+
+		friend void to_json(nlohmann::json& j, const Transform& t)
+		{
+			j = nlohmann::json{
+				{"position", t.m_WorldPosition},
+				{"rotation", t.m_WorldRotation},
+				{"scale", t.m_WorldScale}
+			};
+		}
+
+		friend void from_json(const nlohmann::json& j, Transform& t)
+		{
+			j.at("position").get_to(t.m_WorldPosition);
+			j.at("rotation").get_to(t.m_WorldRotation);
+			j.at("scale").get_to(t.m_WorldScale);
+		}
+
 	private:
 		Transform*					m_Parent;
 		std::vector<Transform*> 	m_Children;
@@ -309,8 +328,9 @@ namespace GameEngine
 		bool m_bDirty;
 	};
 
+	/*
 	inline Component* Transform::Clone(GameObject* _newOwner) const
 	{
 		return new Transform(*this);
-	}
+	}*/
 }

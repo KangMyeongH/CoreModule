@@ -7,7 +7,7 @@
 
 namespace GameEngine
 {
-	class MonoBehaviourManager
+	class COREMODULE_API MonoBehaviourManager
 	{
 	private:
 		MonoBehaviourManager() = default;

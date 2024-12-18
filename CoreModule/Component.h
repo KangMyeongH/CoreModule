@@ -23,7 +23,7 @@ namespace GameEngine
 
 		Transform& 	Get_Transform() const;
 
-		virtual Component* Clone(GameObject* _newOwner) const = 0;
+		//virtual Component* Clone(GameObject* _newOwner) const = 0;
 
 
 	protected:

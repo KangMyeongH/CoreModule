@@ -110,6 +110,27 @@ namespace GameEngine
 			return Scene::GetInstance().Find(_name);
 		}
 
+
+	public:
+		friend void to_json(nlohmann::json& j, const GameObject& obj)
+		{
+			j = nlohmann::json
+			{
+				{"name", obj.Get_Name()},
+				{"transform", obj.m_Transform}
+			};
+		}
+
+		friend void from_json(const nlohmann::json& j, GameObject& obj)
+		{
+			std::string name;
+			j.at("name").get_to(name);
+			obj.Set_Name(name);
+			j.at("transform").get_to(obj.m_Transform);
+		}
+
+
+
 	private:
 		Transform 		m_Transform;
 		Component_Map 	m_ComponentMap;

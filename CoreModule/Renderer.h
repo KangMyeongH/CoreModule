@@ -2,7 +2,7 @@
 #include "Behaviour.h"
 namespace GameEngine
 {
-	class Renderer : public Behaviour
+	class COREMODULE_API Renderer : public Behaviour
 	{
 	public:
 		explicit Renderer(GameObject* _owner)

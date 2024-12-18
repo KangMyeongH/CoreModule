@@ -3,7 +3,7 @@
 
 namespace GameEngine
 {
-	class MonoBehaviour : public Behaviour
+	class COREMODULE_API MonoBehaviour : public Behaviour
 	{
 	public:
 		explicit MonoBehaviour(GameObject* _owner)
@@ -34,7 +34,7 @@ namespace GameEngine
 			}
 		}
 
-		void Destroy() override;
+		void Destroy() override = 0;
 	};
 }
 
