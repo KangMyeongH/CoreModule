@@ -130,9 +130,9 @@ namespace GameEngine
 
 
 	public:
-		friend void to_json(nlohmann::json& j, const GameObject& obj)
+		friend void to_json(nlohmann::ordered_json& j, const GameObject& obj)
 		{
-			j = nlohmann::json
+			j = nlohmann::ordered_json
 			{
 				{"name", obj.Get_Name()},
 				{"tag", obj.Get_Tag()},
@@ -144,34 +144,34 @@ namespace GameEngine
 			obj.ComponentToJson(j);
 		}
 
-		void ComponentToJson(nlohmann::json& _j) const
+		void ComponentToJson(nlohmann::ordered_json& _j) const
 		{
 			for (auto& component : m_ComponentMap)
 			{
-				nlohmann::json componentJson;
+				nlohmann::ordered_json componentJson;
 				component.second.front()->to_json(componentJson);
 				_j["components"].push_back(componentJson);
 			}
 		}
 
-		friend void from_json(const nlohmann::json& j, GameObject& obj)
+		friend void from_json(const nlohmann::ordered_json& _j, GameObject& _obj)
 		{
 			std::string name;
-			j.at("name").get_to(name);
-			obj.Set_Name(name);
-			j.at("transform").get_to(obj.m_Transform);
+			_j.at("name").get_to(name);
+			_obj.Set_Name(name);
+			_j.at("transform").get_to(_obj.m_Transform);
 		}
 
-		void ComponentFromJson(const nlohmann::json& j)
+		void ComponentFromJson(const nlohmann::ordered_json& _j)
 		{
-			for (const auto& component_json : j.at("components"))
+			for (const auto& component_json : _j.at("components"))
 			{
 				// 어떤 컴포넌트인지 타입을 가져온 후
 				std::string type = component_json.at("type").get<std::string>();
 
 				// 타입에 맞는 컴포넌트를 만들고, 해당 정보를 넣는다.
 				auto component = createComponent(type);
-				component->from_json(j);
+				component->from_json(_j);
 				m_ComponentMap[typeid(*component)].push_back(component);
 			}
 		}

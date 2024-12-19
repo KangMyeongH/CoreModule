@@ -29,6 +29,7 @@ namespace GameEngine
 		//======================================//
 		//				constructor				//
 		//======================================//
+
 		Transform() : Component(nullptr), m_Parent(nullptr), m_DirtyFlags(None), m_bDirty(false) {}
 
 		explicit Transform(GameObject* _owner) :
@@ -45,6 +46,7 @@ namespace GameEngine
 		//======================================//
 		//				 property				//
 		//======================================//
+
 		const Vector3& 		Get_LocalPosition() const { return m_LocalPosition; }
 		void 				Set_LocalPosition(const Vector3& _position)
 		{
@@ -54,6 +56,7 @@ namespace GameEngine
 				set_Dirty();
 			}
 		}
+
 		const Vector3& 		Get_LocalRotation() const { return m_LocalRotation; }
 		void 				Set_LocalRotation(const Vector3& _rotation)
 		{
@@ -63,6 +66,7 @@ namespace GameEngine
 				set_Dirty();
 			}
 		}
+
 		const Vector3& 		Get_LocalScale() const { return m_LocalScale; }
 		void 				Set_LocalScale(const Vector3& _scale)
 		{
@@ -89,6 +93,7 @@ namespace GameEngine
 				}
 			}
 		}
+
 		const Vector3& 		Rotation() const { return m_WorldRotation; }
 		void 				Set_Rotation(const Vector3& _rotation)
 		{
@@ -105,6 +110,7 @@ namespace GameEngine
 				}
 			}
 		}
+
 		const Vector3& 		Scale() const { return m_WorldScale; }
 
 		void 				Set_Parent(Transform* _parent)
@@ -133,6 +139,7 @@ namespace GameEngine
 			}
 		}
 		Transform* 			Get_Parent() const { return m_Parent; }
+
 		const D3DXMATRIX& 	Get_WorldMatrix()
 		{
 			update_MatrixIfNeeded();
@@ -140,18 +147,25 @@ namespace GameEngine
 		}
 		const std::vector<Transform*>& Get_Children() const { return m_Children; }
 
-
 		//======================================//
 		//				  method				//
 		//======================================//
+
+		void	Translate(const Vector3& _value);
 
 	private:
 		//======================================//
 		//			  private method			//
 		//======================================//
+
 		void set_LocalDirty()
 		{
 			m_DirtyFlags |= LocalDirty;
+		}
+
+		void set_WorldDirty()
+		{
+			m_DirtyFlags |= WorldDirty;
 		}
 
 		void set_Dirty()
@@ -303,16 +317,16 @@ namespace GameEngine
 
 
 	public:
-		void to_json(nlohmann::json& _j) override
+		void to_json(nlohmann::ordered_json& _j) override
 		{
-			_j = nlohmann::json{
+			_j = nlohmann::ordered_json{
 				{"position", Get_LocalPosition()},
 				{"rotation", Get_LocalRotation()},
 				{"scale", Get_LocalScale()}
 			};
 		}
 
-		void from_json(const nlohmann::json& _j) override
+		void from_json(const nlohmann::ordered_json& _j) override
 		{
 			Set_LocalPosition(_j.at("position").get<Vector3>());
 			Set_LocalRotation(_j.at("rotation").get<Vector3>());
@@ -320,16 +334,16 @@ namespace GameEngine
 		}
 
 		
-		friend void to_json(nlohmann::json& j, const Transform& t)
+		friend void to_json(nlohmann::ordered_json& j, const Transform& t)
 		{
-			j = nlohmann::json{
+			j = nlohmann::ordered_json{
 				{"position", t.Get_LocalPosition()},
 				{"rotation", t.Get_LocalRotation()},
 				{"scale", t.Get_LocalScale()}
 			};
 		}
 
-		friend void from_json(const nlohmann::json& j, Transform& t)
+		friend void from_json(const nlohmann::ordered_json& j, Transform& t)
 		{
 			t.Set_LocalPosition(j.at("position").get<Vector3>());
 			t.Set_LocalPosition(j.at("rotation").get<Vector3>());
@@ -364,6 +378,15 @@ namespace GameEngine
 		bool m_bDirty;
 
 	};
+
+	inline void Transform::Translate(const Vector3& _value)
+	{
+		if (_value.x != 0.f || _value.y != 0.f || _value.z != 0.f)
+		{
+			m_LocalPosition += _value;
+			set_WorldDirty();
+		}
+	}
 
 	REGISTER_COMPONENT(Transform)
 }

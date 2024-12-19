@@ -18,8 +18,8 @@ namespace GameEngine
 
 
 	public:
-		void to_json(nlohmann::json& _j) override = 0;
-		void from_json(const nlohmann::json& _j) override = 0;
+		void to_json(nlohmann::ordered_json& _j) override = 0;
+		void from_json(const nlohmann::ordered_json& _j) override = 0;
 
 	protected:
 		bool m_bEnabled;

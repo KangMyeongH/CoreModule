@@ -25,3 +25,12 @@ void GameEngine::Core::Release()
 
 
 }
+
+void GameEngine::Core::render(LPDIRECT3DDEVICE9 _device)
+{
+	// render begin
+
+	// RenderManager::Get_Instance->Render(m_Device);
+
+	// render end
+}

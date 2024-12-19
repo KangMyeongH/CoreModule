@@ -27,8 +27,8 @@ namespace GameEngine
 		virtual Component* Clone() const = 0;
 
 	public:
-		virtual void to_json(nlohmann::json& _j) = 0;
-		virtual void from_json(const nlohmann::json& _j) = 0;
+		virtual void to_json(nlohmann::ordered_json& _j) = 0;
+		virtual void from_json(const nlohmann::ordered_json& _j) = 0;
 
 	protected:
 		GameObject* m_Owner;

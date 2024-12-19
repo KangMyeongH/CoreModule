@@ -16,7 +16,7 @@ namespace GameEngine
 		DECLARE_SINGLETON(MonoBehaviourManager)
 
 	public:
-		void Fixed_Update()
+		void Fixed_Update() const
 		{
 			for (const auto& monoBehaviour : m_MonoBehaviours)
 			{
@@ -27,7 +27,7 @@ namespace GameEngine
 			}
 		}
 
-		void Update()
+		void Update() const
 		{
 			for (const auto& monoBehaviour : m_MonoBehaviours)
 			{
@@ -38,7 +38,7 @@ namespace GameEngine
 			}
 		}
 
-		void Late_Update()
+		void Late_Update() const
 		{
 			for(const auto& monoBehaviour : m_MonoBehaviours)
 			{
@@ -49,7 +49,7 @@ namespace GameEngine
 			}
 		}
 
-		void OnDestroy()
+		void On_Destroy() const
 		{
 			for (const auto& obj : m_DestroyQueue)
 			{
@@ -59,9 +59,15 @@ namespace GameEngine
 			}
 		}
 
+		void Add_MonoBehaviour(MonoBehaviour* _monoBehaviour)
+		{
+			m_RegisterQueue.push_back(_monoBehaviour);
+			_monoBehaviour->Awake();
+		}
+
 		void RegisterForUpdates()
 		{
-			for (auto it = m_PendingQueue.begin(); it != m_PendingQueue.end();)
+			for (auto it = m_RegisterQueue.begin(); it != m_RegisterQueue.end();)
 			{
 				MonoBehaviour* monoBehaviour = *it;
 
@@ -71,7 +77,7 @@ namespace GameEngine
 					monoBehaviour->Start();
 					m_MonoBehaviours.push_back(monoBehaviour);
 
-					it = m_PendingQueue.erase(it);
+					it = m_RegisterQueue.erase(it);
 				}
 
 				else ++it;
@@ -92,7 +98,7 @@ namespace GameEngine
 
 	private:
 		std::vector<MonoBehaviour*>		m_MonoBehaviours;
-		std::list<MonoBehaviour*>		m_PendingQueue;
+		std::list<MonoBehaviour*>		m_RegisterQueue;
 		std::list<MonoBehaviour*>		m_DestroyQueue;
 	};
 }

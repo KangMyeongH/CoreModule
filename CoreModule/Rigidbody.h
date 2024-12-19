@@ -1,16 +1,16 @@
 #pragma once
-#include "Behaviour.h"
+#include "Component.h"
 namespace GameEngine
 {
-	class COREMODULE_API Rigidbody : public Behaviour
+	class COREMODULE_API Rigidbody : public Component
 	{
 	public:
 		//======================================//
 		//				constructor				//
 		//======================================//
 
-		Rigidbody() : Behaviour(nullptr),m_Velocity(0.f,0.f,0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f), m_UseGravity(false) {}
-		explicit Rigidbody(GameObject* _owner) : Behaviour(_owner), m_Velocity(0.f, 0.f, 0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f),
+		Rigidbody() : Component(nullptr),m_Velocity(0.f,0.f,0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f), m_UseGravity(false) {}
+		explicit Rigidbody(GameObject* _owner) : Component(_owner), m_Velocity(0.f, 0.f, 0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f),
 		                                         m_UseGravity(false) {}
 		/// <summary>
 		/// 
@@ -20,7 +20,7 @@ namespace GameEngine
 		/// <param name="_angularDrag">공기 각 저항(float)</param>
 		/// <param name="_useGravity">중력 사용 여부(bool)</param>
 		explicit Rigidbody(GameObject* _owner, const float _mass, const float _drag, const float _angularDrag, const bool _useGravity) :
-		Behaviour(_owner), m_Velocity(0.f,0.f,0.f),
+		Component(_owner), m_Velocity(0.f,0.f,0.f),
 		m_Mass(_mass), m_Drag(_drag), m_AngularDrag(_angularDrag), m_UseGravity(_useGravity) {}
 		~Rigidbody() override = default;
 		Rigidbody(const Rigidbody& _rhs) = default;
@@ -29,6 +29,7 @@ namespace GameEngine
 		//======================================//
 		//				 property				//
 		//======================================//
+
 		void		Set_Velocity(const Vector3& _velocity) { m_Velocity = _velocity; }
 		Vector3		Get_Velocity() const { return m_Velocity; }
 		Vector3& 	Velocity() { return m_Velocity; }
@@ -45,6 +46,13 @@ namespace GameEngine
 		void		Set_UseGravity(const bool _useGravity) { m_UseGravity = _useGravity; }
 		bool		Get_UseGravity() const { return  m_UseGravity; }
 
+		//======================================//
+		//				 method					//
+		//======================================//
+
+		void		Add_Force(const Vector3& _force);
+		void		Rigidbody_Update(const float& _deltaTime);
+
 		Component* Clone() const override
 		{
 			return new Rigidbody(*this);
@@ -53,14 +61,16 @@ namespace GameEngine
 		void Destroy() override;
 
 
+		//======================================//
+		//				 serialize				//
+		//======================================//
 
-		void to_json(nlohmann::json& _j) override
+		void to_json(nlohmann::ordered_json& _j) override
 		{
 			std::string type = "Rigidbody";
 
 			_j = nlohmann::json{
 				{"type", type},
-				{"enabled", Is_Enabled()},
 				{"mass", Get_Mass()},
 				{"drag", Get_Drag()},
 				{"angularDrag", Get_AngularDrag()},
@@ -68,9 +78,8 @@ namespace GameEngine
 			};
 		}
 
-		void from_json(const nlohmann::json& _j) override
+		void from_json(const nlohmann::ordered_json& _j) override
 		{
-			Set_Enable(_j.at("enabled").get<bool>());
 			Set_Mass(_j.at("mass").get<float>());
 			Set_Drag(_j.at("drag").get<float>());
 			Set_AngularDrag(_j.at("angularDrag").get<float>());

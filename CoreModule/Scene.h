@@ -39,20 +39,20 @@ namespace GameEngine
 		// Scene management
 		bool Initialize(const std::string& name, const GameObjectList& gameObjects);
 		void Release();
-		bool LoadScene(std::string sceneName);
+		bool Load_Scene(std::string sceneName);
 
 		// GameObject management
-		GameObject* AddGameObject();
-		GameObjectList* GetGameObjectList();
+		GameObject* Add_GameObject();
+		GameObjectList* Get_GameObjectList();
 		GameObject* Find(const std::string& _name);
 
-		std::string GetSceneName() { return m_SceneName; }
+		std::string Get_SceneName() { return m_SceneName; }
 
-		nlohmann::json ToJson() const;
-		void FromJson(const nlohmann::json& j);
+		nlohmann::ordered_json To_Json() const;
+		void From_Json(const nlohmann::ordered_json& _j);
 
-		friend void to_json(nlohmann::json& j, const Scene& scene);
-		friend void from_json(const nlohmann::json& j, Scene& scene);
+		friend void to_json(nlohmann::ordered_json& _j, const Scene& _scene);
+		friend void from_json(const nlohmann::ordered_json& _j, Scene& _scene);
 		
 	private:
 		GameObjectList	m_GameObjects;

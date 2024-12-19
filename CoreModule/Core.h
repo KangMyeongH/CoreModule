@@ -30,7 +30,7 @@ namespace GameEngine
 		void on_Collision();
 		void update();
 		void late_Update();
-		void render();
+		void render(LPDIRECT3DDEVICE9 _device);
 		void on_Destroy();
 		void destroy();
 

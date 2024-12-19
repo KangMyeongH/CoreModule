@@ -329,16 +329,16 @@ namespace GameEngine
 
 	public:
 		// json 변환
-		friend void to_json(nlohmann::json& j, const Vector3& v)
+		friend void to_json(nlohmann::ordered_json& _j, const Vector3& _v)
 		 {
-			j = nlohmann::json{ {"x", v.x}, {"y", v.y}, {"z", v.z} };
+			_j = nlohmann::ordered_json{ {"x", _v.x}, {"y", _v.y}, {"z", _v.z} };
 		 }
 
-		friend void from_json(const nlohmann::json& j, Vector3& v)
+		friend void from_json(const nlohmann::ordered_json& _j, Vector3& _v)
 		 {
-			j.at("x").get_to(v.x);
-			j.at("y").get_to(v.y);
-			j.at("z").get_to(v.z);
+			_j.at("x").get_to(_v.x);
+			_j.at("y").get_to(_v.y);
+			_j.at("z").get_to(_v.z);
 		 }
 	};
 
@@ -346,17 +346,17 @@ namespace GameEngine
 	{
 	public:
 		// json 변환
-		friend void to_json(nlohmann::json& j, const Quaternion& v)
+		friend void to_json(nlohmann::ordered_json& _j, const Quaternion& _v)
 		{
-			j = nlohmann::json{ {"x", v.x}, {"y", v.y}, {"z", v.z}, {"w", v.w} };
+			_j = nlohmann::ordered_json{ {"x", _v.x}, {"y", _v.y}, {"z", _v.z}, {"w", _v.w} };
 		}
 
-		friend void from_json(const nlohmann::json& j, Quaternion& v)
+		friend void from_json(const nlohmann::ordered_json& _j, Quaternion& _v)
 		{
-			j.at("x").get_to(v.x);
-			j.at("y").get_to(v.y);
-			j.at("z").get_to(v.z);
-			j.at("w").get_to(v.w);
+			_j.at("x").get_to(_v.x);
+			_j.at("y").get_to(_v.y);
+			_j.at("z").get_to(_v.z);
+			_j.at("w").get_to(_v.w);
 		}
 	};
 

@@ -31,6 +31,13 @@
     <ClCompile Include="Core.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp">
+      <Filter>Manager\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -84,6 +91,13 @@
     <ClInclude Include="Core.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
+      <Filter>Manager\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -121,6 +135,12 @@
     </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{896e7694-2313-4cc9-9803-f0b4f80d888e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Physics">
+      <UniqueIdentifier>{445550d0-8afb-49aa-8d2e-017e5ebe3d11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Time">
+      <UniqueIdentifier>{08490895-e2d6-47cd-aa3f-49eadc63ac21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

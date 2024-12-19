@@ -9,7 +9,7 @@ GameEngine::MonoBehaviourManager::~MonoBehaviourManager()
 		delete mb;
 	}
 
-	for (auto& mb : m_PendingQueue)
+	for (auto& mb : m_RegisterQueue)
 	{
 		delete mb;
 	}
@@ -27,7 +27,7 @@ void GameEngine::MonoBehaviourManager::Release()
 		delete mb;
 	}
 
-	for (auto& mb : m_PendingQueue)
+	for (auto& mb : m_RegisterQueue)
 	{
 		delete mb;
 	}
@@ -38,6 +38,6 @@ void GameEngine::MonoBehaviourManager::Release()
 	}
 
 	m_MonoBehaviours.clear();
-	m_PendingQueue.clear();
+	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();
 }

@@ -31,19 +31,19 @@ void GameEngine::Scene::Release()
 
 }
 
-bool GameEngine::Scene::LoadScene(std::string sceneName)
+bool GameEngine::Scene::Load_Scene(std::string sceneName)
 {
 	return false;
 }
 
-GameEngine::GameObject* GameEngine::Scene::AddGameObject()
+GameEngine::GameObject* GameEngine::Scene::Add_GameObject()
 {
 	GameObject* newGameObject = new GameObject();
 	m_GameObjects.push_back(newGameObject);
 	return newGameObject;
 }
 
-GameEngine::GameObjectList* GameEngine::Scene::GetGameObjectList()
+GameEngine::GameObjectList* GameEngine::Scene::Get_GameObjectList()
 {
 	return &m_GameObjects;
 }
@@ -61,9 +61,9 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 	return nullptr;
 }
 
-nlohmann::json GameEngine::Scene::ToJson() const
+nlohmann::ordered_json GameEngine::Scene::To_Json() const
 {
-	nlohmann::json j = nlohmann::json
+	nlohmann::ordered_json j = nlohmann::json
 	{
 		{"sceneName", m_SceneName},
 		{"GameObjects", nlohmann::json::array()}
@@ -77,10 +77,10 @@ nlohmann::json GameEngine::Scene::ToJson() const
 	return j;
 }
 
-void GameEngine::Scene::FromJson(const nlohmann::json& j)
+void GameEngine::Scene::From_Json(const nlohmann::ordered_json& _j)
 {
-	m_SceneName = j.at("sceneName").get<std::string>();
-	for (const auto& obj_json : j.at("GameObjects"))
+	m_SceneName = _j.at("sceneName").get<std::string>();
+	for (const auto& obj_json : _j.at("GameObjects"))
 	{
 		GameObject* obj = new GameObject();
 		obj_json.get_to(*obj);
@@ -88,26 +88,26 @@ void GameEngine::Scene::FromJson(const nlohmann::json& j)
 	}
 }
 
-void GameEngine::to_json(nlohmann::json& j, const Scene& scene)
+void GameEngine::to_json(nlohmann::ordered_json& _j, const Scene& _scene)
 {
-	j = nlohmann::json
+	_j = nlohmann::ordered_json
 	{
-	{"sceneName", scene.m_SceneName},
-	{"GameObjects", nlohmann::json::array()}
+	{"sceneName", _scene.m_SceneName},
+	{"GameObjects", nlohmann::ordered_json::array()}
 	};
-	for (const auto& obj : scene.m_GameObjects)
+	for (const auto& obj : _scene.m_GameObjects)
 	{
-		j["GameObjects"].push_back(*obj);
+		_j["GameObjects"].push_back(*obj);
 	}
 }
 
-void GameEngine::from_json(const nlohmann::json& j, Scene& scene)
+void GameEngine::from_json(const nlohmann::ordered_json& _j, Scene& _scene)
 {
-	scene.m_SceneName = j.at("sceneName").get<std::string>();
-	for (const auto& obj_json : j.at("GameObjects"))
+	_scene.m_SceneName = _j.at("sceneName").get<std::string>();
+	for (const auto& obj_json : _j.at("GameObjects"))
 	{
 		GameObject* obj = new GameObject();
 		obj_json.get_to(*obj);
-		scene.m_GameObjects.push_back(obj);
+		_scene.m_GameObjects.push_back(obj);
 	}
 }
