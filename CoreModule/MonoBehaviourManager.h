@@ -88,6 +88,8 @@ namespace GameEngine
 			m_DestroyQueue.clear();
 		}
 
+		void Release();
+
 	private:
 		std::vector<MonoBehaviour*>		m_MonoBehaviours;
 		std::list<MonoBehaviour*>		m_PendingQueue;

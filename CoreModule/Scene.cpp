@@ -63,12 +63,12 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 
 nlohmann::json GameEngine::Scene::ToJson() const
 {
-	nlohmann::json j;
-	j = nlohmann::json
+	nlohmann::json j = nlohmann::json
 	{
-	{"sceneName", m_SceneName},
-	{"GameObjects", nlohmann::json::array()}
+		{"sceneName", m_SceneName},
+		{"GameObjects", nlohmann::json::array()}
 	};
+
 	for (const auto& obj : m_GameObjects)
 	{
 		j["GameObjects"].push_back(*obj);

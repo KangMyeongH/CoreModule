@@ -35,6 +35,10 @@ namespace GameEngine
 		}
 
 		void Destroy() override = 0;
+
+	public:
+		void to_json(nlohmann::json& _j) override = 0;
+		void from_json(const nlohmann::json& _j) override = 0;
 	};
 }
 

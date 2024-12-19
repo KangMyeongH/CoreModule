@@ -1,5 +1,6 @@
 #pragma once
 #include "core_math.h"
+#include "ComponentRegistrar.h"
 #include "Object.h"
 
 namespace GameEngine
@@ -23,11 +24,13 @@ namespace GameEngine
 
 		Transform& 	Get_Transform() const;
 
-		//virtual Component* Clone(GameObject* _newOwner) const = 0;
+		virtual Component* Clone() const = 0;
 
+	public:
+		virtual void to_json(nlohmann::json& _j) = 0;
+		virtual void from_json(const nlohmann::json& _j) = 0;
 
 	protected:
 		GameObject* m_Owner;
 	};
-
 }

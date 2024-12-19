@@ -22,7 +22,15 @@
     <ClCompile Include="MonoBehaviourManager.cpp">
       <Filter>Manager\MonoBehaviour</Filter>
     </ClCompile>
-    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Rigidbody.cpp">
+      <Filter>Component\04. Rigidbidy</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentFactory.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -64,7 +72,18 @@
     <ClInclude Include="MonoBehaviourManager.h">
       <Filter>Manager\MonoBehaviour</Filter>
     </ClInclude>
-    <ClInclude Include="Core.h" />
+    <ClInclude Include="Rigidbody.h">
+      <Filter>Component\04. Rigidbidy</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentFactory.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentRegistrar.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -96,6 +115,12 @@
     </Filter>
     <Filter Include="Manager\MonoBehaviour">
       <UniqueIdentifier>{91aa87d8-351b-4a15-b92a-663fda2f4fe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\04. Rigidbidy">
+      <UniqueIdentifier>{4fb72993-ac4b-4b4e-b650-fd1d8d9355fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{896e7694-2313-4cc9-9803-f0b4f80d888e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

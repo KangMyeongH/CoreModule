@@ -16,6 +16,11 @@ namespace GameEngine
 		bool 			Is_Enabled() const { return m_bEnabled; }
 		void 			Destroy() override = 0;
 
+
+	public:
+		void to_json(nlohmann::json& _j) override = 0;
+		void from_json(const nlohmann::json& _j) override = 0;
+
 	protected:
 		bool m_bEnabled;
 	};

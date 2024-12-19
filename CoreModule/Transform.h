@@ -29,6 +29,8 @@ namespace GameEngine
 		//======================================//
 		//				constructor				//
 		//======================================//
+		Transform() : Component(nullptr), m_Parent(nullptr), m_DirtyFlags(None), m_bDirty(false) {}
+
 		explicit Transform(GameObject* _owner) :
 			Component(_owner), m_Parent(nullptr), m_LocalPosition(0.0f, 0.0f, 0.0f),
 			m_LocalRotation(0.0f, 0.0f, 0.0f),
@@ -301,7 +303,23 @@ namespace GameEngine
 
 
 	public:
+		void to_json(nlohmann::json& _j) override
+		{
+			_j = nlohmann::json{
+				{"position", Get_LocalPosition()},
+				{"rotation", Get_LocalRotation()},
+				{"scale", Get_LocalScale()}
+			};
+		}
 
+		void from_json(const nlohmann::json& _j) override
+		{
+			Set_LocalPosition(_j.at("position").get<Vector3>());
+			Set_LocalRotation(_j.at("rotation").get<Vector3>());
+			Set_LocalScale(_j.at("scale").get<Vector3>());
+		}
+
+		
 		friend void to_json(nlohmann::json& j, const Transform& t)
 		{
 			j = nlohmann::json{
@@ -317,6 +335,11 @@ namespace GameEngine
 			t.Set_LocalPosition(j.at("rotation").get<Vector3>());
 			j.at("rotation").get_to(t.m_WorldRotation);
 			j.at("scale").get_to(t.m_WorldScale);
+		}
+
+		Component* Clone() const override
+		{
+			return new Transform(*this);
 		}
 
 	private:
@@ -339,11 +362,8 @@ namespace GameEngine
 		TransformDirtyFlags m_DirtyFlags;
 
 		bool m_bDirty;
+
 	};
 
-	/*
-	inline Component* Transform::Clone(GameObject* _newOwner) const
-	{
-		return new Transform(*this);
-	}*/
+	REGISTER_COMPONENT(Transform)
 }

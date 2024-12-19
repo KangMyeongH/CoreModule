@@ -6,6 +6,9 @@
 
 #pragma warning(disable : 4251)
 
+#define REGISTER_COMPONENT(className) \
+	static ComponentRegistrar registrar_##className(#className, []() { return std::make_unique<className>(); });
+
 #ifdef COREMODULE_EXPORTS
 #define COREMODULE_API __declspec(dllexport)
 #else
@@ -32,3 +35,9 @@ ClassName& ClassName::GetInstance()					\
 	return sClass;									\
 }
 #pragma endregion Singleton
+
+
+namespace GameEngine
+{
+	class Component;
+}
