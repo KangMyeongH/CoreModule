@@ -342,6 +342,24 @@ namespace GameEngine
 		 }
 	};
 
+	struct Quaternion : D3DXQUATERNION
+	{
+	public:
+		// json º¯È¯
+		friend void to_json(nlohmann::json& j, const Quaternion& v)
+		{
+			j = nlohmann::json{ {"x", v.x}, {"y", v.y}, {"z", v.z}, {"w", v.w} };
+		}
+
+		friend void from_json(const nlohmann::json& j, Quaternion& v)
+		{
+			j.at("x").get_to(v.x);
+			j.at("y").get_to(v.y);
+			j.at("z").get_to(v.z);
+			j.at("w").get_to(v.w);
+		}
+	};
+
 	struct AnimationCurve
 	{
 		#define PI 3.141592f

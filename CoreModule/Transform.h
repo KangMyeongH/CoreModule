@@ -16,6 +16,13 @@ namespace GameEngine
 {
 	class GameObject;
 
+	enum TransformDirtyFlags_
+	{	None = 0,				// 0000
+		LocalDirty = 1 << 0,	// 0001 
+		WorldDirty = 1 << 1,	// 0010
+		ParentChanged = 1 << 2	// 0100
+	};
+
 	class COREMODULE_API Transform final : public Component
 	{
 	public:
@@ -25,7 +32,7 @@ namespace GameEngine
 		explicit Transform(GameObject* _owner) :
 			Component(_owner), m_Parent(nullptr), m_LocalPosition(0.0f, 0.0f, 0.0f),
 			m_LocalRotation(0.0f, 0.0f, 0.0f),
-			m_LocalScale(1.f, 1.f, 1.f), m_DirtyFlags(TransformDirtyFlags::WorldDirty), m_bDirty(true) {}
+			m_LocalScale(1.f, 1.f, 1.f), m_DirtyFlags(WorldDirty), m_bDirty(true) {}
 
 		~Transform() override = default;
 		Transform(const Transform&) = default;
@@ -140,6 +147,11 @@ namespace GameEngine
 		//======================================//
 		//			  private method			//
 		//======================================//
+		void set_LocalDirty()
+		{
+			m_DirtyFlags |= LocalDirty;
+		}
+
 		void set_Dirty()
 		{
 			m_bDirty = true;
@@ -293,15 +305,16 @@ namespace GameEngine
 		friend void to_json(nlohmann::json& j, const Transform& t)
 		{
 			j = nlohmann::json{
-				{"position", t.m_WorldPosition},
-				{"rotation", t.m_WorldRotation},
-				{"scale", t.m_WorldScale}
+				{"position", t.Get_LocalPosition()},
+				{"rotation", t.Get_LocalRotation()},
+				{"scale", t.Get_LocalScale()}
 			};
 		}
 
 		friend void from_json(const nlohmann::json& j, Transform& t)
 		{
-			j.at("position").get_to(t.m_WorldPosition);
+			t.Set_LocalPosition(j.at("position").get<Vector3>());
+			t.Set_LocalPosition(j.at("rotation").get<Vector3>());
 			j.at("rotation").get_to(t.m_WorldRotation);
 			j.at("scale").get_to(t.m_WorldScale);
 		}
@@ -313,13 +326,13 @@ namespace GameEngine
 		// world space
 		D3DXMATRIX 	m_WorldMatrix;
 		Vector3 	m_WorldPosition;
-		D3DXQUATERNION m_WorldQuaternionRotation;
+		Quaternion 	m_WorldQuaternionRotation;
 		Vector3 	m_WorldRotation;
 		Vector3 	m_WorldScale;
 
 		// local space
 		Vector3 	m_LocalPosition;
-		D3DXQUATERNION m_LocalQuaternionRotation;
+		Quaternion	m_LocalQuaternionRotation;
 		Vector3 	m_LocalRotation;
 		Vector3 	m_LocalScale;
 
