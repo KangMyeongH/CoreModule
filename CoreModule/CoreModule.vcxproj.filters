@@ -37,7 +37,12 @@
     <ClCompile Include="TimeManager.cpp">
       <Filter>Manager\Time</Filter>
     </ClCompile>
-    <ClCompile Include="CubeRenderer.cpp" />
+    <ClCompile Include="CubeRenderer.cpp">
+      <Filter>Component\03. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>Manager\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -97,7 +102,12 @@
     <ClInclude Include="TimeManager.h">
       <Filter>Manager\Time</Filter>
     </ClInclude>
-    <ClInclude Include="CubeRenderer.h" />
+    <ClInclude Include="CubeRenderer.h">
+      <Filter>Component\03. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>Manager\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -141,6 +151,9 @@
     </Filter>
     <Filter Include="Manager\Time">
       <UniqueIdentifier>{08490895-e2d6-47cd-aa3f-49eadc63ac21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Render">
+      <UniqueIdentifier>{17cae13d-0c7d-467a-8113-299e1fe4d637}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

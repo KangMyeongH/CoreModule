@@ -36,6 +36,9 @@ namespace GameEngine
 
 	private:
 		LPDIRECT3DDEVICE9 m_Device;
+
+		RenderManager* m_RenderManager;
+
 	};
 
 }
