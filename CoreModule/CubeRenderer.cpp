@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 
+//vertex buffer, index buffer 초기화
 void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
 	m_TriangleCnt = 12;
@@ -136,9 +137,9 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
 	//Transfrom 설정
-	//render State 설정
-	//texture 컴포넌트에서 텍스처 가져와서 Set_Texture()
+	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
 
+	//render State 설정
 	_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
 	_device->SetFVF(FVF_CUBE);
 

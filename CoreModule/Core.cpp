@@ -17,7 +17,7 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
 
 void GameEngine::Core::Progress()
 {
-	m_RenderManager->RegisterForUpdate();
+	//m_RenderManager->RegisterForUpdate();
 }
 
 void GameEngine::Core::Release()

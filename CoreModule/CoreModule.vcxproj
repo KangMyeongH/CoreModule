@@ -144,6 +144,7 @@
     <ClInclude Include="core_define.h" />
     <ClInclude Include="core_include.h" />
     <ClInclude Include="core_math.h" />
+    <ClInclude Include="core_struct.h" />
     <ClInclude Include="core_types.h" />
     <ClInclude Include="CubeRenderer.h" />
     <ClInclude Include="GameObject.h" />

@@ -21,9 +21,9 @@ void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 {
-	for (auto renderer : m_Renderers)
+	for (Renderer* renderer : m_Renderers)
 	{
-		*renderer.Render(_device);
+		renderer->Render(_device);
 	}
 }
 
