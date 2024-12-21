@@ -3,6 +3,7 @@
 #include "core_include.h"
 #include "core_math.h"
 #include "core_types.h"
+#include "core_struct.h"
 
 #pragma warning(disable : 4251)
 

@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Scene.h"
 #include "Transform.h"
+#include "CubeRenderer.h"
 
 
 // 게임 오브젝트의 생성을 호출 즉시 바로
@@ -172,6 +173,7 @@ namespace GameEngine
 				// 타입에 맞는 컴포넌트를 만들고, 해당 정보를 넣는다.
 				auto component = createComponent(type);
 				component->from_json(_j);
+				component->Set_Owner(this);
 				m_ComponentMap[typeid(*component)].push_back(component);
 			}
 		}

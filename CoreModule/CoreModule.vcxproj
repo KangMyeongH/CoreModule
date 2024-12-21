@@ -110,6 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;COREMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./Code;./Header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,41 +137,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Behaviour.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="ComponentFactory.h" />
-    <ClInclude Include="ComponentRegistrar.h" />
-    <ClInclude Include="Core.h" />
-    <ClInclude Include="core_define.h" />
-    <ClInclude Include="core_include.h" />
-    <ClInclude Include="core_math.h" />
-    <ClInclude Include="core_types.h" />
-    <ClInclude Include="CubeRenderer.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="MonoBehaviour.h" />
-    <ClInclude Include="MonoBehaviourManager.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="PhysicsManager.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Rigidbody.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="TimeManager.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Header\Behaviour.h" />
+    <ClInclude Include="Header\Component.h" />
+    <ClInclude Include="Header\ComponentFactory.h" />
+    <ClInclude Include="Header\ComponentRegistrar.h" />
+    <ClInclude Include="Header\Core.h" />
+    <ClInclude Include="Header\core_define.h" />
+    <ClInclude Include="Header\core_include.h" />
+    <ClInclude Include="Header\core_math.h" />
+    <ClInclude Include="Header\core_struct.h" />
+    <ClInclude Include="Header\core_types.h" />
+    <ClInclude Include="Header\CubeRenderer.h" />
+    <ClInclude Include="Header\GameObject.h" />
+    <ClInclude Include="Header\MonoBehaviour.h" />
+    <ClInclude Include="Header\MonoBehaviourManager.h" />
+    <ClInclude Include="Header\Object.h" />
+    <ClInclude Include="Header\PhysicsManager.h" />
+    <ClInclude Include="Header\Renderer.h" />
+    <ClInclude Include="Header\RenderManager.h" />
+    <ClInclude Include="Header\Rigidbody.h" />
+    <ClInclude Include="Header\Scene.h" />
+    <ClInclude Include="Header\TimeManager.h" />
+    <ClInclude Include="Header\Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="ComponentFactory.cpp" />
-    <ClCompile Include="Core.cpp" />
-    <ClCompile Include="CubeRenderer.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="MonoBehaviour.cpp" />
-    <ClCompile Include="MonoBehaviourManager.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="PhysicsManager.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Rigidbody.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
+    <ClCompile Include="Code\Component.cpp" />
+    <ClCompile Include="Code\ComponentFactory.cpp" />
+    <ClCompile Include="Code\Core.cpp" />
+    <ClCompile Include="Code\CubeRenderer.cpp" />
+    <ClCompile Include="Code\GameObject.cpp" />
+    <ClCompile Include="Code\MonoBehaviour.cpp" />
+    <ClCompile Include="Code\MonoBehaviourManager.cpp" />
+    <ClCompile Include="Code\Object.cpp" />
+    <ClCompile Include="Code\PhysicsManager.cpp" />
+    <ClCompile Include="Code\Renderer.cpp" />
+    <ClCompile Include="Code\RenderManager.cpp" />
+    <ClCompile Include="Code\Rigidbody.cpp" />
+    <ClCompile Include="Code\Scene.cpp" />
+    <ClCompile Include="Code\TimeManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

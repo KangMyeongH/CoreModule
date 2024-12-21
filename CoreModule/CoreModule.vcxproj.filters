@@ -1,103 +1,116 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="Code\Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="MonoBehaviour.cpp">
-      <Filter>Component\02. MonoBehaviour</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Component\03. Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="MonoBehaviourManager.cpp">
-      <Filter>Manager\MonoBehaviour</Filter>
-    </ClCompile>
-    <ClCompile Include="Rigidbody.cpp">
-      <Filter>Component\04. Rigidbidy</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentFactory.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Core.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsManager.cpp">
-      <Filter>Manager\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeManager.cpp">
+    <ClCompile Include="Code\TimeManager.cpp">
       <Filter>Manager\Time</Filter>
     </ClCompile>
-    <ClCompile Include="CubeRenderer.cpp" />
+    <ClCompile Include="Code\RenderManager.cpp">
+      <Filter>Manager\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PhysicsManager.cpp">
+      <Filter>Manager\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\MonoBehaviourManager.cpp">
+      <Filter>Manager\MonoBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Object.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Component.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ComponentFactory.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Rigidbody.cpp">
+      <Filter>Component\04. Rigidbidy</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\CubeRenderer.cpp">
+      <Filter>Component\03. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Renderer.cpp">
+      <Filter>Component\03. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\MonoBehaviour.cpp">
+      <Filter>Component\02. MonoBehaviour</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
+    <ClInclude Include="Header\Transform.h">
       <Filter>Component\00. Transform</Filter>
     </ClInclude>
-    <ClInclude Include="core_math.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="core_define.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="core_include.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="core_types.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="Behaviour.h">
+    <ClInclude Include="Header\Behaviour.h">
       <Filter>Component\01. Behaviour</Filter>
     </ClInclude>
-    <ClInclude Include="MonoBehaviour.h">
+    <ClInclude Include="Header\MonoBehaviour.h">
       <Filter>Component\02. MonoBehaviour</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
+    <ClInclude Include="Header\CubeRenderer.h">
       <Filter>Component\03. Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="MonoBehaviourManager.h">
-      <Filter>Manager\MonoBehaviour</Filter>
+    <ClInclude Include="Header\Renderer.h">
+      <Filter>Component\03. Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Rigidbody.h">
+    <ClInclude Include="Header\Rigidbody.h">
       <Filter>Component\04. Rigidbidy</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentFactory.h">
+    <ClInclude Include="Header\Component.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentRegistrar.h">
+    <ClInclude Include="Header\ComponentFactory.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="Core.h">
+    <ClInclude Include="Header\ComponentRegistrar.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Core.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsManager.h">
+    <ClInclude Include="Header\GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Object.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\core_define.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\core_include.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\core_math.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\core_struct.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\core_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\MonoBehaviourManager.h">
+      <Filter>Manager\MonoBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\PhysicsManager.h">
       <Filter>Manager\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="TimeManager.h">
+    <ClInclude Include="Header\RenderManager.h">
+      <Filter>Manager\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\TimeManager.h">
       <Filter>Manager\Time</Filter>
     </ClInclude>
-    <ClInclude Include="CubeRenderer.h" />
+    <ClInclude Include="Header\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -141,6 +154,9 @@
     </Filter>
     <Filter Include="Manager\Time">
       <UniqueIdentifier>{08490895-e2d6-47cd-aa3f-49eadc63ac21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Render">
+      <UniqueIdentifier>{17cae13d-0c7d-467a-8113-299e1fe4d637}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
