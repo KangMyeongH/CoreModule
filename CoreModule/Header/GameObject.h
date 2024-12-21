@@ -161,6 +161,8 @@ namespace GameEngine
 			_j.at("name").get_to(name);
 			_obj.Set_Name(name);
 			_j.at("transform").get_to(_obj.m_Transform);
+
+			_obj.ComponentFromJson(_j);
 		}
 
 		void ComponentFromJson(const nlohmann::ordered_json& _j)
@@ -172,7 +174,7 @@ namespace GameEngine
 
 				// 타입에 맞는 컴포넌트를 만들고, 해당 정보를 넣는다.
 				auto component = createComponent(type);
-				component->from_json(_j);
+				component->from_json(component_json);
 				component->Set_Owner(this);
 				m_ComponentMap[typeid(*component)].push_back(component);
 			}
