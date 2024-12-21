@@ -31,8 +31,8 @@ namespace GameEngine
 			m_VertexCnt(_rhs.m_VertexCnt),
 			m_TriangleCnt(_rhs.m_TriangleCnt)
 		{
-			m_VertexBuffer->AddRef();
-			m_IndexBuffer->AddRef();
+			if (m_VertexBuffer) m_VertexBuffer->AddRef();
+			if (m_IndexBuffer) m_IndexBuffer->AddRef();
 		}
 		~CubeRenderer() override
 		{
