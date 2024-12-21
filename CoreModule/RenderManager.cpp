@@ -1,5 +1,7 @@
 #include "RenderManager.h"
 
+#include "Renderer.h"
+
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
 GameEngine::RenderManager::~RenderManager()
@@ -21,7 +23,7 @@ void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 {
-	for (Renderer* renderer : m_Renderers)
+	for (const auto& renderer : m_Renderers)
 	{
 		renderer->Render(_device);
 	}

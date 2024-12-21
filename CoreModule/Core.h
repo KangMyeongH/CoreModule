@@ -5,6 +5,8 @@
 
 namespace GameEngine
 {
+	class RenderManager;
+
 	class COREMODULE_API Core
 	{
 	private:

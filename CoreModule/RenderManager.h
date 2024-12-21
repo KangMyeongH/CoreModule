@@ -29,6 +29,7 @@ namespace GameEngine
 		void Release();
 
 	private:
+		// 기준을 잡아야하는데
 		std::list<Renderer*> m_Renderers;
 	};
 }

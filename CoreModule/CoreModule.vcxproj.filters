@@ -108,6 +108,9 @@
     <ClInclude Include="RenderManager.h">
       <Filter>Manager\Render</Filter>
     </ClInclude>
+    <ClInclude Include="core_struct.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
