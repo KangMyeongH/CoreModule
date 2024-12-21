@@ -6,9 +6,9 @@ namespace GameEngine
 	struct VTXCUBE
 	{
 		Vector3 Position;
-		Vector3 TextureUV;
+		ULONG	Color;
 	};
-	const ULONG FVF_CUBE = D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE3(0);
+	const ULONG FVF_COLOR = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX0;
 
 	//Cube Index ±¸Á¶Ã¼
 	struct INDEX16

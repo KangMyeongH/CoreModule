@@ -35,29 +35,20 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 	// 전면
 	pVertex[0].Position = Vector3{ -1.f, 1.f, -1.f };
-	pVertex[0].TextureUV = pVertex[0].Position;
-
 	pVertex[1].Position = Vector3{ 1.f, 1.f, -1.f };
-	pVertex[1].TextureUV = pVertex[1].Position;
-
 	pVertex[2].Position = Vector3{ 1.f, -1.f, -1.f };
-	pVertex[2].TextureUV = pVertex[2].Position;
-
 	pVertex[3].Position = Vector3{ -1.f, -1.f, -1.f };
-	pVertex[3].TextureUV = pVertex[3].Position;
 
 	// 후면
 	pVertex[4].Position = Vector3{ -1.f, 1.f, 1.f };
-	pVertex[4].TextureUV = pVertex[4].Position;
-
 	pVertex[5].Position = Vector3{ 1.f, 1.f, 1.f };
-	pVertex[5].TextureUV = pVertex[5].Position;
-
 	pVertex[6].Position = Vector3{ 1.f, -1.f, 1.f };
-	pVertex[6].TextureUV = pVertex[6].Position;
-
 	pVertex[7].Position = Vector3{ -1.f, -1.f, 1.f };
-	pVertex[7].TextureUV = pVertex[7].Position;
+	
+	for (UINT i = 0; i < m_VertexSize; i++)
+	{
+		pVertex[i].Color = D3DXCOLOR(1.f, 0.f, 0.f, 1.f);
+	}
 
 	m_VertexBuffer->Unlock();
 
