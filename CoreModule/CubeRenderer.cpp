@@ -13,7 +13,7 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 	if (E_FAIL == _device->CreateVertexBuffer(m_VertexCnt * m_VertexSize,
 		0,
-		FVF_CUBE,
+		FVF_COLOR,
 		D3DPOOL_MANAGED,
 		&m_VertexBuffer,
 		NULL))
@@ -132,7 +132,7 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 
 	//render State ¼³Á¤
 	_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
-	_device->SetFVF(FVF_CUBE);
+	_device->SetFVF(FVF_COLOR);
 
 	_device->SetIndices(m_IndexBuffer);
 	_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
