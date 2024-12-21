@@ -16,15 +16,15 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 		FVF_COLOR,
 		D3DPOOL_MANAGED,
 		&m_VertexBuffer,
-		NULL))
+	nullptr))
 		return;
 
 	if(E_FAIL == _device->CreateIndexBuffer(m_TriangleCnt * indexSize,
 		0,						
 		D3DFMT_INDEX16,			
 		D3DPOOL_MANAGED,		
-		&m_IndexBuffer,			
-		NULL))
+		&m_IndexBuffer,
+	nullptr))
 		return;
 
 

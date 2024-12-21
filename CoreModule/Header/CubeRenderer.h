@@ -3,7 +3,7 @@
 
 namespace GameEngine
 {
-	class CubeRenderer : public Renderer
+	class COREMODULE_API CubeRenderer : public Renderer
 	{
 	public:
 		//======================================//
@@ -34,7 +34,11 @@ namespace GameEngine
 			m_VertexBuffer->AddRef();
 			m_IndexBuffer->AddRef();
 		}
-		~CubeRenderer() override = default;
+		~CubeRenderer() override
+		{
+			m_VertexBuffer->Release();
+			m_IndexBuffer->Release();
+		}
 
 		//======================================//
 		//				 method					//
@@ -50,6 +54,7 @@ namespace GameEngine
 		{
 			return new CubeRenderer(*this);
 		}
+
 		void Destroy() override;
 
 
