@@ -63,6 +63,7 @@ namespace GameEngine
 
 			return component;
 		}
+
 		template <typename T>
 		T* Get_Component()
 		{
@@ -73,6 +74,7 @@ namespace GameEngine
 			}
 			return nullptr;
 		}
+
 		template <typename T>
 		std::vector<T*>* Get_Components() const
 		{
@@ -119,6 +121,7 @@ namespace GameEngine
 
 		void Destroy() override;
 
+		Component_Map& Get_ComponentMap() { return m_ComponentMap; }
 
 		//======================================//
 		//			   static method			//

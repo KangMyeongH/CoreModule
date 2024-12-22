@@ -138,6 +138,7 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
 
 	//render state º¹±¸
+
 }
 
 void GameEngine::CubeRenderer::Destroy()

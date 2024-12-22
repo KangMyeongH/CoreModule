@@ -11,10 +11,7 @@ GameEngine::Scene::Scene() : m_SceneName("SampleScene")
 
 GameEngine::Scene::~Scene()
 {
-	for (auto& obj : m_GameObjects)
-	{
-		delete obj;
-	}
+	Release();
 }
 
 bool GameEngine::Scene::Initialize(const std::string& name, const GameObjectList& gameObjects)
@@ -28,7 +25,11 @@ bool GameEngine::Scene::Initialize(const std::string& name, const GameObjectList
 
 void GameEngine::Scene::Release()
 {
-
+	for (auto& obj : m_GameObjects)
+	{
+		delete obj;
+	}
+	m_GameObjects.clear();
 }
 
 bool GameEngine::Scene::Load_Scene(std::string sceneName)
@@ -63,10 +64,10 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 
 nlohmann::ordered_json GameEngine::Scene::To_Json() const
 {
-	nlohmann::ordered_json j = nlohmann::json
+	nlohmann::ordered_json j = nlohmann::ordered_json
 	{
 		{"sceneName", m_SceneName},
-		{"GameObjects", nlohmann::json::array()}
+		{"GameObjects", nlohmann::ordered_json::array()}
 	};
 
 	for (const auto& obj : m_GameObjects)

@@ -36,8 +36,8 @@ namespace GameEngine
 		}
 		~CubeRenderer() override
 		{
-			m_VertexBuffer->Release();
-			m_IndexBuffer->Release();
+			if (m_VertexBuffer) m_VertexBuffer->Release();
+			if (m_IndexBuffer) m_IndexBuffer->Release();
 		}
 
 		//======================================//
@@ -74,7 +74,6 @@ namespace GameEngine
 		}
 
 	private:
-
 		LPDIRECT3DVERTEXBUFFER9		m_VertexBuffer;
 		LPDIRECT3DINDEXBUFFER9		m_IndexBuffer;
 

@@ -3,7 +3,7 @@
 
 namespace GameEngine
 {
-	class TimeManager
+	class COREMODULE_API TimeManager
 	{
 	private:
 		//======================================//
