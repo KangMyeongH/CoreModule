@@ -43,6 +43,9 @@
     <ClCompile Include="Code\MonoBehaviour.cpp">
       <Filter>Component\02. MonoBehaviour</Filter>
     </ClCompile>
+    <ClCompile Include="TextureRenderer.cpp">
+      <Filter>Component\03. Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -110,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="Header\Scene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureRenderer.h">
+      <Filter>Component\03. Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

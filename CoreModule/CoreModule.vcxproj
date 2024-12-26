@@ -159,6 +159,7 @@
     <ClInclude Include="Header\Scene.h" />
     <ClInclude Include="Header\TimeManager.h" />
     <ClInclude Include="Header\Transform.h" />
+    <ClInclude Include="TextureRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Component.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Code\Rigidbody.cpp" />
     <ClCompile Include="Code\Scene.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
+    <ClCompile Include="TextureRenderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,7 +7,7 @@ namespace GameEngine
 	{
 		Vector3		Position;
 		Vector3		Normal;
-		Vector3		TextureUV;
+		Vector2		TextureUV;
 
 	};
 	const ULONG	FVF_TEX = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;

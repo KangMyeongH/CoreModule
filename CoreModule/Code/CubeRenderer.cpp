@@ -142,7 +142,5 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::CubeRenderer::Destroy()
 {
-	m_VertexBuffer->Release();
-	m_IndexBuffer->Release();
 }
 
