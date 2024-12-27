@@ -31,6 +31,11 @@ namespace GameEngine
 			_monoBehaviour->Awake();
 		}
 
+		void Remove_MonoBehaviour(MonoBehaviour* _monoBehaviour)
+		{
+			m_DestroyQueue.push_back(_monoBehaviour);
+		}
+
 		void Register_MonoBehaviour()
 		{
 			for (auto it = m_RegisterQueue.begin(); it != m_RegisterQueue.end();)
@@ -39,7 +44,7 @@ namespace GameEngine
 
 				if (monoBehaviour->Is_Enabled())
 				{
-					monoBehaviour->OnEnable();
+					monoBehaviour->On_Enable();
 					monoBehaviour->Start();
 					m_MonoBehaviours.push_back(monoBehaviour);
 

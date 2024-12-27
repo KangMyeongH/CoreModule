@@ -63,6 +63,12 @@ namespace GameEngine
 			if (m_LocalRotation != _rotation)
 			{
 				m_LocalRotation = _rotation;
+
+				float yaw = D3DXToRadian(m_LocalRotation.y);		// y축 회전 (Yaw)
+				float pitch = D3DXToRadian(m_LocalRotation.x);	// x축 회전 (Pitch)
+				float roll = D3DXToRadian(m_LocalRotation.z);		// z축 회전 (Roll)
+				D3DXQuaternionRotationYawPitchRoll(&m_LocalQuaternionRotation, yaw, pitch, roll);
+
 				set_Dirty();
 			}
 		}
@@ -73,45 +79,89 @@ namespace GameEngine
 			if (m_LocalScale != _scale)
 			{
 				m_LocalScale = _scale;
+
 				set_Dirty();
 			}
 		}
 
-		const Vector3& 		Position() const { return m_WorldPosition; }
+		const Vector3& 		Position() const
+		{
+			update_MatrixIfNeeded();
+			return m_WorldPosition;
+		}
 		void 				Set_Position(const Vector3& _position)
 		{
-			if (m_WorldPosition != _position)
+			if (m_Parent)
 			{
-				if (m_Parent)
-				{
-					Set_LocalPosition(_position - m_Parent->Position());
-				}
+				D3DXMATRIX parentMat;
+				D3DXMatrixInverse(&parentMat, nullptr, &m_Parent->Get_WorldMatrix());
 
-				else
-				{
-					Set_LocalPosition(_position);
-				}
+				D3DXVECTOR4 localPosition;
+				D3DXVec3Transform(&localPosition, &_position, &parentMat);
+				Set_LocalPosition(Vector3(localPosition.x, localPosition.y, localPosition.z));
 			}
+
+			else
+			{
+				Set_LocalPosition(_position);
+			}
+
+			set_Dirty();
 		}
 
-		const Vector3& 		Rotation() const { return m_WorldRotation; }
+		const Vector3& 		Rotation() const
+		{
+			update_MatrixIfNeeded();
+			return m_WorldRotation;
+		}
 		void 				Set_Rotation(const Vector3& _rotation)
 		{
-			if (m_WorldRotation != _rotation)
+			if (m_Parent)
 			{
-				if (m_Parent)
-				{
-					Set_LocalRotation(_rotation - m_Parent->Rotation());
-				}
+				Quaternion parentWorldRotation = m_Parent->Get_WorldQuaternionRotation();
 
-				else
-				{
-					Set_LocalRotation(_rotation);
-				}
+				Quaternion parentInverseRotation;
+				D3DXQuaternionInverse(&parentInverseRotation, &parentWorldRotation);
+
+				float yaw = D3DXToRadian(_rotation.y);
+				float pitch = D3DXToRadian(_rotation.x);
+				float roll = D3DXToRadian(_rotation.z);
+
+				Quaternion quaRot;
+				D3DXQuaternionRotationYawPitchRoll(&quaRot, yaw, pitch, roll);
+
+				D3DXQuaternionMultiply(&m_LocalQuaternionRotation, &parentInverseRotation, &quaRot);
+				quaternionToEuler(m_LocalQuaternionRotation, m_LocalRotation);
 			}
+
+			else
+			{
+				Set_LocalRotation(_rotation);
+			}
+
+			set_Dirty();
 		}
 
-		const Vector3& 		Scale() const { return m_WorldScale; }
+		const Vector3& 		Scale() const
+		{
+			update_MatrixIfNeeded();
+			return m_WorldScale;
+		}
+		void				Set_Scale(const Vector3& _scale)
+		{
+			if (m_Parent)
+			{
+				Vector3 localScale = _scale / m_Parent->Scale();
+				Set_LocalScale(localScale);
+			}
+
+			else
+			{
+				Set_LocalScale(_scale);
+			}
+
+			set_Dirty();
+		}
 
 		void 				Set_Parent(Transform* _parent)
 		{
@@ -126,11 +176,31 @@ namespace GameEngine
 
 				m_LocalPosition = m_WorldPosition;
 				m_LocalRotation = m_WorldRotation;
+				m_LocalScale = m_WorldScale;
 
 				if (m_Parent != nullptr)
 				{
-					m_LocalPosition -= m_Parent->Get_LocalPosition();
-					m_LocalRotation -= m_Parent->Get_LocalRotation();
+					D3DXMATRIX parentWorldMatrix = m_Parent->Get_WorldMatrix();
+					D3DXMATRIX parentInverseMatrix;
+					D3DXMatrixInverse(&parentInverseMatrix, nullptr, &parentWorldMatrix);
+
+					// 월드 위치 -> 로컬 위치 변환
+					D3DXVECTOR4 localPosition4;
+					D3DXVec3Transform(&localPosition4, &m_WorldPosition, &parentInverseMatrix);
+					m_LocalPosition = Vector3(localPosition4.x, localPosition4.y, localPosition4.z);
+
+					// 월드 회전 -> 로컬 회전 변환
+					D3DXQUATERNION parentWorldRotation = m_Parent->Get_WorldQuaternionRotation();
+					D3DXQUATERNION parentInverseRotation;
+					D3DXQuaternionInverse(&parentInverseRotation, &parentWorldRotation);
+					D3DXQuaternionMultiply(&m_LocalQuaternionRotation, &parentInverseRotation, &m_WorldQuaternionRotation);
+
+					quaternionToEuler(m_LocalQuaternionRotation, m_LocalRotation);
+
+					m_LocalScale = m_WorldScale / m_Parent->Scale();
+
+					//m_LocalPosition -= m_Parent->Get_LocalPosition();
+					//m_LocalRotation -= m_Parent->Get_LocalRotation();
 
 					m_Parent->add_Child(this);
 				}
@@ -139,6 +209,17 @@ namespace GameEngine
 			}
 		}
 		Transform* 			Get_Parent() const { return m_Parent; }
+
+		const Quaternion&	Get_WorldQuaternionRotation() const
+		{
+			update_MatrixIfNeeded();
+			return m_WorldQuaternionRotation;
+		}
+
+		const Quaternion&	Get_LocalQuaternionRotation() const
+		{
+			return m_LocalQuaternionRotation;
+		}
 
 		const D3DXMATRIX& 	Get_WorldMatrix()
 		{
@@ -256,8 +337,33 @@ namespace GameEngine
 
 		void Destroy() override {}
 
+		void quaternionToEuler(const Quaternion& quaternion, Vector3& euler)
+		{
+			// 쿼터니언 요소
+			float x = quaternion.x;
+			float y = quaternion.y;
+			float z = quaternion.z;
+			float w = quaternion.w;
+
+			// Pitch (X축 회전)
+			float sinPitch = 2.0f * (w * x - z * y);
+			if (fabs(sinPitch) >= 1.0f) {
+				// 특수 케이스: Gimble Lock 방지
+				euler.x = D3DXToDegree(copysign(D3DX_PI / 2.0f, sinPitch)); // 90도 또는 -90도
+			}
+			else {
+				euler.x = D3DXToDegree(asinf(sinPitch));
+			}
+
+			// Yaw (Y축 회전)
+			euler.y = D3DXToDegree(atan2f(2.0f * (w * y + z * x), 1.0f - 2.0f * (x * x + y * y)));
+
+			// Roll (Z축 회전)
+			euler.z = D3DXToDegree(atan2f(2.0f * (w * z + x * y), 1.0f - 2.0f * (y * y + z * z)));
+		}
+
 		// 레거시 코드 안쓸 확률 높음
-		void update_MatrixIfNeeded()
+		void update_MatrixIfNeeded() const
 		{
 			if (!m_bDirty)
 				return;
@@ -274,10 +380,12 @@ namespace GameEngine
 			float roll = D3DXToRadian(m_LocalRotation.z);		// z축 회전 (Roll)
 
 			// 오일러 각 -> 쿼터니언 변환
-			D3DXQUATERNION quaternion;
+			Quaternion quaternion;
 			D3DXQuaternionRotationYawPitchRoll(&quaternion, yaw, pitch, roll);
 			D3DXQuaternionNormalize(&quaternion, &quaternion);
 			D3DXMatrixRotationQuaternion(&matRot, &quaternion);
+
+			m_LocalQuaternionRotation = quaternion;
 
 			// position
 			D3DXMatrixTranslation(&matTrans, m_LocalPosition.x, m_LocalPosition.y, m_LocalPosition.z);
@@ -289,8 +397,10 @@ namespace GameEngine
 				D3DXMATRIX matParent = m_Parent->Get_WorldMatrix();
 				m_WorldMatrix = matLocal * matParent;
 
-				D3DXQUATERNION quaternionRotation;
+				Quaternion quaternionRotation;
 				D3DXMatrixDecompose(&m_WorldScale, &quaternionRotation, &m_WorldPosition, &m_WorldMatrix);
+
+				m_WorldQuaternionRotation = quaternionRotation;
 
 				D3DXMATRIX rotMat;
 				D3DXMatrixRotationQuaternion(&rotMat, &quaternionRotation);
@@ -310,6 +420,8 @@ namespace GameEngine
 				m_WorldPosition = m_LocalPosition;
 				m_WorldRotation = m_LocalRotation;
 				m_WorldScale = m_LocalScale;
+
+				m_WorldQuaternionRotation = m_LocalQuaternionRotation;
 			}
 
 			m_bDirty = false;
@@ -347,7 +459,7 @@ namespace GameEngine
 				{"instanceID", t.Get_InstanceID()},
 				{"position", t.Get_LocalPosition()},
 				{"rotation", t.Get_LocalRotation()},
-				{"scale", t.Get_LocalScale()}
+				{"scale", t.Scale()}
 			};
 		}
 
@@ -363,9 +475,9 @@ namespace GameEngine
 			t.Set_InstanceID(j.at("instanceID").get<int>());
 			s_TransformMap[t.Get_InstanceID()] = &t;
 			t.Set_LocalPosition(j.at("position").get<Vector3>());
-			t.Set_LocalPosition(j.at("rotation").get<Vector3>());
+			t.Set_LocalRotation(j.at("rotation").get<Vector3>());
 			//j.at("rotation").get_to(t.m_WorldRotation);
-			j.at("scale").get_to(t.m_WorldScale);
+			t.Set_Scale(j.at("scale").get<Vector3>());
 		}
 
 		Component* Clone() const override
@@ -381,21 +493,21 @@ namespace GameEngine
 		std::vector<Transform*> 	m_Children;
 
 		// world space
-		D3DXMATRIX 	m_WorldMatrix;
-		Vector3 	m_WorldPosition;
-		Quaternion 	m_WorldQuaternionRotation;
-		Vector3 	m_WorldRotation;
-		Vector3 	m_WorldScale;
+		mutable D3DXMATRIX 	m_WorldMatrix;
+		mutable Vector3 	m_WorldPosition;
+		mutable Quaternion 	m_WorldQuaternionRotation;
+		mutable Vector3 	m_WorldRotation;
+		mutable Vector3 	m_WorldScale;
 
 		// local space
-		Vector3 	m_LocalPosition;
-		Quaternion	m_LocalQuaternionRotation;
-		Vector3 	m_LocalRotation;
-		Vector3 	m_LocalScale;
+		Vector3 			m_LocalPosition;
+		mutable Quaternion	m_LocalQuaternionRotation;
+		Vector3 			m_LocalRotation;
+		Vector3 			m_LocalScale;
 
 		TransformDirtyFlags m_DirtyFlags;
 
-		bool m_bDirty;
+		mutable bool m_bDirty;
 
 	};
 
@@ -404,7 +516,7 @@ namespace GameEngine
 		if (_value.x != 0.f || _value.y != 0.f || _value.z != 0.f)
 		{
 			m_LocalPosition += _value;
-			set_WorldDirty();
+			set_Dirty();
 		}
 	}
 

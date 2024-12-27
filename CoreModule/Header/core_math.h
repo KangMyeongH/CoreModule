@@ -189,6 +189,15 @@ namespace GameEngine
 		{
 			return Vector3(x / rhs, y / rhs, z / rhs);
 		}
+		Vector3		operator/(const Vector3& rhs) const
+		{
+			return Vector3{
+				rhs.x != 0.0f ? x / rhs.x : 0.0f,
+				rhs.y != 0.0f ? y / rhs.y : 0.0f,
+				rhs.z != 0.0f ? z / rhs.z : 0.0f
+			};
+		}
+
 		Vector3& 	operator/=(const float rhs)
 		{
 			x /= rhs;

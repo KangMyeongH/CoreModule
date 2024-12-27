@@ -8,18 +8,10 @@ IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-	///
-	/// 사용하는 Renederer들 한 번씩 버퍼 생성해주기.
-	///
-
-
-
-
-	/*
 	for (auto& renderer : m_RegisterQueue)
 	{
 		dynamic_cast<CubeRenderer*>(renderer)->Ready_Buffer(_device);
-	}*/
+	}
 }
 
 GameEngine::RenderManager::~RenderManager()
@@ -52,7 +44,10 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 
 	for (const auto& renderer : m_Renderers)
 	{
-		renderer->Render(_device);
+		if (renderer->Is_Enabled() && renderer->Get_GameObject()->Is_Active())
+		{
+			renderer->Render(_device);
+		}
 	}
 }
 
