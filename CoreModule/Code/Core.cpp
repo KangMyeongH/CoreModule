@@ -19,13 +19,15 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
 
 	m_Scene = &Scene::GetInstance();
 
-	//TODO : Manager �ʱ�ȭ
+	//TODO : Manager ÃÊ±âÈ­
 	m_TimeManager = &TimeManager::GetInstance();
 	m_TimeManager->Initialize();
 	m_CameraManager = &CameraManager::GetInstance();
 	m_RenderManager = &RenderManager::GetInstance();
 	m_PhysicsManager = &PhysicsManager::GetInstance();
 	m_MonoBehaviourManager = &MonoBehaviourManager::GetInstance();
+
+	m_RenderManager->Initialize(m_Device);
 }
 
 void GameEngine::Core::Progress()

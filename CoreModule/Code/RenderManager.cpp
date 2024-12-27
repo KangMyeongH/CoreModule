@@ -3,11 +3,57 @@
 #include "GameObject.h"
 #include "Renderer.h"
 #include "Scene.h"
+#include "TextureRenderer.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
+void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
+{
+	m_Device = _device;
+	_device->AddRef();
+}
+
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
+	//Renderer ���� ����
+	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;
+
+	for (auto& renderer : m_RegisterQueue)
+	{
+		if (dynamic_cast<CubeRenderer*>(renderer))
+		{
+			if (m_BufferMap.find(CUBE) == m_BufferMap.end())
+			{
+				renderer->Ready_Buffer(_device);
+				renderer->Get_Buffer(buffer.first, buffer.second);
+				buffer.first->AddRef();
+				buffer.second->AddRef();
+
+				m_BufferMap.insert({ CUBE, buffer });
+			}
+			else
+			{
+				buffer = (m_BufferMap.find(CUBE))->second;
+				renderer->Set_Buffer(buffer.first, buffer.second);
+			}
+		}
+		else if (dynamic_cast<TextureRenderer*>(renderer))
+		{
+			if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
+			{
+				renderer->Ready_Buffer(_device);
+				renderer->Get_Buffer(buffer.first, buffer.second);
+				buffer.first->AddRef();
+				buffer.second->AddRef();
+
+				m_BufferMap.insert({ TEXTURE, buffer });
+			}
+			else
+			{
+				buffer = (m_BufferMap.find(TEXTURE))->second;
+				renderer->Set_Buffer(buffer.first, buffer.second);
+			}
+		}
 	for (auto& renderer : m_RegisterQueue)
 	{
 		dynamic_cast<CubeRenderer*>(renderer)->Ready_Buffer(_device);
@@ -57,9 +103,55 @@ void GameEngine::RenderManager::Render_End(LPDIRECT3DDEVICE9 _device)
 	_device->Present(NULL, NULL, NULL, NULL);
 }
 
+// Renderer Component�� Render�Ŵ����� ���� ��⿭�� �߰��ϴ� �Լ�
 void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 {
+	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;
+
+	if (dynamic_cast<CubeRenderer*>(_renderer))
+	{
+		if (m_BufferMap.find(CUBE) == m_BufferMap.end())
+		{
+			_renderer->Ready_Buffer(m_Device);
+			_renderer->Get_Buffer(buffer.first, buffer.second);
+			buffer.first->AddRef();
+			buffer.second->AddRef();
+
+			m_BufferMap.insert({ CUBE, buffer });
+		}
+		else
+		{
+			buffer = (m_BufferMap.find(CUBE))->second;
+			_renderer->Set_Buffer(buffer.first, buffer.second);
+		}
+	}
+
+	else if (dynamic_cast<TextureRenderer*>(_renderer))
+	{
+		if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
+		{
+			_renderer->Ready_Buffer(m_Device);
+			_renderer->Get_Buffer(buffer.first, buffer.second);
+			buffer.first->AddRef();
+			buffer.second->AddRef();
+
+			m_BufferMap.insert({ TEXTURE, buffer });
+		}
+		else
+		{
+			buffer = (m_BufferMap.find(TEXTURE))->second;
+			_renderer->Set_Buffer(buffer.first, buffer.second);
+		}
+	}
+
 	m_RegisterQueue.push_back(_renderer);
+}
+
+void GameEngine::RenderManager::Add_Texture(const std::wstring& _name, const std::wstring& _path)
+{
+	LPDIRECT3DTEXTURE9 texture = nullptr;
+	D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture);
+	m_TextureMap.insert({ _name, texture });
 }
 
 void GameEngine::RenderManager::Remove_Renderer(Renderer* _renderer)
@@ -125,7 +217,26 @@ void GameEngine::RenderManager::Release()
 		delete renderer;
 	}
 
+	for (const auto& buffer : m_BufferMap)
+	{
+		buffer.second.first->Release();
+		buffer.second.second->Release();
+	}
+
+	for (const auto& texture : m_TextureMap)
+	{
+		texture.second->Release();
+	}
+
 	m_Renderers.clear();
 	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();
+
+	m_BufferMap.clear();
+	m_TextureMap.clear();
+}
+
+LPDIRECT3DTEXTURE9& GameEngine::RenderManager::Get_Texture(const std::wstring& _name)
+{
+	return m_TextureMap.find(_name)->second;
 }
