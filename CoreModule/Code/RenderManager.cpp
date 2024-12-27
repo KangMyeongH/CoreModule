@@ -167,7 +167,26 @@ void GameEngine::RenderManager::Release()
 		delete renderer;
 	}
 
+	for (const auto& buffer : m_BufferMap)
+	{
+		buffer.second.first->Release();
+		buffer.second.second->Release();
+	}
+
+	for (const auto& texture : m_TextureMap)
+	{
+		texture.second->Release();
+	}
+
 	m_Renderers.clear();
 	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();
+
+	m_BufferMap.clear();
+	m_TextureMap.clear();
+}
+
+LPDIRECT3DTEXTURE9& GameEngine::RenderManager::Get_Texture(std::wstring _name)
+{
+	return m_TextureMap.find(_name)->second;
 }

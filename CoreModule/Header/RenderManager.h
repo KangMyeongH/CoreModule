@@ -50,6 +50,8 @@ namespace GameEngine
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
+		LPDIRECT3DTEXTURE9& Get_Texture(std::wstring _name);
+
 	private:
 		LPDIRECT3DDEVICE9		m_Device;
 

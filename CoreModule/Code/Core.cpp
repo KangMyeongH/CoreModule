@@ -23,6 +23,8 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
 	m_RenderManager = &RenderManager::GetInstance();
 	m_PhysicsManager = &PhysicsManager::GetInstance();
 	m_MonoBehaviourManager = &MonoBehaviourManager::GetInstance();
+
+	m_RenderManager->Initialize(m_Device);
 }
 
 void GameEngine::Core::Progress()
