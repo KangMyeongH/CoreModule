@@ -153,8 +153,4 @@ void GameEngine::CubeRenderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer,
 	m_IndexBuffer = _indexBuffer;
 }
 
-void GameEngine::CubeRenderer::Destroy()
-{
-	
-}
 

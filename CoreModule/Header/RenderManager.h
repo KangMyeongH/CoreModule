@@ -33,14 +33,14 @@ namespace GameEngine
 		//======================================//
 		//				  method				//
 		//======================================//
-		void Initialize(LPDIRECT3DDEVICE9 device);
+		void Initialize(LPDIRECT3DDEVICE9 _device);
 
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device);
 		void Render_Begin(LPDIRECT3DDEVICE9 _device);
 		void Render(LPDIRECT3DDEVICE9 _device);
 		void Render_End(LPDIRECT3DDEVICE9 _device);
 		void Add_Renderer(Renderer* _renderer);
-		void Add_Texture(std::wstring _name, std::wstring _path);
+		void Add_Texture(const std::wstring& _name, const std::wstring& _path);
 		void Remove_Renderer(Renderer* _renderer);
 		void Register_Renderer();
 		void Destroy_Renderer();
@@ -50,7 +50,7 @@ namespace GameEngine
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
-		LPDIRECT3DTEXTURE9& Get_Texture(std::wstring _name);
+		LPDIRECT3DTEXTURE9& Get_Texture(const std::wstring& _name);
 
 	private:
 		LPDIRECT3DDEVICE9		m_Device;

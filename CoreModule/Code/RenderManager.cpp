@@ -7,10 +7,10 @@
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
-void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 device)
+void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 {
-	m_Device = device;
-	device->AddRef();
+	m_Device = _device;
+	_device->AddRef();
 }
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
@@ -26,6 +26,9 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 			{
 				renderer->Ready_Buffer(_device);
 				renderer->Get_Buffer(buffer.first, buffer.second);
+				buffer.first->AddRef();
+				buffer.second->AddRef();
+
 				m_BufferMap.insert({ CUBE, buffer });
 			}
 			else
@@ -40,6 +43,9 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 			{
 				renderer->Ready_Buffer(_device);
 				renderer->Get_Buffer(buffer.first, buffer.second);
+				buffer.first->AddRef();
+				buffer.second->AddRef();
+
 				m_BufferMap.insert({ TEXTURE, buffer });
 			}
 			else
@@ -49,7 +55,6 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 			}
 		}
 	}
-
 }
 
 GameEngine::RenderManager::~RenderManager()
@@ -92,14 +97,53 @@ void GameEngine::RenderManager::Render_End(LPDIRECT3DDEVICE9 _device)
 	_device->Present(NULL, NULL, NULL, NULL);
 }
 
+// Renderer Component를 Render매니저의 생성 대기열에 추가하는 함수
 void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 {
+	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;
+
+	if (dynamic_cast<CubeRenderer*>(_renderer))
+	{
+		if (m_BufferMap.find(CUBE) == m_BufferMap.end())
+		{
+			_renderer->Ready_Buffer(m_Device);
+			_renderer->Get_Buffer(buffer.first, buffer.second);
+			buffer.first->AddRef();
+			buffer.second->AddRef();
+
+			m_BufferMap.insert({ CUBE, buffer });
+		}
+		else
+		{
+			buffer = (m_BufferMap.find(CUBE))->second;
+			_renderer->Set_Buffer(buffer.first, buffer.second);
+		}
+	}
+
+	else if (dynamic_cast<TextureRenderer*>(_renderer))
+	{
+		if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
+		{
+			_renderer->Ready_Buffer(m_Device);
+			_renderer->Get_Buffer(buffer.first, buffer.second);
+			buffer.first->AddRef();
+			buffer.second->AddRef();
+
+			m_BufferMap.insert({ TEXTURE, buffer });
+		}
+		else
+		{
+			buffer = (m_BufferMap.find(TEXTURE))->second;
+			_renderer->Set_Buffer(buffer.first, buffer.second);
+		}
+	}
+
 	m_RegisterQueue.push_back(_renderer);
 }
 
-void GameEngine::RenderManager::Add_Texture(std::wstring _name, std::wstring _path)
+void GameEngine::RenderManager::Add_Texture(const std::wstring& _name, const std::wstring& _path)
 {
-	LPDIRECT3DTEXTURE9 texture(nullptr);
+	LPDIRECT3DTEXTURE9 texture = nullptr;
 	D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture);
 	m_TextureMap.insert({ _name, texture });
 }
@@ -186,7 +230,7 @@ void GameEngine::RenderManager::Release()
 	m_TextureMap.clear();
 }
 
-LPDIRECT3DTEXTURE9& GameEngine::RenderManager::Get_Texture(std::wstring _name)
+LPDIRECT3DTEXTURE9& GameEngine::RenderManager::Get_Texture(const std::wstring& _name)
 {
 	return m_TextureMap.find(_name)->second;
 }

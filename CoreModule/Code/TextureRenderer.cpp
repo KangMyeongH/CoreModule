@@ -95,6 +95,7 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
 	//Transfrom 설정
 	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
+	_device->SetTexture(0, m_Texture);
 
 	//render State 설정
 	_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
@@ -124,12 +125,8 @@ void GameEngine::TextureRenderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuff
 	m_IndexBuffer = _indexBuffer;
 }
 
-void GameEngine::TextureRenderer::Set_Texture(LPDIRECT3DTEXTURE9& _texture)
+void GameEngine::TextureRenderer::Set_Texture(const LPDIRECT3DTEXTURE9& _texture)
 {
 	m_Texture = _texture;
 }
 
-void GameEngine::TextureRenderer::Destroy()
-{
-
-}

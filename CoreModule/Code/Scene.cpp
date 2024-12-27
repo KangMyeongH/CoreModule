@@ -1,8 +1,8 @@
 #include "Scene.h"
 
 #include "GameObject.h"
-#include "../Camera.h"
-#include "../CameraManager.h"
+#include "Camera.h"
+#include "CameraManager.h"
 
 IMPLEMENT_SINGLETON(GameEngine::Scene)
 
