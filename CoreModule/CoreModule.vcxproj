@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Header\Behaviour.h" />
     <ClInclude Include="Header\Component.h" />
     <ClInclude Include="Header\ComponentFactory.h" />
@@ -161,6 +163,8 @@
     <ClInclude Include="Header\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Code\Component.cpp" />
     <ClCompile Include="Code\ComponentFactory.cpp" />
     <ClCompile Include="Code\Core.cpp" />
@@ -175,6 +179,7 @@
     <ClCompile Include="Code\Rigidbody.cpp" />
     <ClCompile Include="Code\Scene.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

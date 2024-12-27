@@ -45,7 +45,7 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pVertex[6].Position = Vector3{ 1.f, -1.f, 1.f };
 	pVertex[7].Position = Vector3{ -1.f, -1.f, 1.f };
 	
-	for (UINT i = 0; i < m_VertexSize; i++)
+	for (UINT i = 0; i < m_VertexCnt; i++)
 	{
 		pVertex[i].Color = D3DXCOLOR(1.f, 0.f, 0.f, 1.f);
 	}
@@ -138,6 +138,7 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
 
 	//render state º¹±¸
+
 }
 
 void GameEngine::CubeRenderer::Destroy()

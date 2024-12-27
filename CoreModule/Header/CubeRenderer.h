@@ -31,13 +31,13 @@ namespace GameEngine
 			m_VertexCnt(_rhs.m_VertexCnt),
 			m_TriangleCnt(_rhs.m_TriangleCnt)
 		{
-			m_VertexBuffer->AddRef();
-			m_IndexBuffer->AddRef();
+			if (m_VertexBuffer) m_VertexBuffer->AddRef();
+			if (m_IndexBuffer) m_IndexBuffer->AddRef();
 		}
 		~CubeRenderer() override
 		{
-			m_VertexBuffer->Release();
-			m_IndexBuffer->Release();
+			if (m_VertexBuffer) m_VertexBuffer->Release();
+			if (m_IndexBuffer) m_IndexBuffer->Release();
 		}
 
 		//======================================//
@@ -64,7 +64,7 @@ namespace GameEngine
 		void to_json(nlohmann::ordered_json& _j) override
 		{
 			std::string type = "CubeRenderer";
-			_j = nlohmann::json{
+			_j = nlohmann::ordered_json{
 				{"type", type}
 			};
 		}
@@ -74,7 +74,6 @@ namespace GameEngine
 		}
 
 	private:
-
 		LPDIRECT3DVERTEXBUFFER9		m_VertexBuffer;
 		LPDIRECT3DINDEXBUFFER9		m_IndexBuffer;
 

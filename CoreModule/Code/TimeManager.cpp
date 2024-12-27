@@ -40,6 +40,12 @@ void GameEngine::TimeManager::TimeUpdate()
 
 	++m_FPS;
 
+	if (m_AccTime >= 1.0f)
+	{
+		m_FPS = 0;
+		m_AccTime = 0;
+	}
+
 	if (m_SlowTime >= m_SlowMotionTime)
 	{
 		m_SlowTime = 0.f;

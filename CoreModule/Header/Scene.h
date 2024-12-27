@@ -48,6 +48,9 @@ namespace GameEngine
 
 		std::string Get_SceneName() { return m_SceneName; }
 
+		// Component management
+		void Register_Component();
+
 		nlohmann::ordered_json To_Json() const;
 		void From_Json(const nlohmann::ordered_json& _j);
 

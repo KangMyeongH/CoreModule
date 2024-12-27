@@ -336,7 +336,15 @@ namespace GameEngine
 		
 		friend void to_json(nlohmann::ordered_json& j, const Transform& t)
 		{
+			int parentID = -1;
+			if (t.m_Parent)
+			{
+				parentID = t.m_Parent->Get_InstanceID();
+			}
+
 			j = nlohmann::ordered_json{
+				{"parentID", parentID},
+				{"instanceID", t.Get_InstanceID()},
 				{"position", t.Get_LocalPosition()},
 				{"rotation", t.Get_LocalRotation()},
 				{"scale", t.Get_LocalScale()}
@@ -345,9 +353,18 @@ namespace GameEngine
 
 		friend void from_json(const nlohmann::ordered_json& j, Transform& t)
 		{
+			int parentID;
+			j.at("parentID").get_to(parentID);
+			if (parentID != -1)
+			{
+				t.s_ChildTransformMap[parentID].push_back(&t);
+			}
+
+			t.Set_InstanceID(j.at("instanceID").get<int>());
+			s_TransformMap[t.Get_InstanceID()] = &t;
 			t.Set_LocalPosition(j.at("position").get<Vector3>());
 			t.Set_LocalPosition(j.at("rotation").get<Vector3>());
-			j.at("rotation").get_to(t.m_WorldRotation);
+			//j.at("rotation").get_to(t.m_WorldRotation);
 			j.at("scale").get_to(t.m_WorldScale);
 		}
 
@@ -357,6 +374,9 @@ namespace GameEngine
 		}
 
 	private:
+		static std::unordered_map<int, Transform*> s_TransformMap;
+		static std::unordered_map<int, std::vector<Transform*>> s_ChildTransformMap;
+
 		Transform*					m_Parent;
 		std::vector<Transform*> 	m_Children;
 

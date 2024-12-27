@@ -69,7 +69,7 @@ namespace GameEngine
 		{
 			std::string type = "Rigidbody";
 
-			_j = nlohmann::json{
+			_j = nlohmann::ordered_json{
 				{"type", type},
 				{"mass", Get_Mass()},
 				{"drag", Get_Drag()},

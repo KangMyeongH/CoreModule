@@ -48,8 +48,14 @@ namespace GameEngine
         //======================================//
         void 			Set_Name(const std::string& _name) { m_Name = _name; }
         std::string 	Get_Name() const { return m_Name; }
+        void            Set_InstanceID(const int _id) { m_ID = _id; }
         int 			Get_InstanceID() const { return m_ID; }
         virtual void    Destroy() = 0;
+
+        //======================================//
+        //			   static method			//
+        //======================================//
+        static int      Get_MaxID() { return s_IdGenerator; }
 
     private:
         static std::atomic<int> s_IdGenerator; 		// 고유 ID 생성기

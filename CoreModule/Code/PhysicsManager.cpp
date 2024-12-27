@@ -11,9 +11,15 @@ GameEngine::PhysicsManager::~PhysicsManager()
 	Release();
 }
 
-void GameEngine::PhysicsManager::Physics_Update(float _deltaTime) const
+void GameEngine::PhysicsManager::Physics_Update(const float _deltaTime) const
 {
-
+	for (auto& rigidbody : m_Rigidbodies)
+	{
+		if (rigidbody->Get_GameObject()->Is_Active())
+		{
+			rigidbody->Rigidbody_Update(_deltaTime);
+		}
+	}
 }
 
 void GameEngine::PhysicsManager::Add_Rigidbody(Rigidbody* _rigidbody)
@@ -38,7 +44,7 @@ void GameEngine::PhysicsManager::Register_Rigidbody()
 {
 	for (auto it = m_RegisterQueue.begin(); it != m_RegisterQueue.end();)
 	{
-		m_RegisterQueue.push_back(*it);
+		m_Rigidbodies.push_back(*it);
 		it = m_RegisterQueue.erase(it);
 	}
 
