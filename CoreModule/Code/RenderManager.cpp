@@ -15,7 +15,6 @@ void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-	//Renderer ���� ����
 	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;
 
 	for (auto& renderer : m_RegisterQueue)
