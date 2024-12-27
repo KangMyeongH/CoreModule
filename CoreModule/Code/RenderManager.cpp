@@ -1,4 +1,4 @@
-#include "RenderManager.h"
+﻿#include "RenderManager.h"
 
 #include "GameObject.h"
 #include "Renderer.h"
@@ -36,6 +36,7 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 				renderer->Set_Buffer(buffer.first, buffer.second);
 			}
 		}
+
 		else if (dynamic_cast<TextureRenderer*>(renderer))
 		{
 			if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
@@ -53,9 +54,6 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 				renderer->Set_Buffer(buffer.first, buffer.second);
 			}
 		}
-	for (auto& renderer : m_RegisterQueue)
-	{
-		dynamic_cast<CubeRenderer*>(renderer)->Ready_Buffer(_device);
 	}
 }
 
