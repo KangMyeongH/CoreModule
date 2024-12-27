@@ -3,23 +3,53 @@
 #include "GameObject.h"
 #include "Renderer.h"
 #include "Scene.h"
+#include "TextureRenderer.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
+void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 device)
+{
+	m_Device = device;
+	device->AddRef();
+}
+
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-	///
-	/// 사용하는 Renederer들 한 번씩 버퍼 생성해주기.
-	///
+	//Renderer 버퍼 세팅
+	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;
 
-
-
-
-	/*
 	for (auto& renderer : m_RegisterQueue)
 	{
-		dynamic_cast<CubeRenderer*>(renderer)->Ready_Buffer(_device);
-	}*/
+		if (dynamic_cast<CubeRenderer*>(renderer))
+		{
+			if (m_BufferMap.find(CUBE) == m_BufferMap.end())
+			{
+				renderer->Ready_Buffer(_device);
+				renderer->Get_Buffer(buffer.first, buffer.second);
+				m_BufferMap.insert({ CUBE, buffer });
+			}
+			else
+			{
+				buffer = (m_BufferMap.find(CUBE))->second;
+				renderer->Set_Buffer(buffer.first, buffer.second);
+			}
+		}
+		else if (dynamic_cast<TextureRenderer*>(renderer))
+		{
+			if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
+			{
+				renderer->Ready_Buffer(_device);
+				renderer->Get_Buffer(buffer.first, buffer.second);
+				m_BufferMap.insert({ TEXTURE, buffer });
+			}
+			else
+			{
+				buffer = (m_BufferMap.find(TEXTURE))->second;
+				renderer->Set_Buffer(buffer.first, buffer.second);
+			}
+		}
+	}
+
 }
 
 GameEngine::RenderManager::~RenderManager()
@@ -65,6 +95,13 @@ void GameEngine::RenderManager::Render_End(LPDIRECT3DDEVICE9 _device)
 void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 {
 	m_RegisterQueue.push_back(_renderer);
+}
+
+void GameEngine::RenderManager::Add_Texture(std::wstring _name, std::wstring _path)
+{
+	LPDIRECT3DTEXTURE9 texture(nullptr);
+	D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture);
+	m_TextureMap.insert({ _name, texture });
 }
 
 void GameEngine::RenderManager::Remove_Renderer(Renderer* _renderer)

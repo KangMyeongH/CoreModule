@@ -4,7 +4,7 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "TimeManager.h"
-#include "../CameraManager.h"
+#include "CameraManager.h"
 
 GameEngine::Core::~Core()
 {

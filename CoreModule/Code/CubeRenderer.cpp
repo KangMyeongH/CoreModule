@@ -141,7 +141,20 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 
 }
 
+void GameEngine::CubeRenderer::Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer, LPDIRECT3DINDEXBUFFER9& _indexBuffer)
+{
+	_vertexBuffer = m_VertexBuffer;
+	_indexBuffer = m_IndexBuffer;
+}
+
+void GameEngine::CubeRenderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer)
+{
+	m_VertexBuffer = _vertexBuffer;
+	m_IndexBuffer = _indexBuffer;
+}
+
 void GameEngine::CubeRenderer::Destroy()
 {
+	
 }
 

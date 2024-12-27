@@ -106,6 +106,29 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	//render state º¹±¸
 }
 
+void GameEngine::TextureRenderer::Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer,
+	LPDIRECT3DINDEXBUFFER9& _indexBuffer)
+{
+	_vertexBuffer = m_VertexBuffer;
+	_indexBuffer = m_IndexBuffer;
+}
+
+void GameEngine::TextureRenderer::Get_Texture(IDirect3DBaseTexture9*& _texture)
+{
+	_texture = m_Texture;
+}
+
+void GameEngine::TextureRenderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer)
+{
+	m_VertexBuffer = _vertexBuffer;
+	m_IndexBuffer = _indexBuffer;
+}
+
+void GameEngine::TextureRenderer::Set_Texture(IDirect3DBaseTexture9*& _texture)
+{
+	m_Texture = _texture;
+}
+
 void GameEngine::TextureRenderer::Destroy()
 {
 

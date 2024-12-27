@@ -44,11 +44,16 @@ namespace GameEngine
 		//				 method					//
 		//======================================//
 
+	public:
 		//vertex buffer 및 index buffer 생성
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device);
 
 		//화면에 출력
 		void Render(LPDIRECT3DDEVICE9 _device) override;
+
+		void Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer, LPDIRECT3DINDEXBUFFER9& _indexBuffer) override;
+
+		void Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer) override;
 
 		Component* Clone() const override
 		{
