@@ -15,7 +15,7 @@ void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-	//Renderer ¹öÆÛ ¼¼ÆÃ
+	//Renderer ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;
 
 	for (auto& renderer : m_RegisterQueue)
@@ -54,6 +54,9 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 				renderer->Set_Buffer(buffer.first, buffer.second);
 			}
 		}
+	for (auto& renderer : m_RegisterQueue)
+	{
+		dynamic_cast<CubeRenderer*>(renderer)->Ready_Buffer(_device);
 	}
 }
 
@@ -87,7 +90,10 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 
 	for (const auto& renderer : m_Renderers)
 	{
-		renderer->Render(_device);
+		if (renderer->Is_Enabled() && renderer->Get_GameObject()->Is_Active())
+		{
+			renderer->Render(_device);
+		}
 	}
 }
 
@@ -97,7 +103,7 @@ void GameEngine::RenderManager::Render_End(LPDIRECT3DDEVICE9 _device)
 	_device->Present(NULL, NULL, NULL, NULL);
 }
 
-// Renderer Component¸¦ Render¸Å´ÏÀúÀÇ »ý¼º ´ë±â¿­¿¡ Ãß°¡ÇÏ´Â ÇÔ¼ö
+// Renderer Componentï¿½ï¿½ Renderï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½â¿­ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 {
 	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;

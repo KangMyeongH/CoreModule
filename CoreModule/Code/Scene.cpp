@@ -64,6 +64,18 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 	return nullptr;
 }
 
+void GameEngine::Scene::Destroy_GameObject()
+{
+	for (auto& gameObject : m_GameObjects)
+	{
+		if (gameObject->Is_Destroyed())
+		{
+			delete gameObject;
+			m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), gameObject), m_GameObjects.end());
+		}
+	}
+}
+
 void GameEngine::Scene::Register_Component()
 {
 	for (auto& gameObject : m_GameObjects)

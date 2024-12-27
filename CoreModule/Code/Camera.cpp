@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include "CameraManager.h"
 #include "RenderManager.h"
 #include "Transform.h"
 
@@ -31,6 +32,13 @@ void GameEngine::Camera::Update_Camera(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::Camera::Destroy()
 {
+	if (CameraManager::GetInstance().Get_CurrentCamera() == this)
+	{
+		CameraManager::GetInstance().Set_CurrentCamera(nullptr);
+
+		// 이게맞나
+		delete this;
+	}
 }
 
 void GameEngine::Camera::to_json(nlohmann::ordered_json& _j)

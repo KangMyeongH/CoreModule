@@ -50,6 +50,8 @@ namespace GameEngine
         std::string 	Get_Name() const { return m_Name; }
         void            Set_InstanceID(const int _id) { m_ID = _id; }
         int 			Get_InstanceID() const { return m_ID; }
+        bool            Is_Destroyed() const { return m_bDestroyed; }
+
         virtual void    Destroy() = 0;
 
         //======================================//
@@ -61,6 +63,8 @@ namespace GameEngine
         static std::atomic<int> s_IdGenerator; 		// 고유 ID 생성기
         int 					m_ID;            	// 각 객체의 고유 ID
         std::string 			m_Name;          	// 객체 이름
+
+    protected:
         bool 					m_bDestroyed;   	// 삭제 플래그
     };
 }

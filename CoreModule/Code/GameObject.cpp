@@ -10,4 +10,16 @@ GameEngine::GameObject::~GameObject()
 
 void GameEngine::GameObject::Destroy()
 {
+	if (!m_bDestroyed)
+	{
+		m_bDestroyed = true;
+
+		for (auto& comVec : m_ComponentMap)
+		{
+			for (auto& component : comVec.second)
+			{
+				component->Destroy();
+			}
+		}
+	}
 }

@@ -42,13 +42,14 @@ namespace GameEngine
 		bool Load_Scene(std::string sceneName);
 
 		// GameObject management
-		GameObject* Add_GameObject();
-		GameObjectList* Get_GameObjectList();
-		GameObject* Find(const std::string& _name);
+		GameObject* 		Add_GameObject();
+		GameObjectList* 	Get_GameObjectList();
+		GameObject* 		Find(const std::string& _name);
 
 		std::string Get_SceneName() { return m_SceneName; }
 
-		// Component management
+		void Destroy_GameObject();
+
 		void Register_Component();
 
 		nlohmann::ordered_json To_Json() const;
@@ -58,8 +59,8 @@ namespace GameEngine
 		friend void from_json(const nlohmann::ordered_json& _j, Scene& _scene);
 		
 	private:
-		GameObjectList	m_GameObjects;
-		std::string 	m_SceneName;
+		GameObjectList			m_GameObjects;
+		std::string 			m_SceneName;
 	};
 
 }
