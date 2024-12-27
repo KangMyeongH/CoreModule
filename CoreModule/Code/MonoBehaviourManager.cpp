@@ -41,7 +41,7 @@ void GameEngine::MonoBehaviourManager::On_Destroy() const
 {
 	for (const auto& obj : m_DestroyQueue)
 	{
-		obj->OnDestroy();
+		obj->On_Destroy();
 		obj->Get_GameObject()->Remove_Component(obj);
 		obj->Set_Owner(nullptr);
 	}

@@ -5,6 +5,11 @@
 
 namespace GameEngine
 {
+	class Scene;
+}
+
+namespace GameEngine
+{
 	class CameraManager;
 }
 
@@ -47,7 +52,9 @@ namespace GameEngine
 		void destroy();
 
 	private:
-		LPDIRECT3DDEVICE9 m_Device;
+		LPDIRECT3DDEVICE9 		m_Device;
+
+		Scene* 					m_Scene;
 
 		PhysicsManager* 		m_PhysicsManager;
 		RenderManager* 			m_RenderManager;

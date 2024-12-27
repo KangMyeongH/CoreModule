@@ -12,13 +12,13 @@ namespace GameEngine
 		~MonoBehaviour() override = default;
 
 		virtual void Awake() {}
-		virtual void OnEnable() {}
+		virtual void On_Enable() {}
 		virtual void Start() {}
 		virtual void Fixed_Update() {}
 		virtual void Update() {}
 		virtual void Late_Update() {}
-		virtual void OnDestroy() {}
-		virtual void OnDisable() {}
+		virtual void On_Destroy() {}
+		virtual void On_Disable() {}
 
 		//virtual void OnCollisionEnter(Collision _other) {}
 		//virtual void OnCollisionStay(Collision _other) {}
@@ -28,13 +28,13 @@ namespace GameEngine
 		{
 			if (m_bEnabled != _enabled)
 			{
-				if (_enabled) OnEnable();
-				else OnDisable();
+				if (_enabled) On_Enable();
+				else On_Disable();
 				m_bEnabled = _enabled;
 			}
 		}
 
-		void Destroy() override = 0;
+		void Destroy() override;
 
 	public:
 		void to_json(nlohmann::ordered_json& _j) override = 0;

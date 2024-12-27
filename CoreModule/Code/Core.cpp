@@ -4,7 +4,8 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "TimeManager.h"
-#include "../CameraManager.h"
+#include "CameraManager.h"
+#include "Scene.h"
 
 GameEngine::Core::~Core()
 {
@@ -15,6 +16,8 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
 {
 	m_Device = device;
 	device->AddRef();
+
+	m_Scene = &Scene::GetInstance();
 
 	//TODO : Manager ÃÊ±âÈ­
 	m_TimeManager = &TimeManager::GetInstance();
@@ -113,9 +116,9 @@ void GameEngine::Core::on_Destroy()
 
 void GameEngine::Core::destroy()
 {
+	m_Scene->Destroy_GameObject();
 	m_PhysicsManager->Destroy_Rigidbody();
 	m_RenderManager->Destroy_Renderer();
-
 	m_MonoBehaviourManager->Destroy_MonoBehaviour();
 }
 
