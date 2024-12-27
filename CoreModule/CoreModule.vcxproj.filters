@@ -34,22 +34,25 @@
     <ClCompile Include="Code\Rigidbody.cpp">
       <Filter>Component\04. Rigidbidy</Filter>
     </ClCompile>
-    <ClCompile Include="Code\CubeRenderer.cpp">
-      <Filter>Component\03. Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Renderer.cpp">
       <Filter>Component\03. Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Code\MonoBehaviour.cpp">
       <Filter>Component\02. MonoBehaviour</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Component\00. Transform</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="Code\Camera.cpp">
       <Filter>Component\05. Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CameraManager.cpp">
+    <ClCompile Include="Code\Transform.cpp">
+      <Filter>Component\00. Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\TextureRenderer.cpp">
+      <Filter>Component\03. Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\CubeRenderer.cpp">
+      <Filter>Component\03. Renderer\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\CameraManager.cpp">
       <Filter>Manager\Camera</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,9 +65,6 @@
     </ClInclude>
     <ClInclude Include="Header\MonoBehaviour.h">
       <Filter>Component\02. MonoBehaviour</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\CubeRenderer.h">
-      <Filter>Component\03. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Header\Renderer.h">
       <Filter>Component\03. Renderer</Filter>
@@ -120,10 +120,16 @@
     <ClInclude Include="Header\Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="Header\Camera.h">
       <Filter>Component\05. Camera</Filter>
     </ClInclude>
-    <ClInclude Include="CameraManager.h">
+    <ClInclude Include="Header\CubeRenderer.h">
+      <Filter>Component\03. Renderer\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\TextureRenderer.h">
+      <Filter>Component\03. Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\CameraManager.h">
       <Filter>Manager\Camera</Filter>
     </ClInclude>
   </ItemGroup>
@@ -178,6 +184,12 @@
     </Filter>
     <Filter Include="Manager\Camera">
       <UniqueIdentifier>{dd753381-66b0-42b0-984d-94259216ffd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\03. Renderer\Cube">
+      <UniqueIdentifier>{8b3019c9-336a-4f7b-8d8c-8649d49e6eeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\03. Renderer\Texture">
+      <UniqueIdentifier>{d4e4364f-9a54-4508-85dd-f3102d1fa4c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

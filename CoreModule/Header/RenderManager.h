@@ -21,6 +21,7 @@ namespace GameEngine
 		//======================================//
 		//				  method				//
 		//======================================//
+
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device);
 		void Render_Begin(LPDIRECT3DDEVICE9 _device);
 		void Render(LPDIRECT3DDEVICE9 _device);
@@ -39,9 +40,14 @@ namespace GameEngine
 		std::vector<Renderer*> 	m_Renderers;
 		std::list<Renderer*> 	m_RegisterQueue;
 		std::list<Renderer*> 	m_DestroyQueue;
+
 		D3DXMATRIX 				m_ViewMat;
 		D3DXMATRIX 				m_ProjMat;
 		D3DLIGHT9 				m_DirLight;
+
+
+		// 컴객체 주소를 해당하는 컴포넌트가 공유해서 사용
+		// Renderer매니저가 인덱스, 버텍스 버퍼의 주소 Map컨테이너로 들고있어야할지.......
 
 		// 기준을 잡아야하는데
 		// 매번 객체마다 RenderState마다 따로 배열을 할당하거나 RenderUpdate()를 다르게 만들어주는건 비효율 같음...

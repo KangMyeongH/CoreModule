@@ -137,9 +137,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Header\Behaviour.h" />
+    <ClInclude Include="Header\Camera.h" />
+    <ClInclude Include="Header\CameraManager.h" />
     <ClInclude Include="Header\Component.h" />
     <ClInclude Include="Header\ComponentFactory.h" />
     <ClInclude Include="Header\ComponentRegistrar.h" />
@@ -159,12 +159,13 @@
     <ClInclude Include="Header\RenderManager.h" />
     <ClInclude Include="Header\Rigidbody.h" />
     <ClInclude Include="Header\Scene.h" />
+    <ClInclude Include="Header\TextureRenderer.h" />
     <ClInclude Include="Header\TimeManager.h" />
     <ClInclude Include="Header\Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Code\Camera.cpp" />
+    <ClCompile Include="Code\CameraManager.cpp" />
     <ClCompile Include="Code\Component.cpp" />
     <ClCompile Include="Code\ComponentFactory.cpp" />
     <ClCompile Include="Code\Core.cpp" />
@@ -178,8 +179,9 @@
     <ClCompile Include="Code\RenderManager.cpp" />
     <ClCompile Include="Code\Rigidbody.cpp" />
     <ClCompile Include="Code\Scene.cpp" />
+    <ClCompile Include="Code\TextureRenderer.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Code\Transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
