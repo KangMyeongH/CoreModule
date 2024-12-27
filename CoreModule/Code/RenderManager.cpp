@@ -6,6 +6,14 @@
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
+void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
+{
+	for (auto& renderer : m_RegisterQueue)
+	{
+		dynamic_cast<CubeRenderer*>(renderer)->Ready_Buffer(_device);
+	}
+}
+
 GameEngine::RenderManager::~RenderManager()
 {
 }

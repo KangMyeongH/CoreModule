@@ -43,6 +43,15 @@
     <ClCompile Include="Code\MonoBehaviour.cpp">
       <Filter>Component\02. MonoBehaviour</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Component\00. Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Component\05. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Manager\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -111,6 +120,12 @@
     <ClInclude Include="Header\Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Component\05. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Manager\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -157,6 +172,12 @@
     </Filter>
     <Filter Include="Manager\Render">
       <UniqueIdentifier>{17cae13d-0c7d-467a-8113-299e1fe4d637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\05. Camera">
+      <UniqueIdentifier>{47f4c342-9c2b-4b6b-87e4-5c8db991d7ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Camera">
+      <UniqueIdentifier>{dd753381-66b0-42b0-984d-94259216ffd5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

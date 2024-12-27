@@ -2,11 +2,12 @@
 #include <list>
 #include <vector>
 
-#include "GameObject.h"
 #include "MonoBehaviour.h"
 
 namespace GameEngine
 {
+	class GameObject;
+
 	class COREMODULE_API MonoBehaviourManager
 	{
 	private:
@@ -16,48 +17,13 @@ namespace GameEngine
 		DECLARE_SINGLETON(MonoBehaviourManager)
 
 	public:
-		void Fixed_Update() const
-		{
-			for (const auto& monoBehaviour : m_MonoBehaviours)
-			{
-				if (monoBehaviour->Is_Enabled())
-				{
-					monoBehaviour->Fixed_Update();
-				}
-			}
-		}
+		void Fixed_Update() const;
 
-		void Update() const
-		{
-			for (const auto& monoBehaviour : m_MonoBehaviours)
-			{
-				if (monoBehaviour->Is_Enabled())
-				{
-					monoBehaviour->Fixed_Update();
-				}
-			}
-		}
+		void Update() const;
 
-		void Late_Update() const
-		{
-			for(const auto& monoBehaviour : m_MonoBehaviours)
-			{
-				if (monoBehaviour->Is_Enabled())
-				{
-					monoBehaviour->Late_Update();
-				}
-			}
-		}
+		void Late_Update() const;
 
-		void On_Destroy() const
-		{
-			for (const auto& obj : m_DestroyQueue)
-			{
-				obj->OnDestroy();
-				obj->Get_GameObject()->Remove_Component(obj);
-				obj->Set_Owner(nullptr);
-			}
-		}
+		void On_Destroy() const;
 
 		void Add_MonoBehaviour(MonoBehaviour* _monoBehaviour)
 		{
@@ -65,7 +31,7 @@ namespace GameEngine
 			_monoBehaviour->Awake();
 		}
 
-		void RegisterForUpdates()
+		void Register_MonoBehaviour()
 		{
 			for (auto it = m_RegisterQueue.begin(); it != m_RegisterQueue.end();)
 			{
@@ -84,7 +50,7 @@ namespace GameEngine
 			}
 		}
 
-		void ClearDestroyQueue()
+		void Destroy_MonoBehaviour()
 		{
 			for (auto& obj : m_DestroyQueue)
 			{

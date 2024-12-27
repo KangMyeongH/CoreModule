@@ -7,6 +7,11 @@
 #include "Scene.h"
 #include "Transform.h"
 #include "CubeRenderer.h"
+#include "MonoBehaviour.h"
+#include "MonoBehaviourManager.h"
+#include "PhysicsManager.h"
+#include "RenderManager.h"
+#include "Rigidbody.h"
 
 
 // 게임 오브젝트의 생성을 호출 즉시 바로
@@ -60,6 +65,24 @@ namespace GameEngine
 			T* component = new T(this, std::forward<Args>(_args)...);
 			m_ComponentMap[typeid(T)].push_back(component);
 			// 각각의 Component매니저에 주소값 뿌리기.
+
+			if (dynamic_cast<MonoBehaviour*>(component))
+			{
+				MonoBehaviourManager::GetInstance().Add_MonoBehaviour(dynamic_cast<MonoBehaviour*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<Rigidbody*>(component))
+			{
+				PhysicsManager::GetInstance().Add_Rigidbody(dynamic_cast<Rigidbody*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<Renderer*>(component))
+			{
+				RenderManager::GetInstance().Add_Renderer(dynamic_cast<Renderer*>(component));
+				return component;
+			}
 
 			return component;
 		}
@@ -138,6 +161,7 @@ namespace GameEngine
 		{
 			j = nlohmann::ordered_json
 			{
+				{"instanceID", obj.Get_InstanceID()},
 				{"name", obj.Get_Name()},
 				{"tag", obj.Get_Tag()},
 				{"active", obj.Is_Active()},
@@ -160,11 +184,13 @@ namespace GameEngine
 
 		friend void from_json(const nlohmann::ordered_json& _j, GameObject& _obj)
 		{
+			_obj.Set_InstanceID(_j.at("instanceID").get<int>());
 			std::string name;
 			_j.at("name").get_to(name);
 			_obj.Set_Name(name);
+			_obj.Set_Tag(_j.at("tag").get<std::string>());
+			_obj.Set_Active(_j.at("active").get<bool>());
 			_j.at("transform").get_to(_obj.m_Transform);
-
 			_obj.ComponentFromJson(_j);
 		}
 

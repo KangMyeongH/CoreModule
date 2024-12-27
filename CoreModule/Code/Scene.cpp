@@ -1,6 +1,8 @@
 #include "Scene.h"
 
 #include "GameObject.h"
+#include "../Camera.h"
+#include "../CameraManager.h"
 
 IMPLEMENT_SINGLETON(GameEngine::Scene)
 
@@ -62,6 +64,42 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 	return nullptr;
 }
 
+void GameEngine::Scene::Register_Component()
+{
+	for (auto& gameObject : m_GameObjects)
+	{
+		for (auto& componentVec : gameObject->Get_ComponentMap())
+		{
+			for (auto& component : componentVec.second)
+			{
+				if (dynamic_cast<MonoBehaviour*>(component))
+				{
+					MonoBehaviourManager::GetInstance().Add_MonoBehaviour(dynamic_cast<MonoBehaviour*>(component));
+					continue;
+				}
+
+				if (dynamic_cast<Rigidbody*>(component))
+				{
+					PhysicsManager::GetInstance().Add_Rigidbody(dynamic_cast<Rigidbody*>(component));
+					continue;
+				}
+
+				if (dynamic_cast<Renderer*>(component))
+				{
+					RenderManager::GetInstance().Add_Renderer(dynamic_cast<Renderer*>(component));
+					continue;
+				}
+
+				if (dynamic_cast<Camera*>(component))
+				{
+					CameraManager::GetInstance().Set_CurrentCamera(dynamic_cast<Camera*>(component));
+					continue;
+				}
+			}
+		}
+	}
+}
+
 nlohmann::ordered_json GameEngine::Scene::To_Json() const
 {
 	nlohmann::ordered_json j = nlohmann::ordered_json
@@ -87,6 +125,7 @@ void GameEngine::Scene::From_Json(const nlohmann::ordered_json& _j)
 		obj_json.get_to(*obj);
 		m_GameObjects.push_back(obj);
 	}
+	Register_Component();
 }
 
 void GameEngine::to_json(nlohmann::ordered_json& _j, const Scene& _scene)

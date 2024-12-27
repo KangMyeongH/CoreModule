@@ -21,6 +21,7 @@ namespace GameEngine
 		//======================================//
 		//				  method				//
 		//======================================//
+		void Ready_Buffer(LPDIRECT3DDEVICE9 _device);
 		void Render_Begin(LPDIRECT3DDEVICE9 _device);
 		void Render(LPDIRECT3DDEVICE9 _device);
 		void Render_End(LPDIRECT3DDEVICE9 _device);
@@ -31,16 +32,16 @@ namespace GameEngine
 		void Release();
 
 		void Set_ViewMat(const D3DXMATRIX& _viewMat)	{ m_ViewMat = _viewMat; }
-		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ViewMat = _projMat; }
+		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
 	private:
 		std::vector<Renderer*> 	m_Renderers;
 		std::list<Renderer*> 	m_RegisterQueue;
 		std::list<Renderer*> 	m_DestroyQueue;
-		D3DXMATRIX 	m_ViewMat;
-		D3DXMATRIX 	m_ProjMat;
-		D3DLIGHT9 	m_DirLight;
+		D3DXMATRIX 				m_ViewMat;
+		D3DXMATRIX 				m_ProjMat;
+		D3DLIGHT9 				m_DirLight;
 
 		// 기준을 잡아야하는데
 		// 매번 객체마다 RenderState마다 따로 배열을 할당하거나 RenderUpdate()를 다르게 만들어주는건 비효율 같음...

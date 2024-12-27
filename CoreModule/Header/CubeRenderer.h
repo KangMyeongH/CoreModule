@@ -64,7 +64,7 @@ namespace GameEngine
 		void to_json(nlohmann::ordered_json& _j) override
 		{
 			std::string type = "CubeRenderer";
-			_j = nlohmann::json{
+			_j = nlohmann::ordered_json{
 				{"type", type}
 			};
 		}

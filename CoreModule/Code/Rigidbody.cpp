@@ -20,7 +20,7 @@ void GameEngine::Rigidbody::Rigidbody_Update(const float& _deltaTime)
 {
 	if (m_UseGravity)
 	{
-		m_Velocity.y += 9.81f * _deltaTime;
+		m_Velocity.y -= 9.81f * _deltaTime;
 	}
 
 	m_Velocity.x *= 1.0f / (1.0f + m_Drag * _deltaTime);
@@ -31,7 +31,7 @@ void GameEngine::Rigidbody::Rigidbody_Update(const float& _deltaTime)
 	
 	if (transform)
 	{
-		transform->Translate(m_Velocity);
+		transform->Translate(m_Velocity * _deltaTime);
 	}
 }
 

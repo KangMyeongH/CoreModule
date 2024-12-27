@@ -5,7 +5,15 @@
 
 namespace GameEngine
 {
+	class CameraManager;
+}
+
+namespace GameEngine
+{
+	class PhysicsManager;
+	class TimeManager;
 	class RenderManager;
+	class MonoBehaviourManager;
 
 	class COREMODULE_API Core
 	{
@@ -23,6 +31,8 @@ namespace GameEngine
 	public:
 		void Initialize(LPDIRECT3DDEVICE9 device);
 		inline void Progress();
+		inline void EditorProgress();
+		inline void Decommissioning();
 		void Release();
 
 	private:
@@ -39,8 +49,11 @@ namespace GameEngine
 	private:
 		LPDIRECT3DDEVICE9 m_Device;
 
-		RenderManager* m_RenderManager;
-
+		PhysicsManager* 		m_PhysicsManager;
+		RenderManager* 			m_RenderManager;
+		MonoBehaviourManager*	m_MonoBehaviourManager;
+		TimeManager* 			m_TimeManager;
+		CameraManager* 			m_CameraManager;
 	};
 
 }
