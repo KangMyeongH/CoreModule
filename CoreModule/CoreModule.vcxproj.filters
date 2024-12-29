@@ -55,6 +55,7 @@
     <ClCompile Include="Code\CameraManager.cpp">
       <Filter>Manager\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -132,6 +133,7 @@
     <ClInclude Include="Header\CameraManager.h">
       <Filter>Manager\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -190,6 +192,9 @@
     </Filter>
     <Filter Include="Component\03. Renderer\Texture">
       <UniqueIdentifier>{d4e4364f-9a54-4508-85dd-f3102d1fa4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\03. Renderer\Shader">
+      <UniqueIdentifier>{cdcf58c5-a571-4369-87c1-f89dee6eee83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

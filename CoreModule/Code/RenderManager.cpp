@@ -147,8 +147,22 @@ void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 void GameEngine::RenderManager::Add_Texture(const std::wstring& _name, const std::wstring& _path)
 {
 	LPDIRECT3DTEXTURE9 texture = nullptr;
-	D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture);
-	m_TextureMap.insert({ _name, texture });
+	if (E_FAIL != D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture))
+	{
+		m_TextureMap.insert({ _name, texture });
+	}
+}
+
+void GameEngine::RenderManager::Add_PixelShader(const std::wstring& _name, const std::wstring& _path)
+{
+	LPD3DXBUFFER shaderBuffer = nullptr;
+	LPDIRECT3DPIXELSHADER9 pixelShader = nullptr;
+
+	if (E_FAIL != D3DXCompileShaderFromFile(_path.c_str(), nullptr, nullptr, "main", "ps_2_0", 0, &shaderBuffer, nullptr, nullptr))
+	{
+		m_Device->CreatePixelShader((DWORD*)shaderBuffer->GetBufferPointer(), &pixelShader);
+		m_PixelShaderMap.insert({ _name, pixelShader });
+	}
 }
 
 void GameEngine::RenderManager::Remove_Renderer(Renderer* _renderer)
@@ -225,15 +239,26 @@ void GameEngine::RenderManager::Release()
 		texture.second->Release();
 	}
 
+	for (const auto& pixelShader : m_PixelShaderMap)
+	{
+		pixelShader.second->Release();
+	}
+
 	m_Renderers.clear();
 	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();
 
 	m_BufferMap.clear();
 	m_TextureMap.clear();
+	m_PixelShaderMap.clear();
 }
 
 LPDIRECT3DTEXTURE9& GameEngine::RenderManager::Get_Texture(const std::wstring& _name)
 {
 	return m_TextureMap.find(_name)->second;
+}
+
+LPDIRECT3DPIXELSHADER9& GameEngine::RenderManager::Get_PixelShader(const std::wstring& _name)
+{
+	return m_PixelShaderMap.find(_name)->second;
 }

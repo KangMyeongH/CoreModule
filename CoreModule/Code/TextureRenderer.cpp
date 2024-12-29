@@ -93,37 +93,23 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
-	//Transfrom 설정
+	//Render State 설정
 	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
-	_device->SetTexture(0, m_Texture);
 
-	//render State 설정
-	_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
-	_device->SetFVF(FVF_COLOR);
+	//shader에 대한 세팅
+	//
+	if (m_Texture)
+		_device->SetTexture(0, m_Texture);
 
-	_device->SetIndices(m_IndexBuffer);
-	_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
-
-	//render state 복구
+	Render_Buffer(_device);
 }
 
-void GameEngine::TextureRenderer::Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer,
-	LPDIRECT3DINDEXBUFFER9& _indexBuffer)
-{
-	_vertexBuffer = m_VertexBuffer;
-	_indexBuffer = m_IndexBuffer;
-}
 
-void GameEngine::TextureRenderer::Get_Texture(LPDIRECT3DTEXTURE9& _texture)
+void GameEngine::TextureRenderer::Get_Texture(LPDIRECT3DTEXTURE9& _texture) const
 {
 	_texture = m_Texture;
 }
 
-void GameEngine::TextureRenderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer)
-{
-	m_VertexBuffer = _vertexBuffer;
-	m_IndexBuffer = _indexBuffer;
-}
 
 void GameEngine::TextureRenderer::Set_Texture(const LPDIRECT3DTEXTURE9& _texture)
 {

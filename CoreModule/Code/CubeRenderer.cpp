@@ -22,11 +22,10 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	if(E_FAIL == _device->CreateIndexBuffer(m_TriangleCnt * indexSize,
 		0,						
 		D3DFMT_INDEX16,			
-		D3DPOOL_MANAGED,		
+		D3DPOOL_MANAGED,
 		&m_IndexBuffer,
 	nullptr))
 		return;
-
 
 	VTXCUBE* pVertex = nullptr;
 
@@ -130,27 +129,10 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	//Transfrom 설정
 	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
 
-	//render State 설정
-	_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
-	_device->SetFVF(FVF_COLOR);
-
-	_device->SetIndices(m_IndexBuffer);
-	_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
-
+	Render_Buffer(_device);
 	//render state 복구
 
 }
 
-void GameEngine::CubeRenderer::Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer, LPDIRECT3DINDEXBUFFER9& _indexBuffer)
-{
-	_vertexBuffer = m_VertexBuffer;
-	_indexBuffer = m_IndexBuffer;
-}
-
-void GameEngine::CubeRenderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer)
-{
-	m_VertexBuffer = _vertexBuffer;
-	m_IndexBuffer = _indexBuffer;
-}
 
 

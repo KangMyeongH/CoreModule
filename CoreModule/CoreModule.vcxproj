@@ -159,6 +159,7 @@
     <ClInclude Include="Header\RenderManager.h" />
     <ClInclude Include="Header\Rigidbody.h" />
     <ClInclude Include="Header\Scene.h" />
+    <ClInclude Include="Header\Shader.h" />
     <ClInclude Include="Header\TextureRenderer.h" />
     <ClInclude Include="Header\TimeManager.h" />
     <ClInclude Include="Header\Transform.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="Code\RenderManager.cpp" />
     <ClCompile Include="Code\Rigidbody.cpp" />
     <ClCompile Include="Code\Scene.cpp" />
+    <ClCompile Include="Code\Shader.cpp" />
     <ClCompile Include="Code\TextureRenderer.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
     <ClCompile Include="Code\Transform.cpp" />
