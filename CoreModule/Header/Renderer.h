@@ -17,8 +17,8 @@ namespace GameEngine
 			m_VertexBuffer(_rhs.m_VertexBuffer),
 			m_IndexBuffer(_rhs.m_IndexBuffer)
 		{
-			m_VertexBuffer->AddRef();
-			m_IndexBuffer->AddRef();
+			if(m_VertexBuffer) m_VertexBuffer->AddRef();
+			if(m_IndexBuffer) m_IndexBuffer->AddRef();
 		}
 		~Renderer() override
 		{

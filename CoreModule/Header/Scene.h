@@ -37,9 +37,9 @@ namespace GameEngine
 		//				  method				//
 		//======================================//
 		// Scene management
-		bool Initialize(const std::string& name, const GameObjectList& gameObjects);
+		bool Initialize(const std::wstring& _path);
 		void Release();
-		bool Load_Scene(std::string sceneName);
+		bool Load_Scene(std::string _sceneName);
 
 		// GameObject management
 		GameObject* 		Add_GameObject();

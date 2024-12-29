@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+#include <fstream>
+
 #include "GameObject.h"
 #include "Camera.h"
 #include "CameraManager.h"
@@ -16,13 +18,21 @@ GameEngine::Scene::~Scene()
 	Release();
 }
 
-bool GameEngine::Scene::Initialize(const std::string& name, const GameObjectList& gameObjects)
+bool GameEngine::Scene::Initialize(const std::wstring& _path)
 {
-	// Scene.json 파일을 읽어와서 GameObjectList에 GameObject들 넣어주기
-	m_SceneName = name;
-	m_GameObjects = gameObjects;
+	if (_path.empty()) return false;
+	std::ifstream inFile(_path);
+	if (!inFile.is_open())
+	{
+		return false;
+	}
+	nlohmann::ordered_json j;
+	inFile >> j;
+	From_Json(j);
+	inFile.clear();
+	inFile.close();
 
-	return true;
+	return false;
 }
 
 void GameEngine::Scene::Release()
@@ -34,7 +44,7 @@ void GameEngine::Scene::Release()
 	m_GameObjects.clear();
 }
 
-bool GameEngine::Scene::Load_Scene(std::string sceneName)
+bool GameEngine::Scene::Load_Scene(std::string _sceneName)
 {
 	return false;
 }

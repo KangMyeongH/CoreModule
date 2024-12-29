@@ -5,6 +5,7 @@
 #include "RenderManager.h"
 #include "TimeManager.h"
 #include "CameraManager.h"
+#include "InputManager.h"
 #include "Scene.h"
 
 GameEngine::Core::~Core()
@@ -19,7 +20,7 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
 
 	m_Scene = &Scene::GetInstance();
 
-	//TODO : Manager ÃÊ±âÈ­
+	m_InputManager = &InputManager::GetInstance();
 	m_TimeManager = &TimeManager::GetInstance();
 	m_TimeManager->Initialize();
 	m_CameraManager = &CameraManager::GetInstance();
@@ -46,6 +47,7 @@ void GameEngine::Core::Progress()
 	on_Collision();
 	update();
 	late_Update();
+	m_InputManager->Update_Key();
 	render(m_Device);
 	on_Destroy();
 	destroy();
@@ -66,6 +68,7 @@ void GameEngine::Core::EditorProgress()
 	on_Collision();
 	update();
 	late_Update();
+	m_InputManager->Update_Key();
 }
 
 void GameEngine::Core::Decommissioning()

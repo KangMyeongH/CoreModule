@@ -4,7 +4,7 @@
 
 GameEngine::CameraManager::~CameraManager()
 {
-	if (m_CurrentCamera != nullptr)
+	if (m_CurrentCamera)
 	{
 		delete m_CurrentCamera;
 	}
@@ -14,7 +14,10 @@ IMPLEMENT_SINGLETON(GameEngine::CameraManager)
 
 void GameEngine::CameraManager::Update_Camera(LPDIRECT3DDEVICE9 _device9) const
 {
-	m_CurrentCamera->Update_Camera(_device9);
+	if (m_CurrentCamera)
+	{
+		m_CurrentCamera->Update_Camera(_device9);
+	}
 }
 
 void GameEngine::CameraManager::Set_CurrentCamera(Camera* _camera)

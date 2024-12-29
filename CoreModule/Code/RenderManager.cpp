@@ -76,6 +76,7 @@ void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 {
+	m_Device->SetRenderState(D3DRS_LIGHTING, false);
 	if (FAILED(_device->SetTransform(D3DTS_VIEW, &m_ViewMat)))
 	{
 		return;
@@ -100,7 +101,6 @@ void GameEngine::RenderManager::Render_End(LPDIRECT3DDEVICE9 _device)
 	_device->Present(NULL, NULL, NULL, NULL);
 }
 
-// Renderer Component�� Render�Ŵ����� ���� ��⿭�� �߰��ϴ� �Լ�
 void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 {
 	std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9> buffer;

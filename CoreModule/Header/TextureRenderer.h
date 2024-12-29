@@ -57,7 +57,6 @@ namespace GameEngine
 			return new TextureRenderer(*this);
 		}
 
-
 		//======================================//
 		//				 serialize				//
 		//======================================//
