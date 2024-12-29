@@ -8,11 +8,12 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	m_TriangleCnt = 2;
 	m_VertexCnt = 4;
 	m_VertexSize = sizeof(VTXTEX);
+	m_FVF = FVF_TEX;
 	UINT indexSize = sizeof(INDEX16);
 
 	if (E_FAIL == _device->CreateVertexBuffer(m_VertexCnt * m_VertexSize,
 		0,
-		FVF_TEX,
+		m_FVF,
 		D3DPOOL_MANAGED,
 		&m_VertexBuffer,
 		nullptr))
@@ -41,7 +42,6 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 	pVertex[3].Position = Vector3{ -1.f, -1.f, 0.f };
 	pVertex[3].TextureUV = Vector2{ 0.f, 1.f };
-
 
 
 	INDEX16* pIndex = nullptr;
@@ -86,7 +86,6 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	for (ULONG i = 0; i < m_VertexCnt; ++i)
 		D3DXVec3Normalize(&pVertex[i].Normal, &pVertex[i].Normal);
 
-
 	m_VertexBuffer->Unlock();
 	m_IndexBuffer->Unlock();
 }
@@ -96,23 +95,27 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	//Render State 설정
 	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
 
-	//shader에 대한 세팅
-	//
-	if (m_Texture)
-		_device->SetTexture(0, m_Texture);
+	//cullmode 변경을 매 renderer마다 껐다 키면 부하가 심함. 같은 애들끼리 묶어서 출력하게 변경해야 함
+	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	//texture 세팅
+	_device->SetTexture(0, m_Texture);
 
 	Render_Buffer(_device);
+
+	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
 }
 
-
-void GameEngine::TextureRenderer::Get_Texture(LPDIRECT3DTEXTURE9& _texture) const
-{
-	_texture = m_Texture;
-}
-
-
-void GameEngine::TextureRenderer::Set_Texture(const LPDIRECT3DTEXTURE9& _texture)
-{
-	m_Texture = _texture;
-}
+//
+//void GameEngine::TextureRenderer::Get_Texture(LPDIRECT3DTEXTURE9& _texture) const
+//{
+//	_texture = m_Texture;
+//}
+//
+//
+//void GameEngine::TextureRenderer::Set_Texture(const LPDIRECT3DTEXTURE9& _texture)
+//{
+//	m_Texture = _texture;
+//}
 

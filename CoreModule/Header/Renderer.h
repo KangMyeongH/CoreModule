@@ -54,6 +54,7 @@ namespace GameEngine
 		UINT m_VertexSize;
 		UINT m_VertexCnt;
 		UINT m_TriangleCnt;
+		ULONG m_FVF;
 	};
 
 }

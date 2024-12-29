@@ -144,12 +144,15 @@ void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 	m_RegisterQueue.push_back(_renderer);
 }
 
-void GameEngine::RenderManager::Add_Texture(const std::wstring& _name, const std::wstring& _path)
+void GameEngine::RenderManager::Add_Texture(const std::wstring& _path)
 {
+	if (m_TextureMap.find(_path) != m_TextureMap.end())
+		return;
+
 	LPDIRECT3DTEXTURE9 texture = nullptr;
 	if (E_FAIL != D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture))
 	{
-		m_TextureMap.insert({ _name, texture });
+		m_TextureMap.insert({ _path, texture });
 	}
 }
 
@@ -253,9 +256,14 @@ void GameEngine::RenderManager::Release()
 	m_PixelShaderMap.clear();
 }
 
-LPDIRECT3DTEXTURE9& GameEngine::RenderManager::Get_Texture(const std::wstring& _name)
+LPDIRECT3DTEXTURE9* GameEngine::RenderManager::Get_Texture(const std::wstring& _path)
 {
-	return m_TextureMap.find(_name)->second;
+	auto iter = m_TextureMap.find(_path);
+
+	if (iter == m_TextureMap.end())
+		return nullptr;
+	else
+		return &(m_TextureMap.find(_path)->second);
 }
 
 LPDIRECT3DPIXELSHADER9& GameEngine::RenderManager::Get_PixelShader(const std::wstring& _name)

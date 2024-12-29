@@ -42,7 +42,7 @@ namespace GameEngine
 		void Render(LPDIRECT3DDEVICE9 _device);
 		void Render_End(LPDIRECT3DDEVICE9 _device);
 		void Add_Renderer(Renderer* _renderer);
-		void Add_Texture(const std::wstring& _name, const std::wstring& _path);
+		void Add_Texture(const std::wstring& _path);
 		void Add_PixelShader(const std::wstring& _name, const std::wstring& _path);
 		void Remove_Renderer(Renderer* _renderer);
 		void Register_Renderer();
@@ -53,7 +53,7 @@ namespace GameEngine
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
-		LPDIRECT3DTEXTURE9& Get_Texture(const std::wstring& _name);
+		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
 		LPDIRECT3DPIXELSHADER9& Get_PixelShader(const std::wstring& _name);
 
 	private:

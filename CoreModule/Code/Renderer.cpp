@@ -11,7 +11,7 @@ void GameEngine::Renderer::Render_Buffer(LPDIRECT3DDEVICE9 _device)
 {
 	//Buffer Ãâ·Â
 	_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
-	_device->SetFVF(FVF_COLOR);
+	_device->SetFVF(m_FVF);
 
 	_device->SetIndices(m_IndexBuffer);
 	_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);

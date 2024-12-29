@@ -9,11 +9,12 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	m_TriangleCnt = 12;
 	m_VertexCnt = 8;
 	m_VertexSize = sizeof(VTXCUBE);
+	m_FVF = FVF_COLOR;
 	UINT indexSize = sizeof(INDEX16);
 
 	if (E_FAIL == _device->CreateVertexBuffer(m_VertexCnt * m_VertexSize,
 		0,
-		FVF_COLOR,
+		m_FVF,
 		D3DPOOL_MANAGED,
 		&m_VertexBuffer,
 	nullptr))

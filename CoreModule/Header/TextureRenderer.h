@@ -1,5 +1,11 @@
 #pragma once
+#include <regex>
+
 #include "Renderer.h"
+#include "RenderManager.h"
+
+//임시
+#include "Transform.h"
 
 class Shader;
 
@@ -33,8 +39,16 @@ namespace GameEngine
 		//화면에 출력
 		void Render(LPDIRECT3DDEVICE9 _device) override;
 
-		void Get_Texture(LPDIRECT3DTEXTURE9& _texture) const;
-		void Set_Texture(const LPDIRECT3DTEXTURE9& _texture);
+		//void Get_Texture(LPDIRECT3DTEXTURE9& _texture) const;
+		//void Set_Texture(const LPDIRECT3DTEXTURE9& _texture);
+
+		void Set_Texture(std::wstring& _path)
+		{
+			//set path는 로딩에서 다 해줘야 프레임 드랍이 없을 듯
+			m_path = _path;
+			RenderManager::GetInstance().Add_Texture(_path);
+			m_Texture = *(RenderManager::GetInstance().Get_Texture(_path));
+		}
 
 		Component* Clone() const override
 		{
@@ -47,7 +61,7 @@ namespace GameEngine
 		void to_json(nlohmann::ordered_json& _j) override
 		{
 			std::string type = "TextureRenderer";
-			_j = nlohmann::json{
+			_j = nlohmann::ordered_json{
 				{"type", type}
 			};
 		}
@@ -57,7 +71,8 @@ namespace GameEngine
 		}
 
 	private:
-		LPDIRECT3DTEXTURE9		m_Texture;
+		std::wstring				m_path;
+		LPDIRECT3DTEXTURE9			m_Texture;
 		//Shader*					m_Shader;
 	};
 
