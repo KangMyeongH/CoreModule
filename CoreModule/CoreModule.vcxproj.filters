@@ -55,6 +55,9 @@
     <ClCompile Include="Code\CameraManager.cpp">
       <Filter>Manager\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Code\InputManager.cpp">
+      <Filter>Manager\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -132,6 +135,9 @@
     <ClInclude Include="Header\CameraManager.h">
       <Filter>Manager\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Header\InputManager.h">
+      <Filter>Manager\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -190,6 +196,9 @@
     </Filter>
     <Filter Include="Component\03. Renderer\Texture">
       <UniqueIdentifier>{d4e4364f-9a54-4508-85dd-f3102d1fa4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Input">
+      <UniqueIdentifier>{5fcd333c-f5c6-4b58-89e6-bee18c335987}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

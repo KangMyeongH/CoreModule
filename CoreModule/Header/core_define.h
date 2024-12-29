@@ -7,6 +7,8 @@
 
 #pragma warning(disable : 4251)
 
+#define VK_MAX 0xff
+
 #define REGISTER_COMPONENT(className) \
 	static ComponentRegistrar registrar_##className(#className, []() { return std::make_unique<className>(); });
 
@@ -42,3 +44,4 @@ namespace GameEngine
 {
 	class Component;
 }
+
