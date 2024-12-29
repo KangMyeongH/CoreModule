@@ -53,6 +53,7 @@ namespace GameEngine
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
+		LPDIRECT3DDEVICE9	Get_Device() const { return m_Device; }
 		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
 		LPDIRECT3DPIXELSHADER9& Get_PixelShader(const std::wstring& _name);
 

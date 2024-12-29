@@ -16,7 +16,10 @@ namespace GameEngine
 		bool		Key_Pressing(int _iKey) const; //계속 눌리는 중일 때
 		bool		Key_Down(int _iKey) const; //처음 눌릴 때
 		bool		Key_Up(int _iKey) const; //처음 눌리지 않을 때
-		void		Update_Key();
+		Vector3		Get_MousePos() const { return m_MousePos; }
+		void		Set_MousePos(const Vector3& _mousePos) { m_MousePos = _mousePos; }
+		void		Update_Key(HWND _hwnd);
+		void		Update_Editor(HWND _hwnd, const Vector3& _mousePos);
 
 	private:
 		enum KEYSTATE
@@ -28,7 +31,7 @@ namespace GameEngine
 		};
 
 		KEYSTATE	m_bKeyState[VK_MAX];
-
-		POINT		m_MouseClientPos;
+		Vector3		m_MousePos;
+		bool		m_bEditor;
 	};
 }
