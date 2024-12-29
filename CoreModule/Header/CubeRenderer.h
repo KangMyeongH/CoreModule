@@ -9,21 +9,11 @@ namespace GameEngine
 		//======================================//
 		//				constructor				//
 		//======================================//
-		CubeRenderer() : Renderer(nullptr),
-			m_VertexSize(0),
-			m_VertexCnt(0),
-			m_TriangleCnt(0)
+		CubeRenderer() : Renderer(nullptr)
 		{}
-		explicit CubeRenderer(GameObject* _owner) : Renderer(_owner),
-			m_VertexSize(0),
-			m_VertexCnt(0),
-			m_TriangleCnt(0)
+		explicit CubeRenderer(GameObject* _owner) : Renderer(_owner)
 		{}
-		CubeRenderer(const CubeRenderer& _rhs)
-			: Renderer(_rhs),
-			m_VertexSize(_rhs.m_VertexSize),
-			m_VertexCnt(_rhs.m_VertexCnt),
-			m_TriangleCnt(_rhs.m_TriangleCnt)
+		CubeRenderer(const CubeRenderer& _rhs) : Renderer(_rhs)
 		{
 		}
 		~CubeRenderer() override = default;
@@ -38,10 +28,6 @@ namespace GameEngine
 
 		//화면에 출력
 		void Render(LPDIRECT3DDEVICE9 _device) override;
-
-		void Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer, LPDIRECT3DINDEXBUFFER9& _indexBuffer) override;
-
-		void Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer) override;
 
 		Component* Clone() const override
 		{
@@ -65,9 +51,7 @@ namespace GameEngine
 		}
 
 	private:
-		UINT m_VertexSize;
-		UINT m_VertexCnt;
-		UINT m_TriangleCnt;
+
 	};
 	REGISTER_COMPONENT(CubeRenderer)
 }

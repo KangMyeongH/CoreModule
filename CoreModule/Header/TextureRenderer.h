@@ -1,5 +1,13 @@
 #pragma once
+#include <regex>
+
 #include "Renderer.h"
+#include "RenderManager.h"
+
+//임시
+#include "Transform.h"
+
+class Shader;
 
 namespace GameEngine
 {
@@ -10,47 +18,37 @@ namespace GameEngine
 		//				constructor				//
 		//======================================//
 		TextureRenderer() : Renderer(nullptr),
-			m_Texture(nullptr),
-			m_VertexSize(0),
-			m_VertexCnt(0),
-			m_TriangleCnt(0)
+			m_Texture(nullptr)
 		{}
 		explicit TextureRenderer(GameObject* _owner) : Renderer(_owner),
-			m_Texture(nullptr),
-			m_VertexSize(0),
-			m_VertexCnt(0),
-			m_TriangleCnt(0)
+			m_Texture(nullptr)
 		{}
-		TextureRenderer(const TextureRenderer& _rhs)
-			: Renderer(_rhs),
-			m_Texture(_rhs.m_Texture),
-			m_VertexSize(_rhs.m_VertexSize),
-			m_VertexCnt(_rhs.m_VertexCnt),
-			m_TriangleCnt(_rhs.m_TriangleCnt)
-		{
-			m_VertexBuffer->AddRef();
-			m_IndexBuffer->AddRef();
-		}
-		~TextureRenderer() override
-		{
-			m_Texture->Release();
-		}
+		TextureRenderer(const TextureRenderer& _rhs) : Renderer(_rhs),
+			m_Texture(_rhs.m_Texture)
+		{}
+		~TextureRenderer() override = default;
 
 		//======================================//
 		//				 method					//
 		//======================================//
 
+	public:
 		//vertex buffer 및 index buffer 생성
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
 
 		//화면에 출력
 		void Render(LPDIRECT3DDEVICE9 _device) override;
 
-		void Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer, LPDIRECT3DINDEXBUFFER9& _indexBuffer) override;
-		void Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPDIRECT3DINDEXBUFFER9 _indexBuffer) override;
+		//void Get_Texture(LPDIRECT3DTEXTURE9& _texture) const;
+		//void Set_Texture(const LPDIRECT3DTEXTURE9& _texture);
 
-		void Get_Texture(LPDIRECT3DTEXTURE9& _texture);
-		void Set_Texture(const LPDIRECT3DTEXTURE9& _texture);
+		void Set_Texture(std::wstring& _path)
+		{
+			//set path는 로딩에서 다 해줘야 프레임 드랍이 없을 듯
+			m_path = _path;
+			RenderManager::GetInstance().Add_Texture(_path);
+			m_Texture = *(RenderManager::GetInstance().Get_Texture(_path));
+		}
 
 		Component* Clone() const override
 		{
@@ -63,7 +61,7 @@ namespace GameEngine
 		void to_json(nlohmann::ordered_json& _j) override
 		{
 			std::string type = "TextureRenderer";
-			_j = nlohmann::json{
+			_j = nlohmann::ordered_json{
 				{"type", type}
 			};
 		}
@@ -73,11 +71,9 @@ namespace GameEngine
 		}
 
 	private:
+		std::wstring				m_path;
 		LPDIRECT3DTEXTURE9			m_Texture;
-
-		UINT m_VertexSize;
-		UINT m_VertexCnt;
-		UINT m_TriangleCnt;
+		//Shader*					m_Shader;
 	};
 
 	REGISTER_COMPONENT(TextureRenderer)
