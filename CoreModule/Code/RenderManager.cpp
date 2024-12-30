@@ -25,10 +25,10 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 			{
 				renderer->Ready_Buffer(_device);
 				renderer->Get_Buffer(buffer.first, buffer.second);
-				buffer.first->AddRef();
-				buffer.second->AddRef();
 
 				m_BufferMap.insert({ CUBE, buffer });
+				buffer.first->AddRef();
+				buffer.second->AddRef();
 			}
 			else
 			{
@@ -54,7 +54,9 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 				renderer->Set_Buffer(buffer.first, buffer.second);
 			}
 		}
+
 	}
+
 }
 
 GameEngine::RenderManager::~RenderManager()

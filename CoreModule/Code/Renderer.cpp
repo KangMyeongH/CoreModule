@@ -28,4 +28,7 @@ void GameEngine::Renderer::Set_Buffer(LPDIRECT3DVERTEXBUFFER9 _vertexBuffer, LPD
 {
 	m_VertexBuffer = _vertexBuffer;
 	m_IndexBuffer = _indexBuffer;
+
+	m_VertexBuffer->AddRef();
+	m_IndexBuffer->AddRef();
 }
