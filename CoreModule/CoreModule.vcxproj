@@ -152,6 +152,7 @@
     <ClInclude Include="Header\CubeRenderer.h" />
     <ClInclude Include="Header\GameObject.h" />
     <ClInclude Include="Header\InputManager.h" />
+    <ClInclude Include="Header\Light.h" />
     <ClInclude Include="Header\MonoBehaviour.h" />
     <ClInclude Include="Header\MonoBehaviourManager.h" />
     <ClInclude Include="Header\Object.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="Code\CubeRenderer.cpp" />
     <ClCompile Include="Code\GameObject.cpp" />
     <ClCompile Include="Code\InputManager.cpp" />
+    <ClCompile Include="Code\Light.cpp" />
     <ClCompile Include="Code\MonoBehaviour.cpp" />
     <ClCompile Include="Code\MonoBehaviourManager.cpp" />
     <ClCompile Include="Code\Object.cpp" />

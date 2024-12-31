@@ -32,7 +32,6 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 	m_VertexBuffer->Lock(0, 0, (void**)&pVertex, 0);
 
-
 	// Àü¸é
 	pVertex[0].Position = Vector3{ -1.f, 1.f, -1.f };
 	pVertex[1].Position = Vector3{ 1.f, 1.f, -1.f };
@@ -50,7 +49,6 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 		pVertex[i].Color = D3DXCOLOR(1.f, 0.f, 0.f, 1.f);
 	}
 
-	m_VertexBuffer->Unlock();
 
 	INDEX16* pIndex = nullptr;
 
@@ -122,6 +120,8 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pIndex[11]._1 = 2;
 	pIndex[11]._2 = 3;
 
+
+	m_VertexBuffer->Unlock();
 	m_IndexBuffer->Unlock();
 }
 

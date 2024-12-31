@@ -58,6 +58,10 @@
     <ClCompile Include="Code\InputManager.cpp">
       <Filter>Manager\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Shader.cpp" />
+    <ClCompile Include="Code\Light.cpp">
+      <Filter>Component\06. Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -138,6 +142,10 @@
     <ClInclude Include="Header\InputManager.h">
       <Filter>Manager\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Shader.h" />
+    <ClInclude Include="Header\Light.h">
+      <Filter>Component\06. Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -199,6 +207,9 @@
     </Filter>
     <Filter Include="Manager\Input">
       <UniqueIdentifier>{5fcd333c-f5c6-4b58-89e6-bee18c335987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\06. Light">
+      <UniqueIdentifier>{899fefc0-63bd-438a-a2fb-e12f098efd81}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
