@@ -8,7 +8,6 @@ void GameEngine::Light::Ready_Light(LPDIRECT3DDEVICE9 _device)
 {
 	//클라이언트 실행 중에 조명 설정 변경하면 적용 안됨
 	//Ready_Light는 조명 설정이 완료된 뒤에 실행되어야 함
-
 	_device->SetLight(m_Index, m_LightInfo);
 	_device->LightEnable(m_Index, TRUE); //해당 번호의 light가 조명 연산 수행하도록 설정
 }

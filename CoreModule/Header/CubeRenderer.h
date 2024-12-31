@@ -12,21 +12,21 @@ namespace GameEngine
 		CubeRenderer() : Renderer(nullptr)
 		{
 			m_VertexSize = sizeof(VTXCUBE);
-			m_VertexCnt = 8;
+			m_VertexCnt = 24;
 			m_TriangleCnt = 12;
 			m_FVF = FVF_COLOR;
 		}
 		explicit CubeRenderer(GameObject* _owner) : Renderer(_owner)
 		{
 			m_VertexSize = sizeof(VTXCUBE);
-			m_VertexCnt = 8;
+			m_VertexCnt = 24;
 			m_TriangleCnt = 12;
 			m_FVF = FVF_COLOR;
 		}
 		CubeRenderer(const CubeRenderer& _rhs) : Renderer(_rhs)
 		{
 			m_VertexSize = sizeof(VTXCUBE);
-			m_VertexCnt = 8;
+			m_VertexCnt = 24;
 			m_TriangleCnt = 12;
 			m_FVF = FVF_COLOR;
 		}

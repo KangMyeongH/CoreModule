@@ -32,15 +32,19 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	m_VertexBuffer->Lock(0, 0, (void**)&pVertex, 0);
 
 	pVertex[0].Position = Vector3{ -1.f, 1.f, 0.f };
+	pVertex[0].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[0].TextureUV = Vector2{ 0.f, 0.f };
 
 	pVertex[1].Position = Vector3{ 1.f, 1.f, 0.f };
+	pVertex[1].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[1].TextureUV = Vector2{ 1.f, 0.f };
 
 	pVertex[2].Position = Vector3{ 1.f, -1.f, 0.f };
+	pVertex[2].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[2].TextureUV = Vector2{ 1.f, 1.f };
 
 	pVertex[3].Position = Vector3{ -1.f, -1.f, 0.f };
+	pVertex[3].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[3].TextureUV = Vector2{ 0.f, 1.f };
 
 
@@ -57,34 +61,6 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pIndex[1]._1 = 2;
 	pIndex[1]._2 = 3;
 
-
-
-	//normal 값 세팅
-	// 오른쪽 위
-
-	Vector3	vDst, vSrc, normal;
-
-	vDst = pVertex[pIndex[0]._1].Position - pVertex[pIndex[0]._0].Position;
-	vSrc = pVertex[pIndex[0]._2].Position - pVertex[pIndex[0]._1].Position;
-	D3DXVec3Cross(&normal, &vDst, &vSrc);
-
-	pVertex[pIndex[0]._0].Normal += normal;
-	pVertex[pIndex[0]._1].Normal += normal;
-	pVertex[pIndex[0]._2].Normal += normal;
-
-
-	// 왼쪽 아래
-	vDst = pVertex[pIndex[1]._1].Position - pVertex[pIndex[1]._0].Position;
-	vSrc = pVertex[pIndex[1]._2].Position - pVertex[pIndex[1]._1].Position;
-	D3DXVec3Cross(&normal, &vDst, &vSrc);
-
-	pVertex[pIndex[1]._0].Normal += normal;
-	pVertex[pIndex[1]._1].Normal += normal;
-	pVertex[pIndex[1]._2].Normal += normal;
-
-
-	for (ULONG i = 0; i < m_VertexCnt; ++i)
-		D3DXVec3Normalize(&pVertex[i].Normal, &pVertex[i].Normal);
 
 	m_VertexBuffer->Unlock();
 	m_IndexBuffer->Unlock();

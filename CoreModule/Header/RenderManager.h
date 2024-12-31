@@ -56,7 +56,7 @@ namespace GameEngine
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
 		//юс╫ц
-		void Add_Light(Light* _light) { m_GlobalLight = _light; m_GlobalLight->Ready_Light(m_Device); }
+		void Add_Light(Light* _light) {  _light->Ready_Light(m_Device); m_GlobalLight = _light;}
 
 		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
 		LPDIRECT3DPIXELSHADER9& Get_PixelShader(const std::wstring& _name);

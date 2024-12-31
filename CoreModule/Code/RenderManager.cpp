@@ -81,8 +81,6 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 {
 	m_Device->SetRenderState(D3DRS_LIGHTING, true);
 
-	//임시
-	m_GlobalLight->Update_Light(_device);
 
 	if (FAILED(_device->SetTransform(D3DTS_VIEW, &m_ViewMat)))
 	{
@@ -91,6 +89,15 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 	if (FAILED(_device->SetTransform(D3DTS_PROJECTION, &m_ProjMat)))
 	{
 		return;
+	}
+
+	//임시
+	if (m_GlobalLight)
+	{
+		m_GlobalLight->Update_Light(_device);
+		m_GlobalLight->Ready_Light(_device); //test
+		_device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+		//_device->SetRenderState(D3DRS_SPECULARENABLE, true);
 	}
 
 	for (const auto& renderer : m_Renderers)

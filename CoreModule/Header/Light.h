@@ -9,16 +9,33 @@ namespace GameEngine
 		static UINT m_IndexValue;
 
 	public:
-		Light() : Behaviour(nullptr),
-		m_LightInfo(nullptr)
+		Light() : Behaviour(nullptr)
 		{
 			m_Index = m_IndexValue;
 			m_IndexValue++;
+
+			m_LightInfo = new D3DLIGHT9;
+			ZeroMemory(m_LightInfo, sizeof(D3DLIGHT9));
+
+			m_LightInfo->Type = D3DLIGHT_DIRECTIONAL;
+			m_LightInfo->Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+			m_LightInfo->Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.f);
+			m_LightInfo->Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.f);
 		}
 
-		explicit Light(GameObject* _owner) : Behaviour(_owner),
-		m_LightInfo(nullptr)
-		{}
+		explicit Light(GameObject* _owner) : Behaviour(_owner)
+		{
+			m_Index = m_IndexValue;
+			m_IndexValue++;
+
+			m_LightInfo = new D3DLIGHT9;
+			ZeroMemory(m_LightInfo, sizeof(D3DLIGHT9));
+
+			m_LightInfo->Type = D3DLIGHT_DIRECTIONAL;
+			m_LightInfo->Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+			m_LightInfo->Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.f);
+			m_LightInfo->Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.f);
+		}
 
 		~Light()
 		{
@@ -38,6 +55,7 @@ namespace GameEngine
 		void	Set_Range(float _range) const { m_LightInfo->Range = _range; }
 
 		UINT	Get_Index() const { return m_Index; }
+		D3DLIGHT9* Get_LightInfo() const { return m_LightInfo; }
 
 		void 	Destroy() override;
 
@@ -53,4 +71,3 @@ namespace GameEngine
 	};
 	REGISTER_COMPONENT(Light)
 }
-

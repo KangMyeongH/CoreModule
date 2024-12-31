@@ -17,7 +17,7 @@ namespace GameEngine
 			m_Material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 			m_Material.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
 			m_Material.Emissive = D3DXCOLOR(0.f, 0.f, 0.f, 1.f);
-			m_Material.Power = 0.f;
+			m_Material.Power = 5.f;
 		}
 		explicit Renderer(GameObject* _owner) : Behaviour(_owner),
 			m_VertexBuffer(nullptr),
@@ -31,7 +31,7 @@ namespace GameEngine
 			m_Material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 			m_Material.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
 			m_Material.Emissive = D3DXCOLOR(0.f, 0.f, 0.f, 1.f);
-			m_Material.Power = 0.f;
+			m_Material.Power = 5.f;
 		}
 		Renderer(const Renderer& _rhs) : Behaviour(_rhs),
 			m_VertexBuffer(_rhs.m_VertexBuffer),
