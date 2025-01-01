@@ -15,7 +15,7 @@ namespace GameEngine
 			ZeroMemory(&m_Material, sizeof(D3DMATERIAL9));
 			m_Material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 			m_Material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-			m_Material.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
+			m_Material.Ambient = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 			m_Material.Emissive = D3DXCOLOR(0.f, 0.f, 0.f, 1.f);
 			m_Material.Power = 5.f;
 		}
@@ -29,7 +29,7 @@ namespace GameEngine
 			ZeroMemory(&m_Material, sizeof(D3DMATERIAL9));
 			m_Material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 			m_Material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-			m_Material.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
+			m_Material.Ambient = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 			m_Material.Emissive = D3DXCOLOR(0.f, 0.f, 0.f, 1.f);
 			m_Material.Power = 5.f;
 		}
