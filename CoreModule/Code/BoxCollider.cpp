@@ -108,7 +108,7 @@ void GameEngine::BoxCollider::Calc_WorldAABB()
 	}
 
 	m_WorldMin = minVec;
-	m_WorldMax = minVec;
+	m_WorldMax = maxVec;
 }
 
 bool GameEngine::BoxCollider::Check_OBBCollision(BoxCollider* _other, Vector3& _contactPoint)

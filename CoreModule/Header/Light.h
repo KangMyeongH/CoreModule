@@ -37,7 +37,7 @@ namespace GameEngine
 			m_LightInfo->Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.f);
 		}
 
-		~Light()
+		~Light() override
 		{
 			//삭제하기 전에 _device->LightEnable(m_Index, FALSE); 필요
 			// 근데 device 어케 가져올지 모르겠음
