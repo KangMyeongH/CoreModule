@@ -35,7 +35,7 @@ namespace GameEngine
 		static Core& Get_Instance() { static Core s_Core; return s_Core; }
 
 	public:
-		void Initialize(LPDIRECT3DDEVICE9 device);
+		void Initialize(LPDIRECT3DDEVICE9 _device, HWND _hwnd);
 		inline void Progress();
 		inline void EditorProgress();
 		inline void Decommissioning();
@@ -54,7 +54,7 @@ namespace GameEngine
 
 	private:
 		LPDIRECT3DDEVICE9 		m_Device;
-
+		HWND					m_Hwnd;
 		Scene* 					m_Scene;
 
 		InputManager* 			m_InputManager;

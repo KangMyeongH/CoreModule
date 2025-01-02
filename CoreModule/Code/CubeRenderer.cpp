@@ -132,7 +132,6 @@ void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 
 	Render_Buffer(_device);
 	//render state º¹±¸
-
 }
 
 

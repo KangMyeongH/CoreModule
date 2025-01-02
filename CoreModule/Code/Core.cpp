@@ -13,10 +13,11 @@ GameEngine::Core::~Core()
 
 }
 
-void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 device)
+void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 _device, HWND _hwnd)
 {
-	m_Device = device;
-	device->AddRef();
+	m_Device = _device;
+	_device->AddRef();
+	m_Hwnd = _hwnd;
 
 	m_Scene = &Scene::GetInstance();
 
@@ -47,7 +48,7 @@ void GameEngine::Core::Progress()
 	on_Collision();
 	update();
 	late_Update();
-	m_InputManager->Update_Key();
+	m_InputManager->Update_Key(m_Hwnd);
 	render(m_Device);
 	on_Destroy();
 	destroy();
@@ -68,14 +69,14 @@ void GameEngine::Core::EditorProgress()
 	on_Collision();
 	update();
 	late_Update();
-	m_InputManager->Update_Key();
+	m_InputManager->Update_Key(m_Hwnd);
 }
 
 void GameEngine::Core::Decommissioning()
 {
 	on_Destroy();
 	destroy();
-	m_TimeManager->FrameLimit();
+	//m_TimeManager->FrameLimit();
 }
 
 void GameEngine::Core::Release()

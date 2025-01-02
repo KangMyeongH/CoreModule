@@ -36,6 +36,13 @@ namespace GameEngine
 		Vector3 Direction;		// Ray의 방향 	(정규화된 월드 벡터)
 	};
 
-
+	struct OBB
+	{
+		Vector3 Center;
+		Vector3 AxisX;
+		Vector3 AxisY;
+		Vector3 AxisZ;
+		Vector3 Extents;
+	};
 }
 

@@ -58,6 +58,22 @@
     <ClCompile Include="Code\InputManager.cpp">
       <Filter>Manager\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Shader.cpp" />
+    <ClCompile Include="Code\Collider.cpp">
+      <Filter>Component\06. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Collision.cpp">
+      <Filter>Component\06. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\BoxCollider.cpp">
+      <Filter>Component\06. Collider\BoxCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SphereCollider.cpp">
+      <Filter>Component\06. Collider\SphereCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Manager\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -138,6 +154,22 @@
     <ClInclude Include="Header\InputManager.h">
       <Filter>Manager\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Shader.h" />
+    <ClInclude Include="Header\Collider.h">
+      <Filter>Component\06. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Collision.h">
+      <Filter>Component\06. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\BoxCollider.h">
+      <Filter>Component\06. Collider\BoxCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\SphereCollider.h">
+      <Filter>Component\06. Collider\SphereCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Manager\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -199,6 +231,18 @@
     </Filter>
     <Filter Include="Manager\Input">
       <UniqueIdentifier>{5fcd333c-f5c6-4b58-89e6-bee18c335987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\06. Collider">
+      <UniqueIdentifier>{a1e4958f-0832-4d72-b0a2-135d2350ca7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\06. Collider\BoxCollider">
+      <UniqueIdentifier>{d3e4d165-c1ad-4e79-841f-353a1b570d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\06. Collider\SphereCollider">
+      <UniqueIdentifier>{2ee3db19-ac7b-445e-85b5-715195b2475f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Collision">
+      <UniqueIdentifier>{dbfc9e4b-a33f-4c9a-9a56-32ea61329eaa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

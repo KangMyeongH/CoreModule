@@ -1,8 +1,6 @@
 #pragma once
 #include <typeindex>
-
 #include "core_define.h"
-
 
 namespace GameEngine
 {

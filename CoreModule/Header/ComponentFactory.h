@@ -1,7 +1,7 @@
 #pragma once
 #include "core_define.h"
 
-class Component;
+class GameEngine::Component;
 
 class COREMODULE_API ComponentFactory
 {
