@@ -69,6 +69,63 @@ GameEngine::OBB GameEngine::BoxCollider::Calc_WorldOBB()
 
 void GameEngine::BoxCollider::Calc_WorldAABB()
 {
+	// (1) 월드 행렬에서 R(3x3), t 추출
+	// D3DXMATRIX가 row-major or column-major냐에 따라
+	// _11,_12,_13 ... 의 위치가 달라질 수 있는데,
+	// 일반적인 DirectX9 row-major 행렬에서
+	// 
+	// [ _11 _12 _13 _14 ]
+	// [ _21 _22 _23 _24 ]
+	// [ _31 _32 _33 _34 ]
+	// [ _41 _42 _43 _44 ]
+	//
+	// 이라 가정하면,
+	// 회전+스케일 부분 =
+	// {
+	//  	( _11,_12,_13 )
+	//   	( _21,_22,_23 )
+	//  	( _31,_32,_33 )
+	//  }
+	// 위치 = 	( _41,_42,_43 )
+	D3DXMATRIX worldMat = Get_Transform().Get_WorldMatrix();
+
+	// 로컬에서의 center, extents
+	Vector3 localCenter = m_Center;
+	Vector3 localExt = m_Size * 0.5f;
+
+	// 1) 월드 공간에서의 center
+	Vector3 worldCenter;
+	{
+		// center 변환
+		D3DXVec3TransformCoord(&worldCenter, &localCenter, &worldMat);
+	}
+
+	// 2) 회전 행렬(또는 회전+스케일)에 의한 extents
+	//    => 절댓값으로 누적
+	// Rx = (worldMat._11, worldMat._21, worldMat._31) ...
+	// 단, 여기선 각 행/열이 어떻게 배치되는지 주의해야 함
+	//
+	// DX9에서 _11,_12,_13 은 첫 행에 해당( x축 변환 성분 )
+	// -> row0 = ( _11, _12, _13 )
+	//    row1 = ( _21, _22, _23 )
+	//    row2 = ( _31, _32, _33 )
+	Vector3 row0(fabsf(worldMat._11), fabsf(worldMat._12), fabsf(worldMat._13));
+	Vector3 row1(fabsf(worldMat._21), fabsf(worldMat._22), fabsf(worldMat._23));
+	Vector3 row2(fabsf(worldMat._31), fabsf(worldMat._32), fabsf(worldMat._33));
+
+	Vector3 newExtents;
+	newExtents.x = row0.x * localExt.x + row0.y * localExt.y + row0.z * localExt.z;
+	newExtents.y = row1.x * localExt.x + row1.y * localExt.y + row1.z * localExt.z;
+	newExtents.z = row2.x * localExt.x + row2.y * localExt.y + row2.z * localExt.z;
+
+	// 3) 최종 AABB = center ± newExtents
+	Vector3 minVec = worldCenter - newExtents;
+	Vector3 maxVec = worldCenter + newExtents;
+
+	m_WorldMin = minVec;
+	m_WorldMax = maxVec;
+
+	/*
 	D3DXMATRIX worldMat = Get_Transform().Get_WorldMatrix();
 
 	Vector3 extents = m_Size * 0.5f;
@@ -108,7 +165,7 @@ void GameEngine::BoxCollider::Calc_WorldAABB()
 	}
 
 	m_WorldMin = minVec;
-	m_WorldMax = maxVec;
+	m_WorldMax = maxVec;*/
 }
 
 bool GameEngine::BoxCollider::Check_OBBCollision(BoxCollider* _other, Vector3& _contactPoint)

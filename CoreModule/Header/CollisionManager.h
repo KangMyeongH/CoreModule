@@ -3,6 +3,7 @@
 
 #include "core_define.h"
 
+class Physics;
 
 namespace GameEngine
 {
@@ -64,6 +65,8 @@ namespace GameEngine
 		void Destroy_Collider();
 		void Release();
 
+		bool RayCast(const Ray& _ray, RayHit& _outHit, float _maxDistance = FLT_MAX, int _layerMask = ~0);
+
 	private:
 		// 1) BroadPhase: SAP
 		void broadPhase_Sap(std::vector<std::pair<BoxCollider*, BoxCollider*>>& _outPotentialPairs);
@@ -78,10 +81,12 @@ namespace GameEngine
 		// 面倒 惯积 矫 贸府
 		void process_CollisionResults(const std::unordered_set<std::pair<BoxCollider*, BoxCollider*>, ColliderPairHash, ColliderPairEq>& newCollisions);;
 
-
 		void invoke_CollisionEnter(BoxCollider* _a, BoxCollider* _b);
 		void invoke_CollisionStay(BoxCollider* _a, BoxCollider* _b);
 		void invoke_CollisionExit(BoxCollider* _a, BoxCollider* _b);
+
+		// Ray Cast
+		bool rayIntersectsOBB(const Ray& _ray, const OBB& _obb, float& _outT, Vector3& outNormal);
 
 	private:
 		std::vector<Collider*> 		m_Colliders;
