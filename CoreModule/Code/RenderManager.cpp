@@ -12,6 +12,8 @@ void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 {
 	m_Device = _device;
 	_device->AddRef();
+
+
 }
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
@@ -66,7 +68,7 @@ GameEngine::RenderManager::~RenderManager()
 
 void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 {
-	D3DXCOLOR backColor = { 1.f, 1.f, 1.f, 1.f };
+	D3DXCOLOR backColor = { 0.2f, 0.2f, 0.2f, 1.f };
 	_device->Clear(0,
 		NULL,
 		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
@@ -79,9 +81,6 @@ void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 {
-	m_Device->SetRenderState(D3DRS_LIGHTING, true);
-
-
 	if (FAILED(_device->SetTransform(D3DTS_VIEW, &m_ViewMat)))
 	{
 		return;
@@ -90,6 +89,32 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 	{
 		return;
 	}
+
+	m_Device->SetRenderState(D3DRS_LIGHTING, true);
+
+	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+	m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+	std::sort(m_Renderers.begin(), m_Renderers.end(), [&_device](Renderer* dst, Renderer* src)->bool
+		{
+			D3DXMATRIX matCameraWorld;
+
+			_device->GetTransform(D3DTS_VIEW, &matCameraWorld);
+			D3DXMatrixInverse(&matCameraWorld, 0, &matCameraWorld);
+
+			Vector3   cameraPosition;
+			memcpy(&cameraPosition, &matCameraWorld.m[3][0], sizeof(Vector3));
+
+			Vector3 dstZ = cameraPosition - dst->Get_Transform().Position();
+			Vector3	srcZ = cameraPosition - src->Get_Transform().Position();
+
+			D3DXVec3Length(&dstZ);
+			D3DXVec3Length(&srcZ);
+
+			return dstZ > srcZ;
+		});
 
 	//임시
 	if (m_GlobalLight)
