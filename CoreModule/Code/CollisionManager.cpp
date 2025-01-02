@@ -117,6 +117,66 @@ void GameEngine::CollisionManager::Release()
 	m_DestroyQueue.clear();
 }
 
+bool GameEngine::CollisionManager::RayCast(const Ray& _ray, RayHit& _outHit, const float _maxDistance, int _layerMask)
+{
+    {
+        _outHit.Distance = 0.f;
+        _outHit.Collider = nullptr;
+
+        float 	closestT = _maxDistance;
+        bool	hasHit = false;
+        RayHit tempHit;
+
+        for (auto col : m_Colliders)
+        {
+            // 레이어 체크
+            // TODO : 지금은 미구현, 최적화가 필요하거나 기능이 필요할 때 구현할 것
+            // if (!CheckLayerMask(col->Get_Layer(), layerMask))
+            //		continue;
+
+            // 트리거 체크
+            // TODO : 지금은 Collider가 Trigger의 기능을 하는중 Trigger 따로 구현 시 구현할 것.
+            // if (col->Is_Trigger())
+            //		continue;
+
+            BoxCollider* boxCol = dynamic_cast<BoxCollider*>(col);
+            if (!boxCol)
+            {
+	            continue;
+            }
+
+            float t;
+            Vector3 normal;
+            bool hit = rayIntersectsOBB(_ray, boxCol->Get_OBB(), t, normal);
+
+            if (!hit)
+                continue;
+
+            if (t < 0.f)
+                continue;
+
+            if (t < closestT && t <= _maxDistance)
+            {
+                closestT = t;
+                hasHit = true;
+
+                tempHit.Distance = t;
+                tempHit.Collider = col;
+                tempHit.Point = _ray.Get_Point(t);
+                tempHit.Normal = normal;
+            }
+        }
+
+        if (hasHit)
+        {
+            _outHit = tempHit;
+            return true;
+        }
+
+        return false;
+    }
+}
+
 void GameEngine::CollisionManager::broadPhase_Sap(std::vector<std::pair<BoxCollider*, BoxCollider*>>& _outPotentialPairs)
 {
     // AABB X축 값들을 수집
@@ -227,10 +287,6 @@ void GameEngine::CollisionManager::narrowPhase_OBB(
         bool overlapZ = (aMin.z <= bMax.z) && (aMax.z >= bMin.z);
         if (!(overlapX && overlapY && overlapZ))
             continue;
-
-        // OBB 계산
-        a->Calc_WorldOBB();
-        b->Calc_WorldOBB();
 
         // 2) OBB 충돌 검사 (회전 고려, 여기선 생략/스텁)
         if (check_OBBCollision(a, b))
@@ -388,4 +444,64 @@ void GameEngine::CollisionManager::invoke_CollisionExit(BoxCollider* _a, BoxColl
 
     objA->On_CollisionExit(Collision(objB, _b));
     objB->On_CollisionExit(Collision(objA, _a));
+}
+
+bool GameEngine::CollisionManager::rayIntersectsOBB(const Ray& _ray, const OBB& _obb, float& _outT, Vector3& outNormal)
+{
+    Vector3 diff = _ray.Origin - _obb.Center;
+
+    float ox = Vector3::Dot(diff, _obb.AxisX);
+    float oy = Vector3::Dot(diff, _obb.AxisY);
+    float oz = Vector3::Dot(diff, _obb.AxisZ);
+
+    float dx = Vector3::Dot(_ray.Direction, _obb.AxisX);
+    float dy = Vector3::Dot(_ray.Direction, _obb.AxisY);
+    float dz = Vector3::Dot(_ray.Direction, _obb.AxisZ);
+
+    Vector3 boxMin(-_obb.Extents.x, -_obb.Extents.y, -_obb.Extents.z);
+    Vector3 boxMax(_obb.Extents.x, _obb.Extents.y, _obb.Extents.z);
+
+    float tmin = 0.0f;
+    float tmax = FLT_MAX;
+
+    auto checkAxis = [&](float originCoord, float dirCoord, float minB, float maxB)->bool
+        {
+            if (fabsf(dirCoord) < 1e-6f)
+            {
+                // 평행
+                if (originCoord < minB || originCoord > maxB)
+                    return false;
+            }
+            else
+            {
+                float invD = 1.f / dirCoord;
+                float t1 = (minB - originCoord) * invD;
+                float t2 = (maxB - originCoord) * invD;
+                if (t1 > t2) std::swap(t1, t2);
+
+                if (t1 > tmin) tmin = t1;
+                if (t2 < tmax) tmax = t2;
+                if (tmin > tmax) return false;
+            }
+            return true;
+        };
+
+    if (!checkAxis(ox, dx, boxMin.x, boxMax.x)) return false;
+    if (!checkAxis(oy, dy, boxMin.y, boxMax.y)) return false;
+    if (!checkAxis(oz, dz, boxMin.z, boxMax.z)) return false;
+
+    if (tmin < 0.f)
+    {
+        // 박스 내부에서 시작
+        if (tmax < 0.f) return false;
+        _outT = tmax;
+    }
+    else
+    {
+        _outT = tmin;
+    }
+
+    outNormal = Vector3(0, 0, 0);
+
+    return true;
 }

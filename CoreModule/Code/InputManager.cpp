@@ -67,10 +67,14 @@ void GameEngine::InputManager::Update_Key(HWND _hwnd)
 		}
 	}
 
+#ifdef EDITOR
+
+#else
 	POINT mouse;
 	GetCursorPos(&mouse);
 	ScreenToClient(_hwnd, &mouse);
-	m_MousePos = Vector3{ static_cast<float>(mouse.x), static_cast<float>(mouse.y), 0.f};
+	m_MousePos = Vector3{ static_cast<float>(mouse.x), static_cast<float>(mouse.y), 0.f };
+#endif
 }
 
 void GameEngine::InputManager::Update_Editor(HWND _hwnd, const Vector3& _mousePos)

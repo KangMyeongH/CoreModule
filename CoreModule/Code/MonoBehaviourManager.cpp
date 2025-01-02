@@ -21,7 +21,7 @@ void GameEngine::MonoBehaviourManager::Update() const
 	{
 		if (monoBehaviour->Is_Enabled() && monoBehaviour->Get_GameObject()->Is_Active())
 		{
-			monoBehaviour->Fixed_Update();
+			monoBehaviour->Update();
 		}
 	}
 }
