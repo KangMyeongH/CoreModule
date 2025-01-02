@@ -84,6 +84,12 @@ namespace GameEngine
 				return component;
 			}
 
+			if (dynamic_cast<Light*>(component))
+			{
+				RenderManager::GetInstance().Add_Light(dynamic_cast<Light*>(component));
+				return component;
+			}
+
 			return component;
 		}
 

@@ -2,11 +2,13 @@
 #include <typeindex>
 
 #include "core_define.h"
+#include "Light.h"
 
 
 namespace GameEngine
 {
 	class Renderer;
+	class Light;
 
 	enum Buffer
 	{
@@ -53,6 +55,9 @@ namespace GameEngine
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
+		//임시
+		void Add_Light(Light* _light) {  _light->Ready_Light(m_Device); m_GlobalLight = _light;}
+
 		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
 		LPDIRECT3DPIXELSHADER9& Get_PixelShader(const std::wstring& _name);
 
@@ -69,6 +74,9 @@ namespace GameEngine
 		D3DXMATRIX 				m_ViewMat;
 		D3DXMATRIX 				m_ProjMat;
 		D3DLIGHT9 				m_DirLight;
+
+		//임시
+		Light* m_GlobalLight;
 
 
 		// 컴객체 주소를 해당하는 컴포넌트가 공유해서 사용

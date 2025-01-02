@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Scene.h"
 #include "TextureRenderer.h"
+#include "Light.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
@@ -78,7 +79,9 @@ void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 {
-	m_Device->SetRenderState(D3DRS_LIGHTING, false);
+	m_Device->SetRenderState(D3DRS_LIGHTING, true);
+
+
 	if (FAILED(_device->SetTransform(D3DTS_VIEW, &m_ViewMat)))
 	{
 		return;
@@ -86,6 +89,15 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 	if (FAILED(_device->SetTransform(D3DTS_PROJECTION, &m_ProjMat)))
 	{
 		return;
+	}
+
+	//임시
+	if (m_GlobalLight)
+	{
+		m_GlobalLight->Update_Light(_device);
+		m_GlobalLight->Ready_Light(_device); //test
+		_device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+		//_device->SetRenderState(D3DRS_SPECULARENABLE, true);
 	}
 
 	for (const auto& renderer : m_Renderers)
