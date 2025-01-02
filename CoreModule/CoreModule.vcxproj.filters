@@ -62,6 +62,21 @@
     <ClCompile Include="Code\Light.cpp">
       <Filter>Component\06. Light</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Collider.cpp">
+      <Filter>Component\07. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\BoxCollider.cpp">
+      <Filter>Component\07. Collider\BoxCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SphereCollider.cpp">
+      <Filter>Component\07. Collider\SphereCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\CollisionManager.cpp">
+      <Filter>Manager\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Collision.cpp">
+      <Filter>Component\07. Collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -146,6 +161,21 @@
     <ClInclude Include="Header\Light.h">
       <Filter>Component\06. Light</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Collider.h">
+      <Filter>Component\07. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\BoxCollider.h">
+      <Filter>Component\07. Collider\BoxCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\SphereCollider.h">
+      <Filter>Component\07. Collider\SphereCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\CollisionManager.h">
+      <Filter>Manager\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Collision.h">
+      <Filter>Component\07. Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -210,6 +240,18 @@
     </Filter>
     <Filter Include="Component\06. Light">
       <UniqueIdentifier>{899fefc0-63bd-438a-a2fb-e12f098efd81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\07. Collider">
+      <UniqueIdentifier>{032a88ec-3837-4490-83a9-d84786c9acb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\07. Collider\BoxCollider">
+      <UniqueIdentifier>{5410a811-be19-4e75-a551-ab97457a0594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\07. Collider\SphereCollider">
+      <UniqueIdentifier>{9694bc53-11b0-457a-ab0b-108cce19f5be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Collision">
+      <UniqueIdentifier>{18f08230-f348-40d7-a5cb-60e5249afe17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -2,7 +2,9 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "BoxCollider.h"
 #include "Collision.h"
+#include "CollisionManager.h"
 #include "Component.h"
 #include "Object.h"
 #include "Scene.h"
@@ -76,6 +78,12 @@ namespace GameEngine
 			if (dynamic_cast<Rigidbody*>(component))
 			{
 				PhysicsManager::GetInstance().Add_Rigidbody(dynamic_cast<Rigidbody*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<BoxCollider*>(component))
+			{
+				CollisionManager::GetInstance().Add_Collider(dynamic_cast<Collider*>(component));
 				return component;
 			}
 

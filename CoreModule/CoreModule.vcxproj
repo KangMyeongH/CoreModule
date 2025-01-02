@@ -137,13 +137,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Header\Behaviour.h" />
     <ClInclude Include="Header\BoxCollider.h" />
     <ClInclude Include="Header\Camera.h" />
     <ClInclude Include="Header\CameraManager.h" />
     <ClInclude Include="Header\Collider.h" />
     <ClInclude Include="Header\Collision.h" />
+    <ClInclude Include="Header\CollisionManager.h" />
     <ClInclude Include="Header\Component.h" />
     <ClInclude Include="Header\ComponentFactory.h" />
     <ClInclude Include="Header\ComponentRegistrar.h" />
@@ -177,6 +177,7 @@
     <ClCompile Include="Code\CameraManager.cpp" />
     <ClCompile Include="Code\Collider.cpp" />
     <ClCompile Include="Code\Collision.cpp" />
+    <ClCompile Include="Code\CollisionManager.cpp" />
     <ClCompile Include="Code\Component.cpp" />
     <ClCompile Include="Code\ComponentFactory.cpp" />
     <ClCompile Include="Code\Core.cpp" />
@@ -197,7 +198,6 @@
     <ClCompile Include="Code\TextureRenderer.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
     <ClCompile Include="Code\Transform.cpp" />
-    <ClCompile Include="CollisionManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

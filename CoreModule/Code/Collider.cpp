@@ -1,6 +1,6 @@
 #include "Collider.h"
 
-#include "../CollisionManager.h"
+#include "CollisionManager.h"
 
 void GameEngine::Collider::Destroy()
 {

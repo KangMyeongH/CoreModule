@@ -13,7 +13,10 @@ void GameEngine::Camera::Update_Camera(LPDIRECT3DDEVICE9 _device)
 	float pitch = D3DXToRadian(rotation.x);
 	float roll = D3DXToRadian(rotation.z);
 
-
+	D3DXQUATERNION quaternion;
+	D3DXQuaternionRotationYawPitchRoll(&quaternion, yaw, pitch, roll);
+	D3DXQuaternionNormalize(&quaternion, &quaternion);
+	D3DXMatrixRotationQuaternion(&matRot, &quaternion);
 
 	m_Target = Get_Transform().Get_LocalPosition() + Vector3(matRot._31, matRot._32, matRot._33);
 

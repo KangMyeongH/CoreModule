@@ -5,6 +5,7 @@
 #include "RenderManager.h"
 #include "TimeManager.h"
 #include "CameraManager.h"
+#include "CollisionManager.h"
 #include "InputManager.h"
 #include "Scene.h"
 
@@ -27,6 +28,7 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 _device, HWND _hwnd)
 	m_CameraManager = &CameraManager::GetInstance();
 	m_RenderManager = &RenderManager::GetInstance();
 	m_PhysicsManager = &PhysicsManager::GetInstance();
+	m_CollisionManager = &CollisionManager::GetInstance();
 	m_MonoBehaviourManager = &MonoBehaviourManager::GetInstance();
 
 	m_RenderManager->Initialize(m_Device);
@@ -37,6 +39,7 @@ void GameEngine::Core::Progress()
 	//m_RenderManager->RegisterForUpdate();
 	m_TimeManager->TimeUpdate();
 	m_PhysicsManager->Register_Rigidbody();
+	m_CollisionManager->Register_Collider();
 	m_RenderManager->Register_Renderer();
 
 	m_MonoBehaviourManager->Register_MonoBehaviour();
@@ -58,6 +61,7 @@ void GameEngine::Core::EditorProgress()
 {
 	m_TimeManager->TimeUpdate();
 	m_PhysicsManager->Register_Rigidbody();
+	m_CollisionManager->Register_Collider();
 	m_RenderManager->Register_Renderer();
 
 	m_MonoBehaviourManager->Register_MonoBehaviour();
@@ -103,6 +107,7 @@ void GameEngine::Core::on_Trigger()
 
 void GameEngine::Core::on_Collision()
 {
+	m_CollisionManager->Collider_Update();
 }
 
 void GameEngine::Core::update()
@@ -125,6 +130,7 @@ void GameEngine::Core::destroy()
 	m_Scene->Destroy_GameObject();
 	m_PhysicsManager->Destroy_Rigidbody();
 	m_RenderManager->Destroy_Renderer();
+	m_CollisionManager->Destroy_Collider();
 	m_MonoBehaviourManager->Destroy_MonoBehaviour();
 }
 

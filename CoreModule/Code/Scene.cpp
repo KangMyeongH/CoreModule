@@ -106,9 +106,21 @@ void GameEngine::Scene::Register_Component()
 					continue;
 				}
 
+				if (dynamic_cast<BoxCollider*>(component))
+				{
+					CollisionManager::GetInstance().Add_Collider(dynamic_cast<Collider*>(component));
+					continue;
+				}
+
 				if (dynamic_cast<Renderer*>(component))
 				{
 					RenderManager::GetInstance().Add_Renderer(dynamic_cast<Renderer*>(component));
+					continue;
+				}
+
+				if (dynamic_cast<Light*>(component))
+				{
+					RenderManager::GetInstance().Add_Light(dynamic_cast<Light*>(component));
 					continue;
 				}
 

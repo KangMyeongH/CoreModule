@@ -24,6 +24,8 @@ namespace GameEngine
 		void		Update_Collider() override;
 		Vector3 	Get_Center() const { return m_Center; }
 		void		Set_Center(const Vector3& _center) { m_Center = _center; }
+		Vector3		Get_Size() const { return m_Size; }
+		void		Set_Size(const Vector3& _size) { m_Size = _size; }
 
 		Vector3		Get_WorldMin() const { return m_WorldMin; }
 		Vector3		Get_WorldMax() const { return m_WorldMax; }

@@ -5,6 +5,11 @@
 
 namespace GameEngine
 {
+	class CollisionManager;
+}
+
+namespace GameEngine
+{
 	class InputManager;
 	class Scene;
 }
@@ -59,6 +64,7 @@ namespace GameEngine
 
 		InputManager* 			m_InputManager;
 		PhysicsManager* 		m_PhysicsManager;
+		CollisionManager* 		m_CollisionManager;
 		RenderManager* 			m_RenderManager;
 		MonoBehaviourManager*	m_MonoBehaviourManager;
 		TimeManager* 			m_TimeManager;
