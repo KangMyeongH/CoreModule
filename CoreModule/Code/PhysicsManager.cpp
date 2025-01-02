@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Rigidbody.h"
+#include "Collider.h"
 #include "Scene.h"
 
 IMPLEMENT_SINGLETON(GameEngine::PhysicsManager)
@@ -24,12 +25,12 @@ void GameEngine::PhysicsManager::Physics_Update(const float _deltaTime) const
 
 void GameEngine::PhysicsManager::Add_Rigidbody(Rigidbody* _rigidbody)
 {
-	m_RegisterQueue.push_back(_rigidbody);
+	m_RegisterRigidbodyQueue.push_back(_rigidbody);
 }
 
 void GameEngine::PhysicsManager::Remove_Rigidbody(Rigidbody* _rigidbody)
 {
-	for (auto& rb : m_DestroyQueue)
+	for (auto& rb : m_DestroyRigidbodyQueue)
 	{
 		if (rb == _rigidbody)
 		{
@@ -37,23 +38,23 @@ void GameEngine::PhysicsManager::Remove_Rigidbody(Rigidbody* _rigidbody)
 		}
 	}
 
-	m_DestroyQueue.push_back(_rigidbody);
+	m_DestroyRigidbodyQueue.push_back(_rigidbody);
 }
 
 void GameEngine::PhysicsManager::Register_Rigidbody()
 {
-	for (auto it = m_RegisterQueue.begin(); it != m_RegisterQueue.end();)
+	for (auto it = m_RegisterRigidbodyQueue.begin(); it != m_RegisterRigidbodyQueue.end();)
 	{
 		m_Rigidbodies.push_back(*it);
-		it = m_RegisterQueue.erase(it);
+		it = m_RegisterRigidbodyQueue.erase(it);
 	}
 
-	m_RegisterQueue.clear();
+	m_RegisterRigidbodyQueue.clear();
 }
 
 void GameEngine::PhysicsManager::Destroy_Rigidbody()
 {
-	for (auto& rb : m_DestroyQueue)
+	for (auto& rb : m_DestroyRigidbodyQueue)
 	{
 		GameObjectList* objList = Scene::GetInstance().Get_GameObjectList();
 		for (auto& gameObject : *objList)
@@ -69,7 +70,7 @@ void GameEngine::PhysicsManager::Destroy_Rigidbody()
 		m_Rigidbodies.erase(std::remove(m_Rigidbodies.begin(), m_Rigidbodies.end(), rb), m_Rigidbodies.end());
 	}
 
-	m_DestroyQueue.clear();
+	m_DestroyRigidbodyQueue.clear();
 }
 
 void GameEngine::PhysicsManager::Release()
@@ -79,12 +80,12 @@ void GameEngine::PhysicsManager::Release()
 		delete rb;
 	}
 
-	for (const auto& rb : m_RegisterQueue)
+	for (const auto& rb : m_RegisterRigidbodyQueue)
 	{
 		delete rb;
 	}
 
 	m_Rigidbodies.clear();
-	m_RegisterQueue.clear();
-	m_DestroyQueue.clear();
+	m_RegisterRigidbodyQueue.clear();
+	m_DestroyRigidbodyQueue.clear();
 }

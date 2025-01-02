@@ -1,5 +1,6 @@
 #pragma once
 #include "Behaviour.h"
+#include "Collision.h"
 
 namespace GameEngine
 {
@@ -20,9 +21,9 @@ namespace GameEngine
 		virtual void On_Destroy() {}
 		virtual void On_Disable() {}
 
-		//virtual void OnCollisionEnter(Collision _other) {}
-		//virtual void OnCollisionStay(Collision _other) {}
-		//virtual void OnCollisionExit(Collision _other) {}
+		virtual void On_CollisionEnter(Collision _other) {}
+		virtual void On_CollisionStay(Collision _other) {}
+		virtual void On_CollisionExit(Collision _other) {}
 
 		void Set_Enable(const bool _enabled) final
 		{

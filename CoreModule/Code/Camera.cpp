@@ -13,10 +13,7 @@ void GameEngine::Camera::Update_Camera(LPDIRECT3DDEVICE9 _device)
 	float pitch = D3DXToRadian(rotation.x);
 	float roll = D3DXToRadian(rotation.z);
 
-	D3DXQUATERNION quaternion;
-	D3DXQuaternionRotationYawPitchRoll(&quaternion, yaw, pitch, roll);
-	D3DXQuaternionNormalize(&quaternion, &quaternion);
-	D3DXMatrixRotationQuaternion(&matRot, &quaternion);
+
 
 	m_Target = Get_Transform().Get_LocalPosition() + Vector3(matRot._31, matRot._32, matRot._33);
 
@@ -27,7 +24,46 @@ void GameEngine::Camera::Update_Camera(LPDIRECT3DDEVICE9 _device)
 	D3DXMatrixPerspectiveFovLH(&projMat, fov, m_AspectRatio, m_NearPlane, m_FarPlane);
 
 	RenderManager::GetInstance().Set_ViewMat(viewMat);
+	m_ViewMat = viewMat;
 	RenderManager::GetInstance().Set_ProjMat(projMat);
+	m_ProjMat = projMat;
+}
+
+GameEngine::Ray GameEngine::Camera::ScreenPointToRay(const Vector3& _position)
+{
+	D3DVIEWPORT9 vp;
+	RenderManager::GetInstance().Get_Device()->GetViewport(&vp);
+
+	Vector3 nearPoint(_position.x, _position.y, 0.0f);
+	Vector3 farPoint(_position.x, _position.y, 1.0f);
+
+	Vector3 nearPointWorld, farPointWorld;
+	D3DXMATRIX identityWorld;
+	D3DXMatrixIdentity(&identityWorld);
+	D3DXVec3Unproject(
+		&nearPointWorld,
+		&nearPoint,
+		&vp,
+		&m_ProjMat,
+		&m_ViewMat,
+		&identityWorld
+	);
+	D3DXVec3Unproject(
+		&farPointWorld,
+		&farPoint,
+		&vp,
+		&m_ProjMat,
+		&m_ViewMat,
+		&identityWorld
+	);
+
+	Ray ray;
+	ray.Origin = nearPointWorld;
+	Vector3 dir = farPointWorld - nearPointWorld;
+	dir.Normalize();
+	ray.Direction = dir;
+
+	return ray;
 }
 
 void GameEngine::Camera::Destroy()

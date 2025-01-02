@@ -2,6 +2,7 @@
 #include <typeindex>
 #include <unordered_map>
 
+#include "Collision.h"
 #include "Component.h"
 #include "Object.h"
 #include "Scene.h"
@@ -151,6 +152,10 @@ namespace GameEngine
 		void Destroy() override;
 
 		Component_Map& Get_ComponentMap() { return m_ComponentMap; }
+
+		void On_CollisionEnter(Collision _other);
+		void On_CollisionStay(Collision _other);
+		void On_CollisionExit(Collision _other);
 
 		//======================================//
 		//			   static method			//

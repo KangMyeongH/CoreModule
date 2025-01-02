@@ -36,6 +36,9 @@ namespace GameEngine
 
 		void	Set_FarPlane(const float _far) { m_FarPlane = _far; }
 		float	Get_FatPlane() const { return m_FarPlane; }
+
+		Ray		ScreenPointToRay(const Vector3& _position);
+
 		void 	Destroy() override;
 		void 	to_json(nlohmann::ordered_json& _j) override;
 		void 	from_json(const nlohmann::ordered_json& _j) override;
@@ -43,6 +46,9 @@ namespace GameEngine
 		Component* Clone() const override;
 
 	private:
+		D3DXMATRIX m_ViewMat;
+		D3DXMATRIX m_ProjMat;
+
 		Vector3 m_Target;
 		Vector3 m_UP;
 

@@ -2,7 +2,7 @@
 
 IMPLEMENT_SINGLETON(GameEngine::InputManager)
 
-GameEngine::InputManager::InputManager(): m_MouseClientPos()
+GameEngine::InputManager::InputManager(): m_bEditor(false)
 {
 	memset(m_bKeyState, KEY_IDLE, sizeof(m_bKeyState));
 }
@@ -45,7 +45,7 @@ bool GameEngine::InputManager::Key_Up(const int _iKey) const
 	return false;
 }
 
-void GameEngine::InputManager::Update_Key()
+void GameEngine::InputManager::Update_Key(HWND _hwnd)
 {
 	for (int i = 0; i < VK_MAX; ++i)
 	{
@@ -66,4 +66,34 @@ void GameEngine::InputManager::Update_Key()
 				m_bKeyState[i] = KEY_IDLE;
 		}
 	}
+
+	POINT mouse;
+	GetCursorPos(&mouse);
+	ScreenToClient(_hwnd, &mouse);
+	m_MousePos = Vector3{ static_cast<float>(mouse.x), static_cast<float>(mouse.y), 0.f};
+}
+
+void GameEngine::InputManager::Update_Editor(HWND _hwnd, const Vector3& _mousePos)
+{
+	for (int i = 0; i < VK_MAX; ++i)
+	{
+		if (m_bKeyState[i] & (KEY_PRESSING | KEY_DOWN)) //이전에 눌린 적이 있을 때
+		{
+			if (GetAsyncKeyState(i) & 0x8000) //이번에 눌렸을 때
+				m_bKeyState[i] = KEY_PRESSING;
+
+			else //이번에 안 눌렸을 때
+				m_bKeyState[i] = KEY_UP;
+		}
+		else //이전에 눌린 적 없을 때
+		{
+			if (GetAsyncKeyState(i) & 0x8000) //이번에 눌렸을 때
+				m_bKeyState[i] = KEY_DOWN;
+
+			else //이번에 안 눌렸을 때
+				m_bKeyState[i] = KEY_IDLE;
+		}
+	}
+
+	m_MousePos = _mousePos;
 }

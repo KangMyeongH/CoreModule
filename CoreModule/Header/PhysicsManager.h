@@ -2,10 +2,9 @@
 
 #include "core_define.h"
 
-
-
 namespace GameEngine
 {
+	class Collider;
 	class Rigidbody;
 
 	class COREMODULE_API PhysicsManager
@@ -28,12 +27,13 @@ namespace GameEngine
 		void Remove_Rigidbody(Rigidbody* _rigidbody);
 		void Register_Rigidbody();
 		void Destroy_Rigidbody();
+
 		void Release();
 
 	private:
 		std::vector<Rigidbody*>		m_Rigidbodies;
-		std::list<Rigidbody*>		m_RegisterQueue;
-		std::list<Rigidbody*>		m_DestroyQueue;
+		std::list<Rigidbody*>		m_RegisterRigidbodyQueue;
+		std::list<Rigidbody*>		m_DestroyRigidbodyQueue;
 	};
 }
 

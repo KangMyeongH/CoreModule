@@ -1,9 +1,7 @@
 #pragma once
 #include <typeindex>
-
 #include "core_define.h"
 #include "Light.h"
-
 
 namespace GameEngine
 {
@@ -58,6 +56,7 @@ namespace GameEngine
 		//юс╫ц
 		void Add_Light(Light* _light) {  _light->Ready_Light(m_Device); m_GlobalLight = _light;}
 
+		LPDIRECT3DDEVICE9	Get_Device() const { return m_Device; }
 		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
 		LPDIRECT3DPIXELSHADER9& Get_PixelShader(const std::wstring& _name);
 
