@@ -176,6 +176,7 @@
     <ClInclude Include="Header\Collision.h">
       <Filter>Component\07. Collider</Filter>
     </ClInclude>
+    <ClInclude Include="Header\CoreModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

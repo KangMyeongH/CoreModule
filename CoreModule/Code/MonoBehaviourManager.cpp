@@ -49,20 +49,7 @@ void GameEngine::MonoBehaviourManager::On_Destroy() const
 
 GameEngine::MonoBehaviourManager::~MonoBehaviourManager()
 {
-	for (auto& mb : m_MonoBehaviours)
-	{
-		delete mb;
-	}
-
-	for (auto& mb : m_RegisterQueue)
-	{
-		delete mb;
-	}
-
-	for (auto& mb : m_DestroyQueue)
-	{
-		delete mb;
-	}
+	Release();
 }
 
 void GameEngine::MonoBehaviourManager::Release()
@@ -73,11 +60,6 @@ void GameEngine::MonoBehaviourManager::Release()
 	}
 
 	for (auto& mb : m_RegisterQueue)
-	{
-		delete mb;
-	}
-
-	for (auto& mb : m_DestroyQueue)
 	{
 		delete mb;
 	}

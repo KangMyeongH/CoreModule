@@ -148,6 +148,7 @@
     <ClInclude Include="Header\ComponentFactory.h" />
     <ClInclude Include="Header\ComponentRegistrar.h" />
     <ClInclude Include="Header\Core.h" />
+    <ClInclude Include="Header\CoreModule.h" />
     <ClInclude Include="Header\core_define.h" />
     <ClInclude Include="Header\core_include.h" />
     <ClInclude Include="Header\core_math.h" />
