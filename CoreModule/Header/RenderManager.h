@@ -17,6 +17,7 @@ namespace GameEngine
 
 	using Buffer_Map = std::unordered_map<GameEngine::Buffer, std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9>>;
 	using Texture_Map = std::unordered_map<std::wstring, LPDIRECT3DTEXTURE9>;
+	using MultiTexture_Map = std::unordered_map<std::wstring, std::vector<LPDIRECT3DTEXTURE9>>;
 	using PixelShader_Map = std::unordered_map<std::wstring, LPDIRECT3DPIXELSHADER9>;
 
 
@@ -43,6 +44,7 @@ namespace GameEngine
 		void Render_End(LPDIRECT3DDEVICE9 _device);
 		void Add_Renderer(Renderer* _renderer);
 		void Add_Texture(const std::wstring& _path);
+		int	 Add_MultiTexture(const std::wstring& _path);
 		void Add_PixelShader(const std::wstring& _name, const std::wstring& _path);
 		void Remove_Renderer(Renderer* _renderer);
 		void Register_Renderer();
@@ -58,6 +60,7 @@ namespace GameEngine
 
 		LPDIRECT3DDEVICE9	Get_Device() const { return m_Device; }
 		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
+		std::vector<LPDIRECT3DTEXTURE9>* Get_MultiTexture(const std::wstring& _path);
 		LPDIRECT3DPIXELSHADER9& Get_PixelShader(const std::wstring& _name);
 
 	private:
@@ -68,6 +71,7 @@ namespace GameEngine
 		std::list<Renderer*> 	m_DestroyQueue;
 		Buffer_Map				m_BufferMap;
 		Texture_Map				m_TextureMap;
+		MultiTexture_Map		m_MultiTextureMap;
 		PixelShader_Map			m_PixelShaderMap;
 
 		D3DXMATRIX 				m_ViewMat;

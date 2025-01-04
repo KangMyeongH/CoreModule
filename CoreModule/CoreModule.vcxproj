@@ -160,6 +160,7 @@
     <ClInclude Include="Header\Light.h" />
     <ClInclude Include="Header\MonoBehaviour.h" />
     <ClInclude Include="Header\MonoBehaviourManager.h" />
+    <ClInclude Include="Header\MultiTextureRenderer.h" />
     <ClInclude Include="Header\Object.h" />
     <ClInclude Include="Header\PhysicsManager.h" />
     <ClInclude Include="Header\Renderer.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="Code\Light.cpp" />
     <ClCompile Include="Code\MonoBehaviour.cpp" />
     <ClCompile Include="Code\MonoBehaviourManager.cpp" />
+    <ClCompile Include="Code\MultiTextureRenderer.cpp" />
     <ClCompile Include="Code\Object.cpp" />
     <ClCompile Include="Code\PhysicsManager.cpp" />
     <ClCompile Include="Code\Renderer.cpp" />

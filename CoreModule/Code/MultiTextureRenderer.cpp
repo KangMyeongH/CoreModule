@@ -1,9 +1,6 @@
-#include "TextureRenderer.h"
+#include "MultiTextureRenderer.h"
 
-#include "GameObject.h"
-#include "Transform.h"
-
-void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
+void GameEngine::MultiTextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
 	m_TriangleCnt = 2;
 	m_VertexCnt = 4;
@@ -66,7 +63,7 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	m_IndexBuffer->Unlock();
 }
 
-void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
+void GameEngine::MultiTextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
 	//Render State 설정
 	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
@@ -75,23 +72,28 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//texture 세팅
-	_device->SetTexture(0, m_Texture);
+	_device->SetTexture(0, (*m_Texture)[m_Frame]);
 
 	Render_Buffer(_device);
 
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
 }
 
-//
-//void GameEngine::TextureRenderer::Get_Texture(LPDIRECT3DTEXTURE9& _texture) const
-//{
-//	_texture = m_Texture;
-//}
-//
-//
-//void GameEngine::TextureRenderer::Set_Texture(const LPDIRECT3DTEXTURE9& _texture)
-//{
-//	m_Texture = _texture;
-//}
+bool GameEngine::MultiTextureRenderer::Set_Frame(const std::wstring& _path, int _frame)
+{
 
+	if (m_Path != _path)
+		m_Texture = RenderManager::GetInstance().Get_MultiTexture(_path);
+
+	m_Path = _path;
+
+	if (!m_Texture)
+		return false;
+
+	if (_frame < 0 || _frame >= m_Texture->size())
+		return false;
+
+	m_Frame = _frame;
+
+	return true;
+}

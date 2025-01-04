@@ -195,6 +195,59 @@ void GameEngine::RenderManager::Add_Texture(const std::wstring& _path)
 	}
 }
 
+//실패하면 0 반환, 성공하면 이미지 파일 개수 반환
+int GameEngine::RenderManager::Add_MultiTexture(const std::wstring& _path)
+{
+	auto iter = m_MultiTextureMap.find(_path);
+	if (iter != m_MultiTextureMap.end())
+		return iter->second.size();
+
+	//경로에서 이미지 파일 불러오기
+	std::wstring searchPath = _path + L"/*.*"; // 모든 파일 검색
+	WIN32_FIND_DATA findFileData;
+	HANDLE hFind = FindFirstFile(searchPath.c_str(), &findFileData);
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		return 0;
+	}
+
+	LPDIRECT3DTEXTURE9 texture = nullptr;
+	int fileCnt = 0;
+
+	do {
+		// 파일인지 확인
+		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+			// 파일명 추출
+			std::wstring fileName = findFileData.cFileName;
+			std::wstring imagePath = _path + L"/" + fileName;
+			
+			// 확장자 검사
+			std::wstring::size_type dotPos = fileName.find_last_of(L'.');
+			if (dotPos != std::wstring::npos) {
+				std::wstring extension = fileName.substr(dotPos + 1);
+				if (extension == L"png" || extension == L"jpg" || extension == L"jpeg" || extension == L"bmp")
+				{
+					//image 파일을 찾으면
+					if (E_FAIL != D3DXCreateTextureFromFile(m_Device, imagePath.c_str(), &texture))
+					{
+						m_MultiTextureMap[_path].push_back(texture);
+						fileCnt++;
+					}
+					else
+					{
+						return 0;
+					}
+				}
+			}
+		}
+	} while (FindNextFile(hFind, &findFileData) != 0);
+
+	//파일 순차적으로 안읽어오면 path vector 만들고 정렬 -> 정렬된 순서대로 texture 만들어서 삽입
+
+	FindClose(hFind);
+	return fileCnt;
+}
+
 void GameEngine::RenderManager::Add_PixelShader(const std::wstring& _name, const std::wstring& _path)
 {
 	LPD3DXBUFFER shaderBuffer = nullptr;
@@ -301,11 +354,21 @@ LPDIRECT3DTEXTURE9* GameEngine::RenderManager::Get_Texture(const std::wstring& _
 
 	if (iter == m_TextureMap.end())
 		return nullptr;
-	else
-		return &(m_TextureMap.find(_path)->second);
+
+	return &(iter->second);
 }
 
 LPDIRECT3DPIXELSHADER9& GameEngine::RenderManager::Get_PixelShader(const std::wstring& _name)
 {
 	return m_PixelShaderMap.find(_name)->second;
+}
+
+std::vector<LPDIRECT3DTEXTURE9>* GameEngine::RenderManager::Get_MultiTexture(const std::wstring& _path)
+{
+	auto iter = m_MultiTextureMap.find(_path);
+
+	if (iter == m_MultiTextureMap.end())
+		return nullptr;
+	
+	return &(iter->second);
 }

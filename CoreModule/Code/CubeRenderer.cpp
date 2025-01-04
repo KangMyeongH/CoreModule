@@ -17,15 +17,15 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 		m_FVF,
 		D3DPOOL_MANAGED,
 		&m_VertexBuffer,
-	nullptr))
+		nullptr))
 		return;
 
-	if(E_FAIL == _device->CreateIndexBuffer(m_TriangleCnt * indexSize,
-		0,						
-		D3DFMT_INDEX16,			
+	if (E_FAIL == _device->CreateIndexBuffer(m_TriangleCnt * indexSize,
+		0,
+		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
 		&m_IndexBuffer,
-	nullptr))
+		nullptr))
 		return;
 
 	VTXCUBE* pVertex = nullptr;
@@ -34,22 +34,22 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 	//normal vector 추가 전 vertex setting
 	// 전면
-	pVertex[0].Position = Vector3{ -1.f, -1.f, -1.f };
-	pVertex[1].Position = Vector3{ 1.f, -1.f, -1.f };
-	pVertex[2].Position = Vector3{ 1.f, 1.f, -1.f };
-	pVertex[3].Position = Vector3{ -1.f, 1.f, -1.f };
+	pVertex[0].Position = Vector3{ -0.5f, -0.5f, -0.5f };
+	pVertex[1].Position = Vector3{ 0.5f, -0.5f, -0.5f };
+	pVertex[2].Position = Vector3{ 0.5f, 0.5f, -0.5f };
+	pVertex[3].Position = Vector3{ -0.5f, 0.5f, -0.5f };
 
-	pVertex[0].Normal = Vector3{0.f, 0.f, -1.f};
+	pVertex[0].Normal = Vector3{ 0.f, 0.f, -1.f };
 	pVertex[1].Normal = Vector3{ 0.f, 0.f, -1.f };
 	pVertex[2].Normal = Vector3{ 0.f, 0.f, -1.f };
 	pVertex[3].Normal = Vector3{ 0.f, 0.f, -1.f };
 
 
 	// 후면
-	pVertex[4].Position = Vector3{ 1.f, -1.f, 1.f };
-	pVertex[5].Position = Vector3{ -1.f, -1.f, 1.f };
-	pVertex[6].Position = Vector3{ -1.f, 1.f, 1.f };
-	pVertex[7].Position = Vector3{ 1.f, 1.f, 1.f };
+	pVertex[4].Position = Vector3{ 0.5f, -0.5f, 0.5f };
+	pVertex[5].Position = Vector3{ -0.5f, -0.5f, 0.5f };
+	pVertex[6].Position = Vector3{ -0.5f, 0.5f, 0.5f };
+	pVertex[7].Position = Vector3{ 0.5f, 0.5f, 0.5f };
 
 	pVertex[4].Normal = Vector3{ 0.f, 0.f, 1.f };
 	pVertex[5].Normal = Vector3{ 0.f, 0.f, 1.f };
@@ -57,10 +57,10 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pVertex[7].Normal = Vector3{ 0.f, 0.f, 1.f };
 
 	// 좌측
-	pVertex[8].Position = Vector3{ -1.f, -1.f, 1.f };
-	pVertex[9].Position = Vector3{ -1.f, -1.f, -1.f };
-	pVertex[10].Position = Vector3{ -1.f, 1.f, -1.f };
-	pVertex[11].Position = Vector3{ -1.f, 1.f, 1.f };
+	pVertex[8].Position = Vector3{ -0.5f, -0.5f, 0.5f };
+	pVertex[9].Position = Vector3{ -0.5f, -0.5f, -0.5f };
+	pVertex[10].Position = Vector3{ -0.5f, 0.5f, -0.5f };
+	pVertex[11].Position = Vector3{ -0.5f, 0.5f, 0.5f };
 
 	pVertex[8].Normal = Vector3{ -1.f, 0.f, 0.f };
 	pVertex[9].Normal = Vector3{ -1.f, 0.f, 0.f };
@@ -68,10 +68,10 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pVertex[11].Normal = Vector3{ -1.f, 0.f, 0.f };
 
 	// 우측
-	pVertex[12].Position = Vector3{ 1.f, -1.f, -1.f };
-	pVertex[13].Position = Vector3{ 1.f, -1.f, 1.f };
-	pVertex[14].Position = Vector3{ 1.f, 1.f, 1.f };
-	pVertex[15].Position = Vector3{ 1.f, 1.f, -1.f };
+	pVertex[12].Position = Vector3{ 0.5f, -0.5f, -0.5f };
+	pVertex[13].Position = Vector3{ 0.5f, -0.5f, 0.5f };
+	pVertex[14].Position = Vector3{ 0.5f, 0.5f, 0.5f };
+	pVertex[15].Position = Vector3{ 0.5f, 0.5f, -0.5f };
 
 	pVertex[12].Normal = Vector3{ 1.f, 0.f, 0.f };
 	pVertex[13].Normal = Vector3{ 1.f, 0.f, 0.f };
@@ -79,10 +79,10 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pVertex[15].Normal = Vector3{ 1.f, 0.f, 0.f };
 
 	// 상
-	pVertex[16].Position = Vector3{ -1.f, 1.f, -1.f };
-	pVertex[17].Position = Vector3{ 1.f, 1.f, -1.f };
-	pVertex[18].Position = Vector3{ 1.f, 1.f, 1.f };
-	pVertex[19].Position = Vector3{ -1.f, 1.f, 1.f };
+	pVertex[16].Position = Vector3{ -0.5f, 0.5f, -0.5f };
+	pVertex[17].Position = Vector3{ 0.5f, 0.5f, -0.5f };
+	pVertex[18].Position = Vector3{ 0.5f, 0.5f, 0.5f };
+	pVertex[19].Position = Vector3{ -0.5f, 0.5f, 0.5f };
 
 	pVertex[16].Normal = Vector3{ 0.f, 1.f, 0.f };
 	pVertex[17].Normal = Vector3{ 0.f, 1.f, 0.f };
@@ -90,17 +90,18 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pVertex[19].Normal = Vector3{ 0.f, 1.f, 0.f };
 
 	// 하
-	pVertex[20].Position = Vector3{ -1.f, -1.f, 1.f };
-	pVertex[21].Position = Vector3{ 1.f, -1.f, 1.f };
-	pVertex[22].Position = Vector3{ 1.f, -1.f, -1.f };
-	pVertex[23].Position = Vector3{ -1.f, -1.f, -1.f };
+	pVertex[20].Position = Vector3{ -0.5f, -0.5f, 0.5f };
+	pVertex[21].Position = Vector3{ 0.5f, -0.5f, 0.5f };
+	pVertex[22].Position = Vector3{ 0.5f, -0.5f, -0.5f };
+	pVertex[23].Position = Vector3{ -0.5f, -0.5f, -0.5f };
 
-	pVertex[20].Position = Vector3{ 0.f, -1.f, 0.f };
-	pVertex[21].Position = Vector3{ 0.f, -1.f, 0.f };
-	pVertex[22].Position = Vector3{ 0.f, -1.f, 0.f };
-	pVertex[23].Position = Vector3{ 0.f, -1.f, 0.f };
-	
-	
+	pVertex[20].Normal = Vector3{ 0.f, -1.f, 0.f };
+	pVertex[21].Normal = Vector3{ 0.f, -1.f, 0.f };
+	pVertex[22].Normal = Vector3{ 0.f, -1.f, 0.f };
+	pVertex[23].Normal = Vector3{ 0.f, -1.f, 0.f };
+
+
+
 	for (UINT i = 0; i < m_VertexCnt; i++)
 	{
 		pVertex[i].Color = D3DXCOLOR(1.f, 0.f, 0.f, 1.f);
