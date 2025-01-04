@@ -53,6 +53,8 @@ namespace GameEngine
 			return new SphereCollider(*this);
 		}
 
+		void Debug_Draw(LPDIRECT3DDEVICE9 _device, DWORD _color) override {}
+
 	private:
 		Vector3 m_Center;
 		float	m_Radius;

@@ -65,5 +65,13 @@ namespace GameEngine
 		Vector3 AxisZ;
 		Vector3 Extents;
 	};
+
+	struct DebugVertex
+	{
+		float x, y, z;
+		DWORD color;
+	};
+	// FVF
+#define DEBUG_FVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 }
 

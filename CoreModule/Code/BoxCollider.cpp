@@ -177,3 +177,53 @@ bool GameEngine::BoxCollider::Check_SphereCollision(SphereCollider* _other, Vect
 {
 	return false;
 }
+
+void GameEngine::BoxCollider::Debug_Draw(LPDIRECT3DDEVICE9 _device, DWORD _color)
+{
+	// 1) 8개 코너 계산
+	Vector3 c = m_OBB.Center;
+	Vector3 ax = m_OBB.AxisX * m_OBB.Extents.x;
+	Vector3 ay = m_OBB.AxisY * m_OBB.Extents.y;
+	Vector3 az = m_OBB.AxisZ * m_OBB.Extents.z;
+
+	Vector3 corners[8];
+	corners[0] = c - ax - ay - az;
+	corners[1] = c + ax - ay - az;
+	corners[2] = c - ax + ay - az;
+	corners[3] = c + ax + ay - az;
+	corners[4] = c - ax - ay + az;
+	corners[5] = c + ax - ay + az;
+	corners[6] = c - ax + ay + az;
+	corners[7] = c + ax + ay + az;
+
+	// 2) LineList 정점 배열(12개 모서리 x 2 = 24정점)
+	DebugVertex lines[24];
+
+	// 람다로 간단히 추가
+	auto AddLine = [&](int index, int i0, int i1) {
+		lines[index * 2 + 0] = { corners[i0].x, corners[i0].y, corners[i0].z, _color };
+		lines[index * 2 + 1] = { corners[i1].x, corners[i1].y, corners[i1].z, _color };
+		};
+
+	// 아래 면
+	AddLine(0, 0, 1);   AddLine(1, 1, 3);
+	AddLine(2, 3, 2);   AddLine(3, 2, 0);
+
+	// 위 면
+	AddLine(4, 4, 5);   AddLine(5, 5, 7);
+	AddLine(6, 7, 6);   AddLine(7, 6, 4);
+
+	// 옆면 연결
+	AddLine(8, 0, 4);  AddLine(9, 1, 5);
+	AddLine(10, 2, 6);  AddLine(11, 3, 7);
+
+	// 3) DirectX9로 선 그리기
+	_device->SetFVF(DEBUG_FVF);
+	// LineList => PrimitiveCount=12
+	_device->DrawPrimitiveUP(
+		D3DPT_LINELIST, // 라인 리스트
+		12,             // 12개 선
+		lines,
+		sizeof(DebugVertex)
+	);
+}
