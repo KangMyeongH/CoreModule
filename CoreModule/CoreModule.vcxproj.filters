@@ -77,6 +77,9 @@
     <ClCompile Include="Code\Collision.cpp">
       <Filter>Component\07. Collider</Filter>
     </ClCompile>
+    <ClCompile Include="Code\MultiTextureRenderer.cpp">
+      <Filter>Component\03. Renderer\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -177,6 +180,9 @@
       <Filter>Component\07. Collider</Filter>
     </ClInclude>
     <ClInclude Include="Header\CoreModule.h" />
+    <ClInclude Include="Header\MultiTextureRenderer.h">
+      <Filter>Component\03. Renderer\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
