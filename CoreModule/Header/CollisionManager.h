@@ -59,6 +59,7 @@ namespace GameEngine
 		//======================================//
 
 		void Collider_Update();
+		void Debug_Collider(LPDIRECT3DDEVICE9 _device, DWORD _color);
 		void Add_Collider(Collider* _collider);
 		void Remove_Collider(Collider* _collider);
 		void Register_Collider();

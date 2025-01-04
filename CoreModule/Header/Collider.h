@@ -30,6 +30,8 @@ namespace GameEngine
 		void 			from_json(const nlohmann::ordered_json& _j) override = 0;
 		Component* 		Clone() const override = 0;
 
+        virtual void    Debug_Draw(LPDIRECT3DDEVICE9 _device, DWORD _color) = 0;
+
 	protected:
         ColliderType 	m_Type;
         bool            m_bTrigger;

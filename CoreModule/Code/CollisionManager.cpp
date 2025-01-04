@@ -33,6 +33,17 @@ void GameEngine::CollisionManager::Collider_Update()
     narrowPhase_OBB(potentialPairs);
 }
 
+void GameEngine::CollisionManager::Debug_Collider(LPDIRECT3DDEVICE9 _device, DWORD _color)
+{
+    for (auto& col : m_Colliders)
+    {
+        if (col->Get_GameObject()->Is_Active() && col->Is_Enabled())
+        {
+            col->Debug_Draw(_device, _color);
+        }
+    }
+}
+
 void GameEngine::CollisionManager::Add_Collider(Collider* _collider)
 {
 	m_RegisterQueue.push_back(_collider);
@@ -129,6 +140,9 @@ bool GameEngine::CollisionManager::RayCast(const Ray& _ray, RayHit& _outHit, con
 
         for (auto col : m_Colliders)
         {
+            if (!col->Is_Enabled() || !col->Get_GameObject()->Is_Active())
+                continue;
+
             // 레이어 체크
             // TODO : 지금은 미구현, 최적화가 필요하거나 기능이 필요할 때 구현할 것
             // if (!CheckLayerMask(col->Get_Layer(), layerMask))

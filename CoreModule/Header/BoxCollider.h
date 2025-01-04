@@ -68,7 +68,9 @@ namespace GameEngine
 			return new BoxCollider(*this);
 	    }
 
-    private:
+		void Debug_Draw(LPDIRECT3DDEVICE9 _device, DWORD _color) override;
+
+	private:
 		OBB			m_OBB;
 		Vector3 	m_Center;
 		Vector3 	m_Size;
