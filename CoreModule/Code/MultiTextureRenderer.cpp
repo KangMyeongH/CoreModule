@@ -79,12 +79,13 @@ void GameEngine::MultiTextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
-bool GameEngine::MultiTextureRenderer::Set_Frame(std::wstring& _path, int _frame)
+bool GameEngine::MultiTextureRenderer::Set_Frame(const std::wstring& _path, int _frame)
 {
-	m_Path = _path;
 
 	if (m_Path != _path)
 		m_Texture = RenderManager::GetInstance().Get_MultiTexture(_path);
+
+	m_Path = _path;
 
 	if (!m_Texture)
 		return false;

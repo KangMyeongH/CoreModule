@@ -56,12 +56,12 @@ namespace GameEngine
 		//화면에 출력
 		void Render(LPDIRECT3DDEVICE9 _device) override;
 
-		bool Set_Frame(std::wstring& _path, int _frame);
+		bool Set_Frame(const std::wstring& _path, int _frame);
 
 
 		//Texture 초기화, 실패 시 0 반환, 성공 시 불러들인 파일 수를 반환
 		//static 함수라서 loading에서도 호출 가능
-		static int Ready_Texture(std::wstring& _path)
+		int Ready_Texture(std::wstring& _path)
 		{
 			return RenderManager::GetInstance().Add_MultiTexture(_path);
 		}

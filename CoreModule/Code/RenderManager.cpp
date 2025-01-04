@@ -219,7 +219,8 @@ int GameEngine::RenderManager::Add_MultiTexture(const std::wstring& _path)
 		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
 			// 파일명 추출
 			std::wstring fileName = findFileData.cFileName;
-
+			std::wstring imagePath = _path + L"/" + fileName;
+			
 			// 확장자 검사
 			std::wstring::size_type dotPos = fileName.find_last_of(L'.');
 			if (dotPos != std::wstring::npos) {
@@ -227,7 +228,7 @@ int GameEngine::RenderManager::Add_MultiTexture(const std::wstring& _path)
 				if (extension == L"png" || extension == L"jpg" || extension == L"jpeg" || extension == L"bmp")
 				{
 					//image 파일을 찾으면
-					if (E_FAIL != D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture))
+					if (E_FAIL != D3DXCreateTextureFromFile(m_Device, imagePath.c_str(), &texture))
 					{
 						m_MultiTextureMap[_path].push_back(texture);
 						fileCnt++;
