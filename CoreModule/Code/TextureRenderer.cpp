@@ -31,19 +31,19 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	VTXTEX* pVertex = nullptr;
 	m_VertexBuffer->Lock(0, 0, (void**)&pVertex, 0);
 
-	pVertex[0].Position = Vector3{ -1.f, 1.f, 0.f };
+	pVertex[0].Position = Vector3{ -0.5f, 0.5f, 0.f };
 	pVertex[0].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[0].TextureUV = Vector2{ 0.f, 0.f };
 
-	pVertex[1].Position = Vector3{ 1.f, 1.f, 0.f };
+	pVertex[1].Position = Vector3{ 0.5f, 0.5f, 0.f };
 	pVertex[1].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[1].TextureUV = Vector2{ 1.f, 0.f };
 
-	pVertex[2].Position = Vector3{ 1.f, -1.f, 0.f };
+	pVertex[2].Position = Vector3{ 0.5f, -0.5f, 0.f };
 	pVertex[2].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[2].TextureUV = Vector2{ 1.f, 1.f };
 
-	pVertex[3].Position = Vector3{ -1.f, -1.f, 0.f };
+	pVertex[3].Position = Vector3{ -0.5f, -0.5f, 0.f };
 	pVertex[3].Normal = Vector3{ 0.0f, 0.0f, 1.0f };
 	pVertex[3].TextureUV = Vector2{ 0.f, 1.f };
 
