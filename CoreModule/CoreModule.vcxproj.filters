@@ -77,6 +77,7 @@
     <ClCompile Include="Code\Collision.cpp">
       <Filter>Component\07. Collider</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Spine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -177,6 +178,7 @@
       <Filter>Component\07. Collider</Filter>
     </ClInclude>
     <ClInclude Include="Header\CoreModule.h" />
+    <ClInclude Include="Header\Spine.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
