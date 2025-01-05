@@ -118,6 +118,10 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(OutDir)*.dll" "$(SolutionDir)CoreModule\Header\"  /Y
+xcopy "$(OutDir)*.lib" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

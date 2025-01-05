@@ -68,6 +68,9 @@ namespace GameEngine
 			else return false;
 		}
 
+		std::wstring Get_Path() const { return m_Path; }
+		void Set_Path(const std::wstring& _path) { m_Path = _path; }
+
 		Component* Clone() const override
 		{
 			return new TextureRenderer(*this);

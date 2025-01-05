@@ -66,6 +66,9 @@ namespace GameEngine
 			return RenderManager::GetInstance().Add_MultiTexture(_path);
 		}
 
+		std::wstring Get_Path() const { return m_Path; }
+		void Set_Path(const std::wstring& _path) { m_Path = _path; }
+
 		Component* Clone() const override
 		{
 			return new MultiTextureRenderer(*this);
