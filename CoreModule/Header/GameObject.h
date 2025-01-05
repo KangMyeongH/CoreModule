@@ -81,7 +81,7 @@ namespace GameEngine
 				return component;
 			}
 
-			if (dynamic_cast<BoxCollider*>(component))
+			if (dynamic_cast<Collider*>(component))
 			{
 				CollisionManager::GetInstance().Add_Collider(dynamic_cast<Collider*>(component));
 				return component;

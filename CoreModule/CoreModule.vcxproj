@@ -159,6 +159,7 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\core_struct.h" />
     <ClInclude Include="Header\core_types.h" />
     <ClInclude Include="Header\CubeRenderer.h" />
+    <ClInclude Include="Header\FileManager.h" />
     <ClInclude Include="Header\GameObject.h" />
     <ClInclude Include="Header\InputManager.h" />
     <ClInclude Include="Header\Light.h" />
@@ -188,6 +189,7 @@ xcopy "$(OutDir)*.lib" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\ComponentFactory.cpp" />
     <ClCompile Include="Code\Core.cpp" />
     <ClCompile Include="Code\CubeRenderer.cpp" />
+    <ClCompile Include="Code\FileManager.cpp" />
     <ClCompile Include="Code\GameObject.cpp" />
     <ClCompile Include="Code\InputManager.cpp" />
     <ClCompile Include="Code\Light.cpp" />

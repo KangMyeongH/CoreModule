@@ -69,6 +69,7 @@ namespace GameEngine
 		std::vector<Renderer*> 	m_Renderers;
 		std::list<Renderer*> 	m_RegisterQueue;
 		std::list<Renderer*> 	m_DestroyQueue;
+
 		Buffer_Map				m_BufferMap;
 		Texture_Map				m_TextureMap;
 		MultiTexture_Map		m_MultiTextureMap;

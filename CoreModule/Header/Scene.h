@@ -43,6 +43,7 @@ namespace GameEngine
 
 		// GameObject management
 		GameObject* 		Add_GameObject();
+		GameObject* 		Add_GameObject(const std::string& _name);
 		GameObjectList* 	Get_GameObjectList();
 		GameObject* 		Find(const std::string& _name);
 

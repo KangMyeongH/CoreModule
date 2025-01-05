@@ -56,6 +56,14 @@ GameEngine::GameObject* GameEngine::Scene::Add_GameObject()
 	return newGameObject;
 }
 
+GameEngine::GameObject* GameEngine::Scene::Add_GameObject(const std::string& _name)
+{
+	GameObject* newGameObject = new GameObject();
+	m_GameObjects.push_back(newGameObject);
+	newGameObject->Set_Name(_name);
+	return newGameObject;
+}
+
 GameEngine::GameObjectList* GameEngine::Scene::Get_GameObjectList()
 {
 	return &m_GameObjects;

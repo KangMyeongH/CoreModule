@@ -80,6 +80,9 @@
     <ClCompile Include="Code\MultiTextureRenderer.cpp">
       <Filter>Component\03. Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Code\FileManager.cpp">
+      <Filter>Manager\File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="Header\MultiTextureRenderer.h">
       <Filter>Component\03. Renderer\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Header\FileManager.h">
+      <Filter>Manager\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -259,6 +265,9 @@
     </Filter>
     <Filter Include="Manager\Collision">
       <UniqueIdentifier>{18f08230-f348-40d7-a5cb-60e5249afe17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\File">
+      <UniqueIdentifier>{7cdd669d-17bc-40e1-8048-ee7593976210}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

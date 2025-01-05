@@ -72,6 +72,28 @@ namespace GameEngine
 		DWORD color;
 	};
 	// FVF
+
+	struct DirectoryTreeNode
+	{
+		std::wstring 	Name;
+		bool 			IsDirectory;
+		std::wstring 	Path;
+
+		std::vector<DirectoryTreeNode*> Children;
+
+		DirectoryTreeNode(std::wstring _name, const bool _isDirectory, const std::wstring& _parentPath = L"")
+			: Name(std::move(_name)), IsDirectory(_isDirectory)
+		{
+			Path = _parentPath.empty() ? Name : _parentPath + L"\\" + Name;
+		}
+
+		~DirectoryTreeNode()
+		{
+			for (const DirectoryTreeNode* child : Children)
+				delete child;
+		}
+	};
+
 #define DEBUG_FVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 }
 
