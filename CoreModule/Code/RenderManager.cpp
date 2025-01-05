@@ -12,8 +12,6 @@ void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 {
 	m_Device = _device;
 	_device->AddRef();
-
-
 }
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
@@ -90,14 +88,43 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 		return;
 	}
 
+	// Light Setting
 	m_Device->SetRenderState(D3DRS_LIGHTING, true);
 
-	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	//임시
+	if (m_GlobalLight)
+	{
+		m_GlobalLight->Update_Light(_device);
+		m_GlobalLight->Ready_Light(_device); //test
+		_device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+		//_device->SetRenderState(D3DRS_SPECULARENABLE, true);
+	}
 
+	m_Device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+
+	//불투명 객체 렌더
+	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 알파 블렌딩 활성화
+	m_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);   // 알파 테스트 활성화
+	m_Device->SetRenderState(D3DRS_ALPHAREF, 128);          // 알파값 128 기준
+	m_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);     // Z 버퍼 쓰기 활성화
+
+	for (const auto& renderer : m_Renderers[0])
+	{
+		if (renderer->Is_Enabled() && renderer->Get_GameObject()->Is_Active())
+		{
+			renderer->Render(_device);
+		}
+	}
+
+	//반투명 객체 렌더
+	m_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);  // 알파 테스트 비활성화
+	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE); // 알파 블렌딩 활성화
 	m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);     // Z 버퍼 쓰기 비활성화
 
-	std::sort(m_Renderers.begin(), m_Renderers.end(), [&_device](Renderer* dst, Renderer* src)->bool
+	std::sort(m_Renderers[1].begin(), m_Renderers[1].end(), [&_device](Renderer* dst, Renderer* src)->bool
 		{
 			D3DXMATRIX matCameraWorld;
 
@@ -110,22 +137,14 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 			Vector3 dstZ = cameraPosition - dst->Get_Transform().Position();
 			Vector3	srcZ = cameraPosition - src->Get_Transform().Position();
 
-			D3DXVec3Length(&dstZ);
-			D3DXVec3Length(&srcZ);
+			float dstLength = D3DXVec3Length(&dstZ);
+			float srcLength = D3DXVec3Length(&srcZ);
 
-			return dstZ > srcZ;
+			return dstLength > srcLength;
 		});
 
-	//임시
-	if (m_GlobalLight)
-	{
-		m_GlobalLight->Update_Light(_device);
-		m_GlobalLight->Ready_Light(_device); //test
-		_device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
-		//_device->SetRenderState(D3DRS_SPECULARENABLE, true);
-	}
-
-	for (const auto& renderer : m_Renderers)
+	
+	for (const auto& renderer : m_Renderers[1])
 	{
 		if (renderer->Is_Enabled() && renderer->Get_GameObject()->Is_Active())
 		{
@@ -281,7 +300,10 @@ void GameEngine::RenderManager::Register_Renderer()
 
 		if (renderer->Is_Enabled())
 		{
-			m_Renderers.push_back(renderer);
+			if (renderer->Get_RenderOption() == Renderer::ALPHA_RENDERING)
+				m_Renderers[0].push_back(renderer);
+			else if (renderer->Get_RenderOption() == Renderer::ALPHA_BLENDING)
+				m_Renderers[1].push_back(renderer);
 
 			it = m_RegisterQueue.erase(it);
 		}
@@ -305,7 +327,9 @@ void GameEngine::RenderManager::Destroy_Renderer()
 		}
 
 		delete renderer;
-		m_Renderers.erase(std::remove(m_Renderers.begin(), m_Renderers.end(), renderer), m_Renderers.end());
+		m_Renderers[0].erase(std::remove(m_Renderers[0].begin(), m_Renderers[0].end(), renderer), m_Renderers[0].end());
+		m_Renderers[1].erase(std::remove(m_Renderers[1].begin(), m_Renderers[1].end(), renderer), m_Renderers[1].end());
+
 	}
 
 	m_DestroyQueue.clear();
@@ -313,9 +337,12 @@ void GameEngine::RenderManager::Destroy_Renderer()
 
 void GameEngine::RenderManager::Release()
 {
-	for (const auto& renderer : m_Renderers)
+	for (const auto& rendererList : m_Renderers)
 	{
-		delete renderer;
+		for (const auto& renderer:rendererList)
+		{
+			delete renderer;
+		}
 	}
 
 	for (const auto& renderer : m_RegisterQueue)
@@ -339,7 +366,9 @@ void GameEngine::RenderManager::Release()
 		pixelShader.second->Release();
 	}
 
-	m_Renderers.clear();
+	m_Renderers[0].clear();
+	m_Renderers[1].clear();
+
 	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();
 

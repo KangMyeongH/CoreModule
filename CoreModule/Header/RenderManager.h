@@ -66,7 +66,7 @@ namespace GameEngine
 	private:
 		LPDIRECT3DDEVICE9		m_Device;
 
-		std::vector<Renderer*> 	m_Renderers;
+		std::vector<Renderer*> 	m_Renderers[2];           
 		std::list<Renderer*> 	m_RegisterQueue;
 		std::list<Renderer*> 	m_DestroyQueue;
 		Buffer_Map				m_BufferMap;
