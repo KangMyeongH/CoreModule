@@ -60,7 +60,7 @@ namespace GameEngine
 		bool Set_Texture(std::wstring& _path)
 		{
 			//set path는 로딩에서 다 해줘야 프레임 드랍이 없을 듯
-			m_path = _path;
+			m_Path = _path;
 			RenderManager::GetInstance().Add_Texture(_path);
 			m_Texture = *(RenderManager::GetInstance().Get_Texture(_path));
 
@@ -80,16 +80,19 @@ namespace GameEngine
 		{
 			std::string type = "TextureRenderer";
 			_j = nlohmann::ordered_json{
-				{"type", type}
+				{"type", type},
+				{"enable", m_bEnabled},
+				{"path", m_Path}
 			};
 		}
 		void from_json(const nlohmann::ordered_json& _j) override
 		{
-
+			_j.at("enable").get_to(m_bEnabled);
+			_j.at("path").get_to(m_Path);
 		}
 
 	private:
-		std::wstring				m_path;
+		std::wstring				m_Path;
 		LPDIRECT3DTEXTURE9			m_Texture;
 		//Shader*					m_Shader;
 	};

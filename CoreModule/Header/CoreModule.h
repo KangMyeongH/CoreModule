@@ -11,6 +11,7 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "MonoBehaviour.h"
+#include "MultiTextureRenderer.h"
 #include "Renderer.h"
 #include "Rigidbody.h"
 #include "Scene.h"

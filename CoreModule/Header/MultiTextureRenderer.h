@@ -78,12 +78,17 @@ namespace GameEngine
 		{
 			std::string type = "MultiTextureRenderer";
 			_j = nlohmann::ordered_json{
-				{"type", type}
+				{"type", type},
+				{"enable", m_bEnabled},
+				{"path", m_Path},
+				{"frame", m_Frame}
 			};
 		}
 		void from_json(const nlohmann::ordered_json& _j) override
 		{
-
+			_j.at("enable").get_to(m_bEnabled);
+			_j.at("path").get_to(m_Path);
+			_j.at("frame").get_to(m_Frame);
 		}
 
 	private:
