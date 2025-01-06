@@ -71,8 +71,17 @@ void GameEngine::MultiTextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	//cullmode 변경을 매 renderer마다 껐다 키면 부하가 심함. 같은 애들끼리 묶어서 출력하게 변경해야 함
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	//texture 세팅
-	_device->SetTexture(0, (*m_Texture)[m_Frame]);
+	if (m_Texture == nullptr)
+	{
+		//texture 세팅
+		_device->SetTexture(0, nullptr);
+	}
+
+	else
+	{
+		//texture 세팅
+		_device->SetTexture(0, (*m_Texture)[m_Frame]);
+	}
 
 	Render_Buffer(_device);
 
