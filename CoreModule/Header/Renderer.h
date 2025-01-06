@@ -5,12 +5,22 @@ namespace GameEngine
 	class COREMODULE_API Renderer : public Behaviour
 	{
 	public:
+		enum RenderOption
+		{
+			ALPHA_RENDERING,
+			ALPHA_BLENDING,
+			RENDER_OPTION_END
+		};
+
+
+	public:
 		Renderer() : Behaviour(nullptr),
 			m_VertexBuffer(nullptr),
 			m_IndexBuffer(nullptr),
 			m_VertexSize(0),
 			m_VertexCnt(0),
-			m_TriangleCnt(0)
+			m_TriangleCnt(0),
+			m_Option(ALPHA_RENDERING)
 		{
 			ZeroMemory(&m_Material, sizeof(D3DMATERIAL9));
 			m_Material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
@@ -24,7 +34,8 @@ namespace GameEngine
 			m_IndexBuffer(nullptr),
 			m_VertexSize(0),
 			m_VertexCnt(0),
-			m_TriangleCnt(0)
+			m_TriangleCnt(0),
+			m_Option(ALPHA_RENDERING)
 		{
 			ZeroMemory(&m_Material, sizeof(D3DMATERIAL9));
 			m_Material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
@@ -39,7 +50,8 @@ namespace GameEngine
 			m_VertexSize(_rhs.m_VertexSize),
 			m_VertexCnt(_rhs.m_VertexCnt),
 			m_TriangleCnt(_rhs.m_TriangleCnt),
-			m_Material(_rhs.m_Material)
+			m_Material(_rhs.m_Material),
+			m_Option(_rhs.m_Option)
 		{
 			if (m_VertexBuffer) m_VertexBuffer->AddRef();
 			if (m_IndexBuffer) m_IndexBuffer->AddRef();
@@ -58,6 +70,9 @@ namespace GameEngine
 		void Set_Specular(D3DXCOLOR _specular) { m_Material.Specular = _specular; }
 		void Set_Ambient(D3DXCOLOR _ambient) { m_Material.Ambient = _ambient; }
 		void Set_Emissive(D3DXCOLOR _emissive) { m_Material.Emissive = _emissive; }
+		void Set_RenderOption(RenderOption _option) { m_Option = _option; }
+
+		RenderOption Get_RenderOption() const { return m_Option; }
 
 		virtual void Ready_Buffer(LPDIRECT3DDEVICE9 _device) = 0;
 		virtual void Render(LPDIRECT3DDEVICE9 _device) = 0;
@@ -81,6 +96,8 @@ namespace GameEngine
 		//material
 		D3DMATERIAL9 m_Material;
 
+		//alpha option
+		RenderOption m_Option;
 	};
 
 }
