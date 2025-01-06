@@ -4,6 +4,8 @@
 #include <locale>
 #include <sstream>
 
+#include "RenderManager.h"
+
 IMPLEMENT_SINGLETON(GameEngine::FileManager)
 
 void GameEngine::FileManager::Build_DirectoryTree(const std::string& _directory)
@@ -20,49 +22,99 @@ void GameEngine::FileManager::Build_DirectoryTree(const std::string& _directory)
 	m_Root = build_DirectoryTree(directory);
 }
 
-GameEngine::DirectoryTreeNode* GameEngine::FileManager::Find_DirectoryNode(const std::string& _path)
+GameEngine::DirectoryTreeNode* GameEngine::FileManager::Find_DirectoryNode(DirectoryTreeNode* _root, const std::wstring& _path)
 {
-	if (!_path.empty() && m_Root)
+	if (!_root) return nullptr;
+
+	if (_root->Path == _path)
+		return _root;
+
+	for (DirectoryTreeNode* child : _root->Children)
 	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		std::wstring path = converter.from_bytes(_path);
-
-		std::vector<std::wstring> pathParts;
-		std::wstringstream ss(path);
-		std::wstring part;
-
-		while (std::getline(ss, part, L'\\'))
-		{
-			if (!part.empty())
-			{
-				pathParts.push_back(part);
-			}
-		}
-
-		DirectoryTreeNode* current = m_Root;
-		for (const auto& part : pathParts)
-		{
-			auto it = std::find_if
-			(
-				current->Children.begin(),
-				current->Children.end(),
-				[&part](DirectoryTreeNode* node)
-				{
-					return node->IsDirectory && node->Name == part;
-				}
-			);
-
-			if (it == current->Children.end())
-			{
-				return nullptr;
-			}
-			current = *it;
-		}
-
-		return current;
+		DirectoryTreeNode* result = Find_DirectoryNode(child, _path);
+		if (result)
+			return result;
 	}
 
 	return nullptr;
+
+
+	//if (!_path.empty() && m_Root)
+	//{
+	//	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	//	std::wstring path = converter.from_bytes(_path);
+
+	//	std::vector<std::wstring> pathParts;
+	//	std::wstringstream ss(path);
+	//	std::wstring part;
+
+	//	while (std::getline(ss, part, L'\\'))
+	//	{
+	//		if (!part.empty())
+	//		{
+	//			pathParts.push_back(part);
+	//		}
+	//	}
+
+	//	DirectoryTreeNode* current = m_Root;
+	//	for (const auto& part : pathParts)
+	//	{
+	//		auto it = std::find_if
+	//		(
+	//			current->Children.begin(),
+	//			current->Children.end(),
+	//			[&part](DirectoryTreeNode* node)
+	//			{
+	//				return node->IsDirectory && node->Name == part;
+	//			}
+	//		);
+
+	//		if (it == current->Children.end())
+	//		{
+	//			return nullptr;
+	//		}
+	//		current = *it;
+	//	}
+
+	//	return current;
+	//}
+
+	//return nullptr;
+}
+
+void GameEngine::FileManager::Load_SingleTexture(const DirectoryTreeNode* _root)
+{
+	for (const auto child : _root->Children)
+	{
+		if (child->IsDirectory)
+		{
+			Load_SingleTexture(child);
+		}
+
+		else
+		{
+			RenderManager::GetInstance().Add_Texture(child->Path);
+		}
+	}
+}
+
+void GameEngine::FileManager::Load_MultiTexture(const DirectoryTreeNode* _root)
+{
+	bool isTarget = true;
+
+	for (const auto child : _root->Children)
+	{
+		if (child->IsDirectory)
+		{
+			isTarget = false;
+			Load_MultiTexture(child);
+		}
+	}
+
+	if (isTarget)
+	{
+		RenderManager::GetInstance().Add_MultiTexture(_root->Path);
+	}
 }
 
 void GameEngine::FileManager::Release()
