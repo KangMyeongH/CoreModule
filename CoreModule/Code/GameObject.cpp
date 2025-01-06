@@ -22,6 +22,11 @@ void GameEngine::GameObject::Destroy()
 			}
 		}
 	}
+
+	for (auto& child : m_Transform.Get_Children())
+	{
+		child->Get_GameObject()->Destroy();
+	}
 }
 
 void GameEngine::GameObject::On_CollisionEnter(Collision _other)

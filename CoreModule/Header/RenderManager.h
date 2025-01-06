@@ -20,7 +20,6 @@ namespace GameEngine
 	using MultiTexture_Map = std::unordered_map<std::wstring, std::vector<LPDIRECT3DTEXTURE9>>;
 	using PixelShader_Map = std::unordered_map<std::wstring, LPDIRECT3DPIXELSHADER9>;
 
-
 	class COREMODULE_API RenderManager
 	{
 	private:
