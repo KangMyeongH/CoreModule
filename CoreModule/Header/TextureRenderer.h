@@ -57,7 +57,7 @@ namespace GameEngine
 		//void Get_Texture(LPDIRECT3DTEXTURE9& _texture) const;
 		//void Set_Texture(const LPDIRECT3DTEXTURE9& _texture);
 
-		bool Set_Texture(std::wstring& _path)
+		bool Set_Texture(const std::wstring& _path)
 		{
 			//set path는 로딩에서 다 해줘야 프레임 드랍이 없을 듯
 			m_Path = _path;
@@ -66,6 +66,16 @@ namespace GameEngine
 
 			if (m_Texture) return true;
 			else return false;
+		}
+
+		bool Ready_Texture()
+		{
+			if (m_Path.empty())
+			{
+				return false;
+			}
+			m_Texture = *(RenderManager::GetInstance().Get_Texture(m_Path));
+			return true;
 		}
 
 		std::wstring Get_Path() const { return m_Path; }
