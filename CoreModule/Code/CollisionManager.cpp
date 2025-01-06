@@ -105,9 +105,9 @@ void GameEngine::CollisionManager::Destroy_Collider()
 	            ++pairIt;
             }
         }
-
 	}
 
+    m_DestroyQueue.clear();
 }
 
 void GameEngine::CollisionManager::Release()
