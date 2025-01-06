@@ -68,6 +68,8 @@ namespace GameEngine
 			else return false;
 		}
 
+		void Set_NativeSize();
+
 		std::wstring Get_Path() const { return m_Path; }
 		void Set_Path(const std::wstring& _path) { m_Path = _path; }
 
