@@ -115,8 +115,7 @@ void GameEngine::MultiTextureRenderer::Set_NativeSize()
 	}
 }
 
-void GameEngine::MultiTextureRenderer::Set_NormalScale()
+void GameEngine::MultiTextureRenderer::Set_NormalSize()
 {
 	D3DXMatrixScaling(&m_TextureScaleMatrix, 1.f, 1.f, 1.f);
-
 }
