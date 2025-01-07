@@ -24,6 +24,8 @@ namespace GameEngine
 			m_VertexCnt = 4;
 			m_TriangleCnt = 2;
 			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
 		explicit TextureRenderer(GameObject* _owner) : Renderer(_owner),
 			m_Texture(nullptr)
@@ -32,6 +34,8 @@ namespace GameEngine
 			m_VertexCnt = 4;
 			m_TriangleCnt = 2;
 			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
 		TextureRenderer(const TextureRenderer& _rhs) : Renderer(_rhs),
 			m_Texture(_rhs.m_Texture)
@@ -40,6 +44,8 @@ namespace GameEngine
 			m_VertexCnt = 4;
 			m_TriangleCnt = 2;
 			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
 		~TextureRenderer() override = default;
 
@@ -78,6 +84,8 @@ namespace GameEngine
 			return true;
 		}
 
+		void Set_NativeSize();
+
 		std::wstring Get_Path() const { return m_Path; }
 		void Set_Path(const std::wstring& _path) { m_Path = _path; }
 
@@ -107,6 +115,7 @@ namespace GameEngine
 	private:
 		std::wstring				m_Path;
 		LPDIRECT3DTEXTURE9			m_Texture;
+		D3DXMATRIX					m_TextureScaleMatrix;
 		//Shader*					m_Shader;
 	};
 

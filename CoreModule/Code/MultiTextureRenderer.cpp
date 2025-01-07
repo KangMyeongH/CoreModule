@@ -106,3 +106,19 @@ bool GameEngine::MultiTextureRenderer::Set_Frame(const std::wstring& _path, int 
 
 	return true;
 }
+
+void GameEngine::MultiTextureRenderer::Set_NativeSize()
+{
+	if (!m_Texture)
+		return;
+
+	if (m_Frame < 0 || m_Frame >= m_Texture->size())
+		return;
+
+	D3DSURFACE_DESC desc;
+
+	HRESULT hr = (*m_Texture)[m_Frame]->GetLevelDesc(0, &desc);
+	if (SUCCEEDED(hr)) {
+		Get_Transform().Set_LocalScale(Vector3{ float(desc.Width), float(desc.Height), 1.f });
+	}
+}

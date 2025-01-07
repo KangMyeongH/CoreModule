@@ -83,6 +83,19 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 
 }
 
+void GameEngine::TextureRenderer::Set_NativeSize()
+{
+	if (!m_Texture)
+		return;
+
+	D3DSURFACE_DESC desc;
+
+	HRESULT hr = m_Texture->GetLevelDesc(0, &desc);
+	if (SUCCEEDED(hr)) {
+		D3DXMatrixScaling(&m_TextureScaleMatrix, float(desc.Width), float(desc.Height), 1.f);
+	}
+}
+
 //
 //void GameEngine::TextureRenderer::Get_Texture(LPDIRECT3DTEXTURE9& _texture) const
 //{
