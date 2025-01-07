@@ -173,12 +173,11 @@ void GameEngine::CubeRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::CubeRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
+	_device->SetTexture(0, nullptr);
+
 	//Transfrom 설정
 	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
 
 	Render_Buffer(_device);
 	//render state 복구
 }
-
-
-
