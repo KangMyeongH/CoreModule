@@ -70,6 +70,8 @@ namespace GameEngine
 			RenderManager::GetInstance().Add_Texture(_path);
 			m_Texture = *(RenderManager::GetInstance().Get_Texture(_path));
 
+			Set_NativeSize();
+
 			if (m_Texture) return true;
 			else return false;
 		}
@@ -85,6 +87,7 @@ namespace GameEngine
 		}
 
 		void Set_NativeSize();
+		void Set_NormalSize();
 
 		std::wstring Get_Path() const { return m_Path; }
 		void Set_Path(const std::wstring& _path) { m_Path = _path; }

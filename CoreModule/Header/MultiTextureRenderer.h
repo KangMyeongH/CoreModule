@@ -24,6 +24,9 @@ namespace GameEngine
 			m_VertexCnt = 4;
 			m_TriangleCnt = 2;
 			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
+
 		}
 		explicit MultiTextureRenderer(GameObject* _owner) : Renderer(_owner),
 			m_Frame(0),
@@ -33,6 +36,9 @@ namespace GameEngine
 			m_VertexCnt = 4;
 			m_TriangleCnt = 2;
 			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
+
 		}
 		MultiTextureRenderer(const MultiTextureRenderer& _rhs) : Renderer(_rhs),
 			m_Frame(0),
@@ -42,6 +48,9 @@ namespace GameEngine
 			m_VertexCnt = 4;
 			m_TriangleCnt = 2;
 			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
+
 		}
 		~MultiTextureRenderer() override = default;
 
@@ -59,6 +68,7 @@ namespace GameEngine
 		bool Set_Frame(const std::wstring& _path, int _frame);
 
 		void Set_NativeSize();
+		void Set_NormalSize();
 
 		//Texture 초기화, 실패 시 0 반환, 성공 시 불러들인 파일 수를 반환
 		//static 함수라서 loading에서도 호출 가능
@@ -99,6 +109,7 @@ namespace GameEngine
 		std::wstring m_Path; //폴더 경로
 		int m_Frame;
 		std::vector<LPDIRECT3DTEXTURE9>* m_Texture;
+		D3DXMATRIX					m_TextureScaleMatrix;
 	};
 
 	REGISTER_COMPONENT(MultiTextureRenderer)

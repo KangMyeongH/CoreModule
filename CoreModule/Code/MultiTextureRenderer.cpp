@@ -66,7 +66,8 @@ void GameEngine::MultiTextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 void GameEngine::MultiTextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
 	//Render State 설정
-	_device->SetTransform(D3DTS_WORLD, &Get_Transform().Get_WorldMatrix());
+	D3DXMATRIX  world = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
+	_device->SetTransform(D3DTS_WORLD, &world);
 
 	//cullmode 변경을 매 renderer마다 껐다 키면 부하가 심함. 같은 애들끼리 묶어서 출력하게 변경해야 함
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -119,6 +120,11 @@ void GameEngine::MultiTextureRenderer::Set_NativeSize()
 
 	HRESULT hr = (*m_Texture)[m_Frame]->GetLevelDesc(0, &desc);
 	if (SUCCEEDED(hr)) {
-		Get_Transform().Set_LocalScale(Vector3{ float(desc.Width), float(desc.Height), 1.f });
+		D3DXMatrixScaling(&m_TextureScaleMatrix, float(desc.Width) / 100.f, float(desc.Height) / 100.f, 1.f);
 	}
+}
+
+void GameEngine::MultiTextureRenderer::Set_NormalSize()
+{
+	D3DXMatrixScaling(&m_TextureScaleMatrix, 1.f, 1.f, 1.f);
 }
