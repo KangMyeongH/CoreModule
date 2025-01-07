@@ -120,7 +120,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)*.dll" "$(SolutionDir)CoreModule\Header\"  /Y
-xcopy "$(OutDir)*.lib" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
+xcopy "$(OutDir)*.lib" "$(SolutionDir)CoreModule\Header\"  /Y
+xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
