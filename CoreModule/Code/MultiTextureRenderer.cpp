@@ -105,6 +105,8 @@ bool GameEngine::MultiTextureRenderer::Set_Frame(const std::wstring& _path, int 
 
 	m_Frame = _frame;
 
+	Set_NativeSize();
+
 	return true;
 }
 
