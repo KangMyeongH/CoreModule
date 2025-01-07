@@ -92,7 +92,7 @@ void GameEngine::TextureRenderer::Set_NativeSize()
 
 	HRESULT hr = m_Texture->GetLevelDesc(0, &desc);
 	if (SUCCEEDED(hr)) {
-		Get_Transform().Set_LocalScale(Vector3{ float(desc.Width), float(desc.Height), 1.f });
+		D3DXMatrixScaling(&m_TextureScaleMatrix, float(desc.Width), float(desc.Height), 1.f);
 	}
 }
 
