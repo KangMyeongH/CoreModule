@@ -66,7 +66,11 @@ void GameEngine::MultiTextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 void GameEngine::MultiTextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
 	//Render State 설정
-	D3DXMATRIX  world = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
+
+	D3DXMATRIX flipMat;
+	Compute_FlipMat(flipMat);
+
+	D3DXMATRIX  world = flipMat * m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
 	_device->SetTransform(D3DTS_WORLD, &world);
 
 	//cullmode 변경을 매 renderer마다 껐다 키면 부하가 심함. 같은 애들끼리 묶어서 출력하게 변경해야 함
@@ -87,6 +91,17 @@ void GameEngine::MultiTextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	Render_Buffer(_device);
 
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+}
+
+void GameEngine::MultiTextureRenderer::Compute_FlipMat(D3DXMATRIX& _mat) const
+{
+	Vector3 flipScale = Vector3{ 1.f, 1.f, 1.f };
+
+	if (m_FlipX)
+		flipScale.x *= -1.f;
+	if (m_FlipY)
+		flipScale.y *= -1.f;
+	D3DXMatrixScaling(&_mat, flipScale.x, flipScale.y, 1.f);
 }
 
 bool GameEngine::MultiTextureRenderer::Set_Frame(const std::wstring& _path, int _frame)
