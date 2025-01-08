@@ -83,6 +83,7 @@ namespace GameEngine
 			{
 				return false;
 			}
+			RenderManager::GetInstance().Add_Texture(m_Path);
 			m_Texture = *(RenderManager::GetInstance().Get_Texture(m_Path));
 			return true;
 		}

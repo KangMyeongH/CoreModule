@@ -3,48 +3,47 @@
 #include "RenderManager.h"
 #include "Transform.h"
 
-void GameEngine::SpriteAnimation::Load_SpriteSheet()
-{
-	if (m_Path.empty()) 
-		return;
-
-	RenderManager::GetInstance().Add_Texture(m_Path);
-	m_Texture = *RenderManager::GetInstance().Get_Texture(m_Path);
-
-	D3DSURFACE_DESC desc;
-
-	HRESULT hr = m_Texture->GetLevelDesc(0, &desc);
-
-	D3DXMatrixScaling(&m_TextureScaleMatrix, static_cast<float>(desc.Width) / 100.f, static_cast<float>(desc.Height) / 100.f, 1.f);
-}
-
-void GameEngine::SpriteAnimation::Add_Animator(std::string _key, const std::wstring& _path)
+void GameEngine::SpriteAnimation::Add_Animator(const std::string& _key, const std::wstring& _path)
 {
 	Animator newClip;
-
 	RenderManager::GetInstance().Add_Texture(_path);
-
+	
 	D3DSURFACE_DESC desc;
-	HRESULT hr = m_Texture->GetLevelDesc(0, &desc);
-	float texWidth = static_cast<float>(desc.Width);
-	float texHeight = static_cast<float>(desc.Height);
-	D3DXMatrixScaling(&m_TextureScaleMatrix, texWidth / 100.f, texHeight / 100.f, 1.f);
-
-
-
+	HRESULT hr = (*RenderManager::GetInstance().Get_Texture(_path))->GetLevelDesc(0, &desc);
+	D3DXMatrixScaling(&m_TextureScaleMatrix, m_SpriteWidth / 100.f, m_SpriteWidth / 100.f, 1.f);
 
 	newClip.Path = _path;
-	newClip.Texture = *RenderManager::GetInstance().Get_Texture(m_Path);
+	newClip.Texture = *RenderManager::GetInstance().Get_Texture(_path);
+	newClip.SpriteWidth = m_SpriteWidth;
+	newClip.SpriteHeight = m_SpriteHeight;
+	newClip.Columns = static_cast<int>(desc.Width) / static_cast<int>(m_SpriteWidth);
+	newClip.Rows = static_cast<int>(desc.Height) / static_cast<int>(m_SpriteHeight);
+	newClip.TotalFrames = newClip.Columns * newClip.Rows;
+	// TODO : Texture AddRef()
+	m_Animator[_key] = newClip;
+}
 
+void GameEngine::SpriteAnimation::Change_Animation(const std::string& _key)
+{
+	m_CurrentAnimationState = _key;
+	m_CurrentFrame = 0;
+	m_AccTime = 0;
+	D3DXMatrixScaling(&m_TextureScaleMatrix, m_Animator[_key].SpriteWidth / 100.f, m_Animator[_key].SpriteHeight / 100.f, 1.f);
+}
+
+void GameEngine::SpriteAnimation::Set_SpriteSize(const float _width, const float _height)
+{
+	m_SpriteWidth = _width;
+	m_SpriteHeight = _height;
 }
 
 void GameEngine::SpriteAnimation::Set_TextureCoordinates(LPDIRECT3DDEVICE9 _device)
 {
-	int frameX = m_CurrentFrame % m_Columns;
-	int frameY = m_CurrentFrame / m_Columns;
+	int frameX = m_CurrentFrame % m_Animator[m_CurrentAnimationState].Columns;
+	int frameY = m_CurrentFrame / m_Animator[m_CurrentAnimationState].Columns;
 
-	float frameWidthU = 1.0f / static_cast<float>(m_Columns);
-	float frameHeightV = 1.0f / static_cast<float>(m_Rows);
+	float frameWidthU = 1.0f / static_cast<float>(m_Animator[m_CurrentAnimationState].Columns);
+	float frameHeightV = 1.0f / static_cast<float>(m_Animator[m_CurrentAnimationState].Rows);
 
 	float tuStart 	= static_cast<float>(frameX) * frameWidthU;
 	float tvStart 	= static_cast<float>(frameY) * frameHeightV;
@@ -69,7 +68,7 @@ void GameEngine::SpriteAnimation::Update_Frame(float _deltaTime)
 
 	if (m_AccTime >= m_DurationTime)
 	{
-		m_CurrentFrame = (m_CurrentFrame + 1) % m_TotalFrames;
+		m_CurrentFrame = (m_CurrentFrame + 1) % m_Animator[m_CurrentAnimationState].TotalFrames;
 		m_AccTime = 0.0f;
 	}
 }
@@ -137,9 +136,23 @@ void GameEngine::SpriteAnimation::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 void GameEngine::SpriteAnimation::Render(LPDIRECT3DDEVICE9 _device)
 {
 	D3DXMATRIX worldMat = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
+
 	_device->SetTransform(D3DTS_WORLD, &worldMat);
 
+	Set_TextureCoordinates(_device);
 
+	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	_device->SetTexture(0, m_Animator[m_CurrentAnimationState].Texture);
+
+	Render_Buffer(_device);
+
+	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	D3DXMATRIX identityMat;
+	D3DXMatrixIdentity(&identityMat);
+
+	_device->SetTransform(D3DTS_TEXTURE0, &identityMat);
 }
 
 GameEngine::Component* GameEngine::SpriteAnimation::Clone() const
@@ -149,8 +162,14 @@ GameEngine::Component* GameEngine::SpriteAnimation::Clone() const
 
 void GameEngine::SpriteAnimation::to_json(nlohmann::ordered_json& _j)
 {
+	std::string type = "SpriteAnimation";
+	_j = nlohmann::ordered_json{
+		{"type", type},
+		{"enable", m_bEnabled}
+	};
 }
 
 void GameEngine::SpriteAnimation::from_json(const nlohmann::ordered_json& _j)
 {
+	_j.at("enable").get_to(m_bEnabled);
 }

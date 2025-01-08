@@ -10,12 +10,8 @@ namespace GameEngine
 		//======================================//
 
 		SpriteAnimation() : Renderer(nullptr),
-		                    m_Texture(nullptr),
 		                    m_SpriteWidth(0),
 		                    m_SpriteHeight(0), m_DurationTime(0), m_AccTime(0),
-		                    m_Columns(0),
-		                    m_Rows(0),
-		                    m_TotalFrames(0),
 		                    m_CurrentFrame(0)
 		{
 			m_VertexSize = sizeof(VTXTEX);
@@ -27,12 +23,8 @@ namespace GameEngine
 		}
 
 		explicit SpriteAnimation(GameObject* _owner) : Renderer(_owner),
-		                                               m_Texture(nullptr),
 		                                               m_SpriteWidth(0),
 		                                               m_SpriteHeight(0), m_DurationTime(0), m_AccTime(0),
-		                                               m_Columns(0),
-		                                               m_Rows(0),
-		                                               m_TotalFrames(0),
 		                                               m_CurrentFrame(0)
 		{
 			m_VertexSize = sizeof(VTXTEX);
@@ -44,13 +36,9 @@ namespace GameEngine
 		}
 
 		SpriteAnimation(const SpriteAnimation& _rhs) : Renderer(_rhs),
-		                                               m_Texture(_rhs.m_Texture),
 		                                               m_SpriteWidth(_rhs.m_SpriteWidth),
 		                                               m_SpriteHeight(_rhs.m_SpriteHeight), m_DurationTime(0),
 		                                               m_AccTime(0),
-		                                               m_Columns(_rhs.m_Columns),
-		                                               m_Rows(_rhs.m_Rows),
-		                                               m_TotalFrames(_rhs.m_TotalFrames),
 		                                               m_CurrentFrame(_rhs.m_CurrentFrame)
 		{
 			m_VertexSize = sizeof(VTXTEX);
@@ -64,9 +52,10 @@ namespace GameEngine
 		~SpriteAnimation() override = default;
 
 	public:
-		void		Load_SpriteSheet();
-		void		Add_Animator(std::string _key, const std::wstring& _path);
-		void		Change_Animation(std::string _key);
+		void		Add_Animator(const std::string& _key, const std::wstring& _path);
+		void		Change_Animation(const std::string& _key);
+		void		Set_SpriteSize(float _width, float _height);
+
 		void		Set_TextureCoordinates(LPDIRECT3DDEVICE9 _device);
 		void		Update_Frame(float _deltaTime);
 		void 		Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
@@ -77,16 +66,12 @@ namespace GameEngine
 
 	private:
 		std::unordered_map<std::string, Animator> m_Animator;
-		std::wstring			m_Path;
-		LPDIRECT3DTEXTURE9		m_Texture;
+		std::string				m_CurrentAnimationState;
 		D3DXMATRIX				m_TextureScaleMatrix;
 		float					m_SpriteWidth;		// 각 프레임의 가로 픽셀
 		float					m_SpriteHeight;		// 각 프레임의 세로 픽셀
 		float					m_DurationTime;
 		float					m_AccTime;
-		int						m_Columns;			// 열
-		int						m_Rows;				// 행
-		int						m_TotalFrames;		// 총 프레임 수
 		int						m_CurrentFrame;
 	};
 	REGISTER_COMPONENT(SpriteAnimation)

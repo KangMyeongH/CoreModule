@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "TextureRenderer.h"
 #include "Light.h"
+#include "../SpriteAnimation.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
@@ -39,6 +40,25 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 		}
 
 		else if (dynamic_cast<TextureRenderer*>(renderer))
+		{
+			if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
+			{
+				renderer->Ready_Buffer(_device);
+				renderer->Get_Buffer(buffer.first, buffer.second);
+				buffer.first->AddRef();
+				buffer.second->AddRef();
+
+				m_BufferMap.insert({ TEXTURE, buffer });
+			}
+			else
+			{
+				buffer = (m_BufferMap.find(TEXTURE))->second;
+				renderer->Set_Buffer(buffer.first, buffer.second);
+			}
+			dynamic_cast<TextureRenderer*>(renderer)->Ready_Texture();
+		}
+
+		else if (dynamic_cast<SpriteAnimation*>(renderer))
 		{
 			if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
 			{
