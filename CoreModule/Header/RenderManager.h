@@ -101,6 +101,4 @@ namespace GameEngine
 		// 캡슐화 모듈화 >>> 고민 많이 해야될거같다.
 		// Cube, TextureRenderer, 게임은 만들수 있다.
 	};
-
-
 }

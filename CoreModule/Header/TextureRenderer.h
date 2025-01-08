@@ -17,6 +17,7 @@ namespace GameEngine
 		//======================================//
 		//				constructor				//
 		//======================================//
+
 		TextureRenderer() : Renderer(nullptr),
 			m_Texture(nullptr)
 		{
