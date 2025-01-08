@@ -18,6 +18,26 @@ void GameEngine::SpriteAnimation::Load_SpriteSheet()
 	D3DXMatrixScaling(&m_TextureScaleMatrix, static_cast<float>(desc.Width) / 100.f, static_cast<float>(desc.Height) / 100.f, 1.f);
 }
 
+void GameEngine::SpriteAnimation::Add_Animator(std::string _key, const std::wstring& _path)
+{
+	Animator newClip;
+
+	RenderManager::GetInstance().Add_Texture(_path);
+
+	D3DSURFACE_DESC desc;
+	HRESULT hr = m_Texture->GetLevelDesc(0, &desc);
+	float texWidth = static_cast<float>(desc.Width);
+	float texHeight = static_cast<float>(desc.Height);
+	D3DXMatrixScaling(&m_TextureScaleMatrix, texWidth / 100.f, texHeight / 100.f, 1.f);
+
+
+
+
+	newClip.Path = _path;
+	newClip.Texture = *RenderManager::GetInstance().Get_Texture(m_Path);
+
+}
+
 void GameEngine::SpriteAnimation::Set_TextureCoordinates(LPDIRECT3DDEVICE9 _device)
 {
 	int frameX = m_CurrentFrame % m_Columns;
