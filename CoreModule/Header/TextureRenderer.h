@@ -17,6 +17,7 @@ namespace GameEngine
 		//======================================//
 		//				constructor				//
 		//======================================//
+
 		TextureRenderer() : Renderer(nullptr),
 			m_Texture(nullptr), m_FlipX(false), m_FlipY(false)
 		{
@@ -82,6 +83,7 @@ namespace GameEngine
 			{
 				return false;
 			}
+			RenderManager::GetInstance().Add_Texture(m_Path);
 			m_Texture = *(RenderManager::GetInstance().Get_Texture(m_Path));
 			return true;
 		}

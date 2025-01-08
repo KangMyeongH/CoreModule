@@ -95,5 +95,28 @@ namespace GameEngine
 	};
 
 #define DEBUG_FVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+
+	struct Animator
+	{
+		std::wstring Path;
+		LPDIRECT3DTEXTURE9 Texture;
+		float SpriteWidth;
+		float SpriteHeight;
+		int Columns;
+		int Rows;
+		int TotalFrames;
+
+		Animator(): Texture(nullptr), SpriteWidth(0), SpriteHeight(0), Columns(0), Rows(0), TotalFrames(0)
+		{
+		}
+
+		~Animator()
+		{
+			if (Texture)
+			{
+				Texture->Release();
+			}
+		}
+	};
 }
 
