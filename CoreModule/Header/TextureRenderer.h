@@ -115,13 +115,29 @@ namespace GameEngine
 			_j = nlohmann::ordered_json{
 				{"type", type},
 				{"enable", m_bEnabled},
-				{"path", m_Path}
+				{"path", m_Path},
+				{"flipX", m_FlipX},
+				{"flipY", m_FlipY}
 			};
 		}
 		void from_json(const nlohmann::ordered_json& _j) override
 		{
-			_j.at("enable").get_to(m_bEnabled);
-			_j.at("path").get_to(m_Path);
+			if (_j.contains("enable"))
+			{
+				_j.at("enable").get_to(m_bEnabled);
+			}
+			if (_j.contains("path"))
+			{
+				_j.at("path").get_to(m_Path);
+			}
+			if (_j.contains("flipX"))
+			{
+				_j.at("flipX").get_to(m_FlipX);
+			}
+			if (_j.contains("flipY"))
+			{
+				_j.at("flipY").get_to(m_FlipY);
+			}
 		}
 
 	private:
