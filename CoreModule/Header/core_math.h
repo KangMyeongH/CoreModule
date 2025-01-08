@@ -165,7 +165,11 @@ namespace GameEngine
 		}
 		Vector3 	operator-(const Vector3& rhs) const
 		{
-			return Vector3(x - rhs.x, y - rhs.y, z - rhs.z);
+			return Vector3(
+				x - rhs.x,
+				y - rhs.y,
+				z - rhs.z
+			);
 		}
 		Vector3& 	operator-=(const Vector3& rhs)
 		{
@@ -176,7 +180,19 @@ namespace GameEngine
 		}
 		Vector3 	operator*(const float rhs) const
 		{
-			return Vector3(x * rhs, y * rhs, z * rhs);
+			return Vector3(
+				x * rhs,
+				y * rhs,
+				z * rhs
+			);
+		}
+		Vector3		operator*(const Vector3& rhs) const
+		{
+			return Vector3(
+				x * rhs.x,
+				y * rhs.y,
+				z * rhs.z
+			);
 		}
 		Vector3& 	operator*=(const float rhs)
 		{
@@ -185,9 +201,20 @@ namespace GameEngine
 			z *= rhs;
 			return *this;
 		}
+		Vector3& 	operator*=(const Vector3& rhs)
+		{
+			x *= rhs.x;
+			y *= rhs.y;
+			z *= rhs.z;
+			return *this;
+		}
 		Vector3 	operator/(const float rhs) const
 		{
-			return Vector3(x / rhs, y / rhs, z / rhs);
+			if (rhs != 0.0f)
+			{
+				return Vector3(x / rhs, y / rhs, z / rhs);
+			}
+			return Vector3(0.0f, 0.0f, 0.0f);
 		}
 		Vector3		operator/(const Vector3& rhs) const
 		{
@@ -197,7 +224,6 @@ namespace GameEngine
 				rhs.z != 0.0f ? z / rhs.z : 0.0f
 			};
 		}
-
 		Vector3& 	operator/=(const float rhs)
 		{
 			x /= rhs;
@@ -207,12 +233,20 @@ namespace GameEngine
 		}
 		bool 		operator==(const Vector3& rhs) const
 		{
-			return x == rhs.x && y == rhs.y && z == rhs.z;
+			const float epsilon = 1e-6f;
+			return 	std::fabs(x - rhs.x) < epsilon &&
+					std::fabs(y - rhs.y) < epsilon &&
+					std::fabs(z - rhs.z) < epsilon;
 		}
 		bool 		operator!=(const Vector3& rhs) const
 		{
 			return !(*this == rhs);
 		}
+		Vector3 	operator-() const
+		{
+			return Vector3(-x, -y, -z);
+		}
+
 
 		//======================================//
 		//				  method				//
@@ -276,6 +310,10 @@ namespace GameEngine
 		static Vector3	Right()
 		{
 			return Vector3(1.f, 0.f, 0.f);
+		}
+		static Vector3	Zero()
+		{
+			return Vector3{ 0.0f, 0.0f, 0.0f };
 		}
 
 		// 정규화 된 벡터를 반환함
@@ -341,16 +379,16 @@ namespace GameEngine
 	public:
 		// json 변환
 		friend void to_json(nlohmann::ordered_json& _j, const Vector3& _v)
-		 {
+		{
 			_j = nlohmann::ordered_json{ {"x", _v.x}, {"y", _v.y}, {"z", _v.z} };
-		 }
+		}
 
 		friend void from_json(const nlohmann::ordered_json& _j, Vector3& _v)
-		 {
+		{
 			_j.at("x").get_to(_v.x);
 			_j.at("y").get_to(_v.y);
 			_j.at("z").get_to(_v.z);
-		 }
+		}
 	};
 
 	struct Quaternion : D3DXQUATERNION
