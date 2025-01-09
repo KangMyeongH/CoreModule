@@ -104,12 +104,9 @@ void GameEngine::TextureRenderer::Set_NativeSize()
 	if (!m_Texture)
 		return;
 
-	D3DSURFACE_DESC desc;
-
-	HRESULT hr = m_Texture->GetLevelDesc(0, &desc);
-	if (SUCCEEDED(hr)) {
-		D3DXMatrixScaling(&m_TextureScaleMatrix, float(desc.Width) / 100.f, float(desc.Height) / 100.f, 1.f);
-	}
+	D3DXIMAGE_INFO imageInfo;
+	D3DXGetImageInfoFromFile(m_Path.c_str(), &imageInfo);
+	D3DXMatrixScaling(&m_TextureScaleMatrix, static_cast<float>(imageInfo.Width) / 100.f, static_cast<float>(imageInfo.Height) / 100.f, 1.f);
 }
 
 void GameEngine::TextureRenderer::Set_NormalSize()
