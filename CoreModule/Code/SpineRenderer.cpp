@@ -64,6 +64,17 @@ void GameEngine::SpineRenderer::Change_Animation(const std::string& _track1, con
     m_State->setAnimation(1, _track2.c_str(), _isLoop);
 }
 
+bool GameEngine::SpineRenderer::Is_Finished(int _track)
+{
+    spine::TrackEntry* current = m_State->getCurrent(_track);
+    if (current && current->isComplete())
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void GameEngine::SpineRenderer::Update_Animation(float _deltaTime)
 {
     m_Skeleton->setScaleX(m_FlipX ? -1 : 1);

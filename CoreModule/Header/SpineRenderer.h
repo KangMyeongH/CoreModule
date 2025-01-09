@@ -31,6 +31,7 @@ namespace GameEngine
 		void Change_Skin(const std::string& _skin);
 		void Change_Animation(const std::string& _animation, bool _isLoop);
 		void Change_Animation(const std::string& _track1, const std::string& _track2, bool _isLoop);
+		bool Is_Finished(int _track);
 
 		void onSpineEvent(spine::AnimationState* state, spine::EventType type, spine::TrackEntry* entry, spine::Event* event) {
 			if (type == spine::EventType_Event && event) {
