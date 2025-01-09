@@ -83,6 +83,9 @@
     <ClCompile Include="Code\FileManager.cpp">
       <Filter>Manager\File</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteAnimation.cpp" />
+    <ClCompile Include="SpineLoader.cpp" />
+    <ClCompile Include="Code\SpineRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="Header\FileManager.h">
       <Filter>Manager\File</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteAnimation.h" />
+    <ClInclude Include="SpineLoader.h" />
+    <ClInclude Include="Header\SpineRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "TextureRenderer.h"
 #include "Light.h"
+#include "SpineRenderer.h"
 #include "../SpriteAnimation.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
@@ -58,22 +59,9 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 			dynamic_cast<TextureRenderer*>(renderer)->Ready_Texture();
 		}
 
-		else if (dynamic_cast<SpriteAnimation*>(renderer))
+		else if (dynamic_cast<SpineRenderer*>(renderer))
 		{
-			if (m_BufferMap.find(TEXTURE) == m_BufferMap.end())
-			{
-				renderer->Ready_Buffer(_device);
-				renderer->Get_Buffer(buffer.first, buffer.second);
-				buffer.first->AddRef();
-				buffer.second->AddRef();
-
-				m_BufferMap.insert({ TEXTURE, buffer });
-			}
-			else
-			{
-				buffer = (m_BufferMap.find(TEXTURE))->second;
-				renderer->Set_Buffer(buffer.first, buffer.second);
-			}
+			renderer->Ready_Buffer(_device);
 		}
 
 	}
@@ -217,6 +205,12 @@ void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 			buffer = (m_BufferMap.find(TEXTURE))->second;
 			_renderer->Set_Buffer(buffer.first, buffer.second);
 		}
+		dynamic_cast<TextureRenderer*>(_renderer)->Ready_Texture();
+	}
+
+	else if (dynamic_cast<SpineRenderer*>(_renderer))
+	{
+		_renderer->Ready_Buffer(m_Device);
 	}
 
 	m_RegisterQueue.push_back(_renderer);
