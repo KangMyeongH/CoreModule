@@ -2,7 +2,7 @@
 
 #include "TimeManager.h"
 #include "Transform.h"
-#include "../SpineLoader.h"
+#include "SpineLoader.h"
 
 #ifndef SPINE_MESH_VERTEX_COUNT_MAX
 #define SPINE_MESH_VERTEX_COUNT_MAX 1000

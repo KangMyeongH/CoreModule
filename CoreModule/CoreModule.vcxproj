@@ -175,12 +175,12 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\Scene.h" />
     <ClInclude Include="Header\Shader.h" />
     <ClInclude Include="Header\SphereCollider.h" />
+    <ClInclude Include="Header\SpineLoader.h" />
     <ClInclude Include="Header\SpineRenderer.h" />
+    <ClInclude Include="Header\SpriteAnimation.h" />
     <ClInclude Include="Header\TextureRenderer.h" />
     <ClInclude Include="Header\TimeManager.h" />
     <ClInclude Include="Header\Transform.h" />
-    <ClInclude Include="SpineLoader.h" />
-    <ClInclude Include="SpriteAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\BoxCollider.cpp" />
@@ -208,12 +208,12 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\Scene.cpp" />
     <ClCompile Include="Code\Shader.cpp" />
     <ClCompile Include="Code\SphereCollider.cpp" />
+    <ClCompile Include="Code\SpineLoader.cpp" />
     <ClCompile Include="Code\SpineRenderer.cpp" />
+    <ClCompile Include="Code\SpriteAnimation.cpp" />
     <ClCompile Include="Code\TextureRenderer.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
     <ClCompile Include="Code\Transform.cpp" />
-    <ClCompile Include="SpineLoader.cpp" />
-    <ClCompile Include="SpriteAnimation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

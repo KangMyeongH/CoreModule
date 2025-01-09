@@ -6,7 +6,6 @@
 #include "TextureRenderer.h"
 #include "Light.h"
 #include "SpineRenderer.h"
-#include "../SpriteAnimation.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
