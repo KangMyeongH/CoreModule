@@ -10,28 +10,28 @@
 
 GameEngine::SpineRenderer::SpineRenderer()
 	: Renderer(nullptr),
-	m_Skeleton(nullptr),
-	m_State(nullptr),
-	m_ownsAnimationStateData(false),
-	m_usePMA(false),
-	m_timeScale(1.0f),
-	m_worldVertices(),
-	m_clipper()
+	  m_Skeleton(nullptr),
+	  m_State(nullptr),
+	  m_ownsAnimationStateData(false),
+	  m_usePMA(false),
+	  m_timeScale(1.0f),
+	  m_worldVertices(),
+	  m_clipper(), m_FlipX(false), m_FlipY(false)
 {
-    m_Option = ALPHA_BLENDING;
+	m_Option = ALPHA_BLENDING;
 }
 
 GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
-    : Renderer(_owner),
-    m_Skeleton(nullptr),
-    m_State(nullptr),
-    m_ownsAnimationStateData(false),
-    m_usePMA(false),
-    m_timeScale(1.0f),
-    m_worldVertices(),
-    m_clipper()
+	: Renderer(_owner),
+	  m_Skeleton(nullptr),
+	  m_State(nullptr),
+	  m_ownsAnimationStateData(false),
+	  m_usePMA(false),
+	  m_timeScale(1.0f),
+	  m_worldVertices(),
+	  m_clipper(), m_FlipX(false), m_FlipY(false)
 {
-    m_Option = ALPHA_BLENDING;
+	m_Option = ALPHA_BLENDING;
 }
 
 GameEngine::SpineRenderer::~SpineRenderer()
@@ -54,11 +54,21 @@ void GameEngine::SpineRenderer::Change_Skin(const std::string& _skin)
 
 void GameEngine::SpineRenderer::Change_Animation(const std::string& _animation, bool _isLoop)
 {
+    m_State->clearTrack(1);
     m_State->setAnimation(0, _animation.c_str(), _isLoop);
+}
+
+void GameEngine::SpineRenderer::Change_Animation(const std::string& _track1, const std::string& _track2, bool _isLoop)
+{
+    m_State->setAnimation(0, _track1.c_str(), _isLoop);
+    m_State->setAnimation(1, _track2.c_str(), _isLoop);
 }
 
 void GameEngine::SpineRenderer::Update_Animation(float _deltaTime)
 {
+    m_Skeleton->setScaleX(m_FlipX ? -1 : 1);
+    m_Skeleton->setScaleY(m_FlipY ? -1 : 1);
+
     m_Skeleton->update(_deltaTime);
 
     // AnimationState 시간 업데이트
@@ -73,6 +83,15 @@ void GameEngine::SpineRenderer::Update_Animation(float _deltaTime)
 
 void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
+    if (m_Path.empty())
+    {
+        return;
+    }
+
+    if (m_State)
+    {
+        return;
+    }
 	std::string skelPath = m_Path;
 	size_t pos = skelPath.find_last_of('.');
 	if (pos != std::string::npos)
@@ -137,6 +156,10 @@ void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
+    if (m_Path.empty())
+    {
+        return;
+    }
     // Animation Update 해줘야함.
     Update_Animation(TimeManager::GetInstance().Get_DeltaTime());
 

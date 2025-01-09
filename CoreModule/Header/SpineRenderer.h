@@ -30,7 +30,21 @@ namespace GameEngine
 
 		void Change_Skin(const std::string& _skin);
 		void Change_Animation(const std::string& _animation, bool _isLoop);
+		void Change_Animation(const std::string& _track1, const std::string& _track2, bool _isLoop);
 
+		void onSpineEvent(spine::AnimationState* state, spine::EventType type, spine::TrackEntry* entry, spine::Event* event) {
+			if (type == spine::EventType_Event && event) {
+				// 이벤트가 발생했을 때 처리
+				std::string eventName = event->getData().getName().buffer();
+				int intValue = event->getIntValue();
+				float floatValue = event->getFloatValue();
+				std::string stringValue = event->getStringValue().buffer();
+
+				// 디버그 출력 예시
+				printf("Event received: %s, Int: %d, Float: %.2f, String: %s\n",
+					eventName.c_str(), intValue, floatValue, stringValue.c_str());
+			}
+		}
 		void Update_Animation(float _deltaTime);
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
 		void Render(LPDIRECT3DDEVICE9 _device) override;
