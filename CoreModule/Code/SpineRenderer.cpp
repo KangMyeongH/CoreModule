@@ -415,8 +415,8 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
     }
 
     // 그리기 끝, 필요하면 RenderState 원복
-    _device->SetRenderState(D3DRS_ZWRITEENABLE, true);
-    _device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+    //_device->SetRenderState(D3DRS_ZWRITEENABLE, true);
+    //_device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 
     // 클리퍼 완전 종료
     m_clipper.clipEnd();

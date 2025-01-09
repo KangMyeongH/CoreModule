@@ -15,6 +15,7 @@
 #include "Renderer.h"
 #include "Rigidbody.h"
 #include "Scene.h"
+#include "SpineRenderer.h"
 #include "TextureRenderer.h"
 #include "TimeManager.h"
 #include "Transform.h"

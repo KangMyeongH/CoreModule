@@ -83,9 +83,13 @@
     <ClCompile Include="Code\FileManager.cpp">
       <Filter>Manager\File</Filter>
     </ClCompile>
-    <ClCompile Include="Code\SpineRenderer.cpp" />
-    <ClCompile Include="Code\SpineLoader.cpp" />
-    <ClCompile Include="Code\SpriteAnimation.cpp" />
+    <ClCompile Include="Code\SpineRenderer.cpp">
+      <Filter>Component\03. Renderer\Spine</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SpineLoader.cpp">
+      <Filter>Manager\Spine</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -192,9 +196,13 @@
     <ClInclude Include="Header\FileManager.h">
       <Filter>Manager\File</Filter>
     </ClInclude>
-    <ClInclude Include="Header\SpineRenderer.h" />
-    <ClInclude Include="Header\SpineLoader.h" />
-    <ClInclude Include="Header\SpriteAnimation.h" />
+    <ClInclude Include="Header\SpineRenderer.h">
+      <Filter>Component\03. Renderer\Spine</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\SpineLoader.h">
+      <Filter>Manager\Spine</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -277,6 +285,15 @@
     </Filter>
     <Filter Include="Component\08. UI">
       <UniqueIdentifier>{281b4ede-16bc-42aa-ae71-b8fe811c1d3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\03. Renderer\Spine">
+      <UniqueIdentifier>{3c1b610f-9280-401c-83d4-8d972f1ca450}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Spine">
+      <UniqueIdentifier>{bd032cdb-fd82-4de2-8057-445330a8933f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\UI">
+      <UniqueIdentifier>{0ceaa63e-3ec7-40c1-9694-5281d9f319b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
