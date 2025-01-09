@@ -85,6 +85,9 @@ namespace GameEngine
 			}
 			RenderManager::GetInstance().Add_Texture(m_Path);
 			m_Texture = *(RenderManager::GetInstance().Get_Texture(m_Path));
+
+			Set_NativeSize();
+
 			return true;
 		}
 
