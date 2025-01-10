@@ -12,9 +12,9 @@ GameEngine::SpineRenderer::SpineRenderer()
 	: Renderer(nullptr),
 	  m_Skeleton(nullptr),
 	  m_State(nullptr),
-	  m_ownsAnimationStateData(false),
-	  m_usePMA(false),
-	  m_timeScale(1.0f),
+	  m_OwnsAnimationStateData(false),
+	  m_UsePMA(false),
+	  m_TimeScale(1.0f),
 	  m_worldVertices(),
 	  m_clipper(), m_FlipX(false), m_FlipY(false)
 {
@@ -25,9 +25,9 @@ GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
 	: Renderer(_owner),
 	  m_Skeleton(nullptr),
 	  m_State(nullptr),
-	  m_ownsAnimationStateData(false),
-	  m_usePMA(false),
-	  m_timeScale(1.0f),
+	  m_OwnsAnimationStateData(false),
+	  m_UsePMA(false),
+	  m_TimeScale(1.0f),
 	  m_worldVertices(),
 	  m_clipper(), m_FlipX(false), m_FlipY(false)
 {
@@ -36,7 +36,7 @@ GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
 
 GameEngine::SpineRenderer::~SpineRenderer()
 {
-	if (m_ownsAnimationStateData)
+	if (m_OwnsAnimationStateData)
 	{
 		delete m_State->getData();
 	}
@@ -83,7 +83,7 @@ void GameEngine::SpineRenderer::Update_Animation(float _deltaTime)
     m_Skeleton->update(_deltaTime);
 
     // AnimationState 시간 업데이트
-    m_State->update(_deltaTime * m_timeScale);
+    m_State->update(_deltaTime * m_TimeScale);
 
     // Skeleton에 AnimationState 적용
     m_State->apply(*m_Skeleton);
@@ -133,8 +133,8 @@ void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
     m_Skeleton = new(__FILE__, __LINE__) spine::Skeleton(skeletonData);
 
     // stateData가 없으면 새로 생성
-    m_ownsAnimationStateData = (stateData == nullptr);
-    if (m_ownsAnimationStateData) {
+    m_OwnsAnimationStateData = (stateData == nullptr);
+    if (m_OwnsAnimationStateData) {
         stateData = new(__FILE__, __LINE__) spine::AnimationStateData(skeletonData);
     }
 
@@ -323,7 +323,7 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
             * slot.getColor().b
             * attachmentColor->b;
 
-        if (m_usePMA) {
+        if (m_UsePMA) {
             r *= alpha; g *= alpha; b *= alpha;
         }
 
