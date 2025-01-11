@@ -348,11 +348,11 @@ void GameEngine::RenderManager::Destroy_Renderer()
 	m_DestroyQueue.clear();
 }
 
-void GameEngine::RenderManager::Release()
+void GameEngine::RenderManager::Clear_Component()
 {
 	for (const auto& rendererList : m_Renderers)
 	{
-		for (const auto& renderer:rendererList)
+		for (const auto& renderer : rendererList)
 		{
 			delete renderer;
 		}
@@ -362,6 +362,17 @@ void GameEngine::RenderManager::Release()
 	{
 		delete renderer;
 	}
+
+	m_Renderers[0].clear();
+	m_Renderers[1].clear();
+
+	m_RegisterQueue.clear();
+	m_DestroyQueue.clear();
+}
+
+void GameEngine::RenderManager::Release()
+{
+	Clear_Component();
 
 	for (const auto& buffer : m_BufferMap)
 	{
@@ -378,12 +389,6 @@ void GameEngine::RenderManager::Release()
 	{
 		pixelShader.second->Release();
 	}
-
-	m_Renderers[0].clear();
-	m_Renderers[1].clear();
-
-	m_RegisterQueue.clear();
-	m_DestroyQueue.clear();
 
 	m_BufferMap.clear();
 	m_TextureMap.clear();

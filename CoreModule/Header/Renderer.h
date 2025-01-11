@@ -53,13 +53,13 @@ namespace GameEngine
 			m_Material(_rhs.m_Material),
 			m_Option(_rhs.m_Option)
 		{
-			if (m_VertexBuffer) m_VertexBuffer->AddRef();
-			if (m_IndexBuffer) m_IndexBuffer->AddRef();
+			//if (m_VertexBuffer) m_VertexBuffer->AddRef();
+			//if (m_IndexBuffer) m_IndexBuffer->AddRef();
 		}
 		~Renderer() override
 		{
-			if (m_VertexBuffer) m_VertexBuffer->Release();
-			if (m_IndexBuffer) m_IndexBuffer->Release();
+			//if (m_VertexBuffer) m_VertexBuffer->Release();
+			//if (m_IndexBuffer) m_IndexBuffer->Release();
 		}
 
 		virtual void Get_Buffer(LPDIRECT3DVERTEXBUFFER9& _vertexBuffer, LPDIRECT3DINDEXBUFFER9& _indexBuffer);

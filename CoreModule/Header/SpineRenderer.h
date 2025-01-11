@@ -1,14 +1,21 @@
 #pragma once
 #include "Renderer.h"
 
+namespace spine
+{
+	class SpineLoader;
+}
+
 namespace GameEngine
 {
 	class COREMODULE_API SpineRenderer : public Renderer
 	{
 	public:
 		SpineRenderer();
+		explicit SpineRenderer(GameObject* _owner, const std::string& _path, const std::string& _skin = "", const std::string& _animation = "");
 		explicit SpineRenderer(GameObject* _owner);
-		SpineRenderer(const SpineRenderer& _rhs) = default;
+		SpineRenderer(const SpineRenderer& _rhs);
+
 		~SpineRenderer() override;
 
 		spine::Skeleton* Get_Skeleton() const { return m_Skeleton; }
@@ -55,12 +62,19 @@ namespace GameEngine
 		void to_json(nlohmann::ordered_json& _j) override;
 		void from_json(const nlohmann::ordered_json& _j) override;
 
+
 	private:
-		spine::Skeleton* 		m_Skeleton;
-		spine::AnimationState*	m_State;
-		bool            		m_OwnsAnimationStateData;
-		bool            		m_UsePMA;
-		float           		m_TimeScale;
+		std::shared_ptr<spine::SkeletonData> readSkeletonBinaryData(const std::string& _path, spine::Atlas* _atlas);
+
+	private:
+		spine::SpineLoader* 					m_Loader;
+		std::unique_ptr<spine::Atlas> 			m_Atlas;
+		std::shared_ptr<spine::SkeletonData> 	m_SkeletonData;
+		spine::Skeleton* 						m_Skeleton;
+		spine::AnimationState*					m_State;
+		bool            						m_OwnsAnimationStateData;
+		bool            						m_UsePMA;
+		float           						m_TimeScale;
 
 		// 정점/UV 보관용 버퍼
 		mutable spine::Vector<float> 		m_worldVertices;
