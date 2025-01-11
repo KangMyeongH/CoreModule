@@ -98,7 +98,8 @@ void GameEngine::Scene::Register_Component()
 {
 	for (auto& gameObject : m_GameObjects)
 	{
-		for (auto& componentVec : gameObject->Get_ComponentMap())
+		Component_Map copy = gameObject->Get_ComponentMap();
+		for (auto& componentVec : copy)
 		{
 			for (auto& component : componentVec.second)
 			{
