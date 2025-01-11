@@ -48,6 +48,7 @@ namespace GameEngine
 		void Remove_Renderer(Renderer* _renderer);
 		void Register_Renderer();
 		void Destroy_Renderer();
+		void Clear_Component();
 		void Release();
 
 		void Set_ViewMat(const D3DXMATRIX& _viewMat)	{ m_ViewMat = _viewMat; }

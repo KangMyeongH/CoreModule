@@ -8,41 +8,70 @@
 #define SPINE_MESH_VERTEX_COUNT_MAX 1000
 #endif
 
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique_test(Args&&... args) {
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
 GameEngine::SpineRenderer::SpineRenderer()
-	: Renderer(nullptr),
+	: Renderer(nullptr), m_Loader(nullptr),
 	  m_Skeleton(nullptr),
 	  m_State(nullptr),
-	  m_ownsAnimationStateData(false),
-	  m_usePMA(false),
-	  m_timeScale(1.0f),
+	  m_OwnsAnimationStateData(false),
+	  m_UsePMA(false),
+	  m_TimeScale(1.0f),
 	  m_worldVertices(),
 	  m_clipper(), m_FlipX(false), m_FlipY(false)
 {
 	m_Option = ALPHA_BLENDING;
 }
 
+GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner, 
+    const std::string& _path,
+    const std::string& _skin,
+	const std::string& _animation)
+    : Renderer(_owner), m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
+	m_OwnsAnimationStateData(false),
+	m_UsePMA(false), m_TimeScale(1.0f),
+	m_Path(_path),
+	m_CurrentSkin(_skin.c_str()),
+	m_CurrentAnimation(_animation.c_str()),
+	m_FlipX(false),
+	m_FlipY(false)
+{
+    m_Option = ALPHA_BLENDING;
+}
+
 GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
-	: Renderer(_owner),
+	: Renderer(_owner), m_Loader(nullptr),
 	  m_Skeleton(nullptr),
 	  m_State(nullptr),
-	  m_ownsAnimationStateData(false),
-	  m_usePMA(false),
-	  m_timeScale(1.0f),
-	  m_worldVertices(),
-	  m_clipper(), m_FlipX(false), m_FlipY(false)
+	  m_OwnsAnimationStateData(false),
+	  m_UsePMA(false),
+	  m_TimeScale(1.0f), m_FlipX(false), m_FlipY(false)
+{
+	m_Option = ALPHA_BLENDING;
+}
+
+GameEngine::SpineRenderer::SpineRenderer(const SpineRenderer& _rhs)
+	: Renderer(_rhs), m_Loader(nullptr),
+	  m_Skeleton(nullptr), m_State(nullptr),
+	  m_OwnsAnimationStateData(false),
+	  m_UsePMA(false),
+	  m_TimeScale(1.0f), m_FlipX(false),
+	  m_FlipY(false)
 {
 	m_Option = ALPHA_BLENDING;
 }
 
 GameEngine::SpineRenderer::~SpineRenderer()
 {
-	if (m_ownsAnimationStateData)
-	{
-		delete m_State->getData();
-	}
+    if (m_OwnsAnimationStateData) delete m_State->getData();
+    delete m_State;
+    delete m_Skeleton;
 
-	delete m_State;
-	delete m_Skeleton;
+    m_Atlas.reset();
+    delete m_Loader;
 }
 
 void GameEngine::SpineRenderer::Change_Skin(const std::string& _skin)
@@ -83,7 +112,7 @@ void GameEngine::SpineRenderer::Update_Animation(float _deltaTime)
     m_Skeleton->update(_deltaTime);
 
     // AnimationState 시간 업데이트
-    m_State->update(_deltaTime * m_timeScale);
+    m_State->update(_deltaTime * m_TimeScale);
 
     // Skeleton에 AnimationState 적용
     m_State->apply(*m_Skeleton);
@@ -103,6 +132,7 @@ void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
     {
         return;
     }
+
 	std::string skelPath = m_Path;
 	size_t pos = skelPath.find_last_of('.');
 	if (pos != std::string::npos)
@@ -110,32 +140,25 @@ void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 		skelPath.replace(pos, std::string::npos, ".skel");
 	}
 
-	spine::SpineLoader* textureLoader = new spine::SpineLoader(_device);
-	spine::Atlas* atlas = new (__FILE__, __LINE__) spine::Atlas(
-		m_Path.c_str(), textureLoader);
+    m_Loader = new spine::SpineLoader(_device);
 
-	spine::SkeletonBinary binary(atlas);
+    m_Atlas = make_unique_test<spine::Atlas>(m_Path.c_str(), m_Loader);
 
-	spine::SkeletonData* skeletonData = binary.readSkeletonDataFile(skelPath.c_str());
-	if (!skeletonData) 
-	{
-		// 로드 실패 처리
-		return;
-	}
+    m_SkeletonData = readSkeletonBinaryData(skelPath, m_Atlas.get());
 
 	// 3) AnimationStateData 생성
-	spine::AnimationStateData* stateData = new (__FILE__, __LINE__) spine::AnimationStateData(skeletonData);
+	spine::AnimationStateData* stateData = new (__FILE__, __LINE__) spine::AnimationStateData(m_SkeletonData.get());
 
 	// 필요한 만큼 버퍼 확보
 	m_worldVertices.ensureCapacity(SPINE_MESH_VERTEX_COUNT_MAX);
 
     // Skeleton 생성
-    m_Skeleton = new(__FILE__, __LINE__) spine::Skeleton(skeletonData);
+    m_Skeleton = new(__FILE__, __LINE__) spine::Skeleton(m_SkeletonData.get());
 
     // stateData가 없으면 새로 생성
-    m_ownsAnimationStateData = (stateData == nullptr);
-    if (m_ownsAnimationStateData) {
-        stateData = new(__FILE__, __LINE__) spine::AnimationStateData(skeletonData);
+    m_OwnsAnimationStateData = (stateData == nullptr);
+    if (m_OwnsAnimationStateData) {
+        stateData = new(__FILE__, __LINE__) spine::AnimationStateData(m_SkeletonData.get());
     }
 
     // AnimationState 생성
@@ -150,19 +173,29 @@ void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
     m_quadIndices.add(0);
 
 	// 스킨 목록 저장
-	spine::Vector<spine::Skin*>& skins = skeletonData->getSkins();
+	spine::Vector<spine::Skin*>& skins = m_SkeletonData->getSkins();
 	for (size_t i = 0; i < skins.size(); i++)
 	{
 		spine::Skin* skin = skins[i];
 		m_Skins.emplace_back(skin->getName().buffer());
 	}
 
-	spine::Vector<spine::Animation*>& animations = skeletonData->getAnimations();
+	spine::Vector<spine::Animation*>& animations = m_SkeletonData->getAnimations();
 	for (size_t i = 0; i <animations.size(); i++)
 	{
 		spine::Animation* animation = animations[i];
 		m_Animations.emplace_back(animation->getName().buffer());
 	}
+
+    if (!m_CurrentSkin.isEmpty())
+    {
+        Change_Skin(m_CurrentSkin.buffer());
+    }
+
+    if (!m_CurrentAnimation.isEmpty())
+    {
+        Change_Animation(m_CurrentAnimation.buffer(), true);
+    }
 }
 
 void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
@@ -323,7 +356,7 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
             * slot.getColor().b
             * attachmentColor->b;
 
-        if (m_usePMA) {
+        if (m_UsePMA) {
             r *= alpha; g *= alpha; b *= alpha;
         }
 
@@ -469,4 +502,17 @@ void GameEngine::SpineRenderer::from_json(const nlohmann::ordered_json& _j)
     {
         _j.at("flipY").get_to(m_FlipY);
     }
+}
+
+std::shared_ptr<spine::SkeletonData> GameEngine::SpineRenderer::readSkeletonBinaryData(const std::string& _path,
+	spine::Atlas* _atlas)
+{
+    spine::SkeletonBinary binary(_atlas);
+    auto skeletonData = binary.readSkeletonDataFile(_path.c_str());
+    if (!skeletonData)
+    {
+        return nullptr;
+    }
+
+    return std::shared_ptr<spine::SkeletonData>(skeletonData);
 }

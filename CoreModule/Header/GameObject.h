@@ -65,6 +65,12 @@ namespace GameEngine
 		T* Add_Component(Args&&... _args)
 		{
 			static_assert(std::is_base_of<Component, T>::value, "T must be derived from Component");
+
+			if (Get_Component<T>())
+			{
+				return nullptr;
+			}
+
 			T* component = new T(this, std::forward<Args>(_args)...);
 			m_ComponentMap[typeid(T)].push_back(component);
 			// 각각의 Component매니저에 주소값 뿌리기.
