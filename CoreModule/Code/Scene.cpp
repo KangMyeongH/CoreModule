@@ -96,7 +96,8 @@ void GameEngine::Scene::Destroy_GameObject()
 
 void GameEngine::Scene::Register_Component()
 {
-	for (auto& gameObject : m_GameObjects)
+	GameObjectList gameObjects = m_GameObjects;
+	for (auto& gameObject : gameObjects)
 	{
 		Component_Map copy = gameObject->Get_ComponentMap();
 		for (auto& componentVec : copy)
