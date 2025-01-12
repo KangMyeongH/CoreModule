@@ -2,21 +2,33 @@
 #include "Behaviour.h"
 namespace GameEngine
 {
-	class UI : public Behaviour
+	class COREMODULE_API UI : public Behaviour
 	{
 	public:
-		UI() : Behaviour(nullptr), m_Texture(nullptr)
+		enum RenderOption
+		{
+			ALPHA_RENDERING,
+			ALPHA_BLENDING,
+			RENDER_OPTION_END
+		};
+
+		UI() : Behaviour(nullptr), m_Option(ALPHA_RENDERING)
 		{
 		}
 
-		explicit UI(GameObject* _owner) : Behaviour(_owner), m_Texture(nullptr)
+		explicit UI(GameObject* _owner) : Behaviour(_owner), m_Option(ALPHA_RENDERING)
 		{
 		}
 
 		~UI() override;
 
+	public:
+		RenderOption Get_RenderOption() const { return m_Option; }
+
 	private:
-		std::wstring		m_Path;
-		LPDIRECT3DTEXTURE9	m_Texture;
+		//std::wstring		m_Path;
+		//LPDIRECT3DTEXTURE9	m_Texture;
+
+		RenderOption m_Option;
 	};
 }

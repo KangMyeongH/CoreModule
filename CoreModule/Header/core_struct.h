@@ -8,9 +8,9 @@ namespace GameEngine
 	struct CUSTOM_VERTEX
 	{
 		D3DXVECTOR3 position;   // 정점의 위치
-		DWORD color;            // 정점의 색상 (임의로 설정)
+		Vector2		TextureUV;
 	};
-	const ULONG FVF_UITEX = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+	const ULONG FVF_UITEX = D3DFVF_XYZ | D3DFVF_TEX1;
 
 
 	//Texture Vertex 구조체

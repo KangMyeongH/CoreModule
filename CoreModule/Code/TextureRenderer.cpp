@@ -62,7 +62,6 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pIndex[1]._1 = 2;
 	pIndex[1]._2 = 3;
 
-
 	m_VertexBuffer->Unlock();
 	m_IndexBuffer->Unlock();
 }
