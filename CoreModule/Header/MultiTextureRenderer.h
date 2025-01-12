@@ -23,7 +23,8 @@ namespace GameEngine
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
-			m_TriangleCnt = 2;
+			m_
+				Cnt = 2;
 			m_FVF = FVF_TEX;
 
 			D3DXMatrixIdentity(&m_TextureScaleMatrix);

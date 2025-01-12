@@ -4,6 +4,15 @@ namespace GameEngine
 {
 	class Collider;
 
+	// UI Vertex 구조체
+	struct CUSTOM_VERTEX
+	{
+		D3DXVECTOR3 position;   // 정점의 위치
+		DWORD color;            // 정점의 색상 (임의로 설정)
+	};
+	const ULONG FVF_UITEX = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+
+
 	//Texture Vertex 구조체
 	struct VTXTEX
 	{

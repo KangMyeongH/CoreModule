@@ -15,6 +15,8 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "Rigidbody.h"
+#include "TextureUI.h"
+#include "UIManager.h"
 
 
 // 게임 오브젝트의 생성을 호출 즉시 바로
@@ -102,6 +104,12 @@ namespace GameEngine
 			if (dynamic_cast<Light*>(component))
 			{
 				RenderManager::GetInstance().Add_Light(dynamic_cast<Light*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<TextureUI*>(component))
+			{
+				UIManager::GetInstance().Add_TextureUI(dynamic_cast<TextureUI*>(component));
 				return component;
 			}
 
