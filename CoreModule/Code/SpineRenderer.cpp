@@ -66,7 +66,11 @@ GameEngine::SpineRenderer::SpineRenderer(const SpineRenderer& _rhs)
 
 GameEngine::SpineRenderer::~SpineRenderer()
 {
-    if (m_OwnsAnimationStateData) delete m_State->getData();
+    if (m_OwnsAnimationStateData)
+    {
+        delete m_State->getData();
+        m_SkeletonData.reset();
+    }
     delete m_State;
     delete m_Skeleton;
 
@@ -156,10 +160,7 @@ void GameEngine::SpineRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
     m_Skeleton = new(__FILE__, __LINE__) spine::Skeleton(m_SkeletonData.get());
 
     // stateData啊 绝栏搁 货肺 积己
-    m_OwnsAnimationStateData = (stateData == nullptr);
-    if (m_OwnsAnimationStateData) {
-        stateData = new(__FILE__, __LINE__) spine::AnimationStateData(m_SkeletonData.get());
-    }
+    m_OwnsAnimationStateData = true;
 
     // AnimationState 积己
     m_State = new(__FILE__, __LINE__) spine::AnimationState(stateData);
