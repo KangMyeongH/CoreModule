@@ -38,6 +38,17 @@ namespace GameEngine
 
 			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
+		explicit TextureRenderer(GameObject* _owner, const std::wstring& _path) : Renderer(_owner),
+		m_Path(_path),
+			m_Texture(nullptr), m_FlipX(false), m_FlipY(false)
+		{
+			m_VertexSize = sizeof(VTXTEX);
+			m_VertexCnt = 4;
+			m_TriangleCnt = 2;
+			m_FVF = FVF_TEX;
+
+			D3DXMatrixIdentity(&m_TextureScaleMatrix);
+		}
 		TextureRenderer(const TextureRenderer& _rhs) : Renderer(_rhs),
 			m_Texture(_rhs.m_Texture), m_FlipX(_rhs.m_FlipX), m_FlipY(_rhs.m_FlipY)
 		{
@@ -66,6 +77,10 @@ namespace GameEngine
 
 		bool Set_Texture(const std::wstring& _path)
 		{
+			if (_path.empty())
+			{
+				return false;
+			}
 			//set path는 로딩에서 다 해줘야 프레임 드랍이 없을 듯
 			m_Path = _path;
 			RenderManager::GetInstance().Add_Texture(_path);

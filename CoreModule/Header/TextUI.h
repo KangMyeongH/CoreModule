@@ -14,8 +14,13 @@ namespace GameEngine
 		void Ready_UI(LPDIRECT3DDEVICE9 _device) override;
 		void Render_UI(LPDIRECT3DDEVICE9 _device) override;
 
+		std::wstring Get_Buffer() const { return m_Buffer; }
 		void Set_Buffer(const std::wstring& _buff) { m_Buffer = _buff; }
+
+		int Get_FontSize() const { return m_FontSize; }
 		void Set_FontSize(int _size);
+
+		D3DXCOLOR Get_FontColor() const { return m_FontColor; }
 		void Set_FontColor(const D3DXCOLOR _color) { m_FontColor = _color; }
 
 		bool Is_MouseHovered() override;
