@@ -145,3 +145,23 @@ void GameEngine::TextUI::from_json(const nlohmann::ordered_json& _j)
 		_j.at("colorA").get_to(m_FontColor.a);
 	}
 }
+
+bool GameEngine::TextUI::Is_MouseHovered()
+{
+	return false;
+}
+
+bool GameEngine::TextUI::Is_ButtonDown()
+{
+	return false;
+}
+
+bool GameEngine::TextUI::Is_ButtonHold()
+{
+	return false;
+}
+
+bool GameEngine::TextUI::Is_ButtonUp()
+{
+	return false;
+}

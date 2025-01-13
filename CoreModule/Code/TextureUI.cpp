@@ -1,5 +1,6 @@
 #include "TextureUI.h"
 
+#include "InputManager.h"
 #include "RenderManager.h"
 #include "Transform.h"
 #include "UIManager.h"
@@ -66,4 +67,45 @@ void GameEngine::TextureUI::Render_UI(LPDIRECT3DDEVICE9 _device)
     _device->SetFVF(FVF_UITEX);
     _device->SetStreamSource(0, m_VertexBuffer, 0, sizeof(CUSTOM_VERTEX));
     _device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);  // 두 개의 삼각형을 그림
+}
+
+bool GameEngine::TextureUI::Is_MouseHovered()
+{
+    // 마우스 좌표
+    const Vector3 mousePos = InputManager::GetInstance().Get_MousePos();
+    POINT winMousePos;
+    winMousePos.x = static_cast<long>(mousePos.x + 960.f);
+    winMousePos.y = static_cast<long>(mousePos.y + 540.f);
+
+    // UI의 크기 구하기
+    D3DXMATRIX mat = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
+    Vector2 scale;
+    scale.x = sqrtf(mat._11 * mat._11 + mat._12 * mat._12 + mat._13 * mat._13);
+    scale.y = sqrtf(mat._21 * mat._21 + mat._22 * mat._22 + mat._23 * mat._23);
+    Vector3 position = Get_Transform().Position();
+
+    RECT rect =
+    {
+        static_cast<LONG>(position.x - scale.x * 0.5f),
+        static_cast<LONG>(position.y - scale.y * 0.5f),
+        static_cast<LONG>(position.x + scale.x * 0.5f),
+        static_cast<LONG>(position.y + scale.y * 0.5f)
+    };
+
+    return PtInRect(&rect, winMousePos);
+}
+
+bool GameEngine::TextureUI::Is_ButtonDown()
+{
+    return Is_MouseHovered() && InputManager::GetInstance().Key_Down(VK_LBUTTON);
+}
+
+bool GameEngine::TextureUI::Is_ButtonHold()
+{
+    return Is_MouseHovered() && InputManager::GetInstance().Key_Pressing(VK_LBUTTON);
+}
+
+bool GameEngine::TextureUI::Is_ButtonUp()
+{
+    return Is_MouseHovered() && InputManager::GetInstance().Key_Up(VK_LBUTTON);
 }

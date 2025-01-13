@@ -26,6 +26,11 @@ namespace GameEngine
 		RenderOption 	Get_RenderOption() const { return m_Option; }
 		void			Set_RenderOption(const RenderOption _option) { m_Option = _option; }
 
+		virtual bool 	Is_MouseHovered() = 0;
+		virtual bool	Is_ButtonDown() = 0;
+		virtual bool	Is_ButtonHold() = 0;
+		virtual bool	Is_ButtonUp() = 0;
+
 		virtual void Ready_UI(LPDIRECT3DDEVICE9 _device) = 0;
 		virtual void Render_UI(LPDIRECT3DDEVICE9 _device) = 0;
 		void Destroy() override;

@@ -50,6 +50,12 @@ namespace GameEngine
 	private:
 		std::shared_ptr<spine::SkeletonData> readSkeletonBinaryData(const std::string& _path, spine::Atlas* _atlas);
 
+	public:
+		bool Is_MouseHovered() override;
+		bool Is_ButtonDown() override;
+		bool Is_ButtonHold() override;
+		bool Is_ButtonUp() override;
+
 	private:
 		spine::SpineLoader* m_Loader;
 		std::unique_ptr<spine::Atlas> 			m_Atlas;

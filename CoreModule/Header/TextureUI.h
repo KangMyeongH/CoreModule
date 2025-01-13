@@ -77,6 +77,11 @@ namespace GameEngine
 			}
 		}
 
+		bool Is_MouseHovered() override;
+		bool Is_ButtonDown() override;
+		bool Is_ButtonHold() override;
+		bool Is_ButtonUp() override;
+
 	private:
 		IDirect3DVertexBuffer9* m_VertexBuffer;
 		LPDIRECT3DTEXTURE9		m_Texture;
