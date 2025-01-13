@@ -61,6 +61,7 @@ namespace GameEngine
 		LPDIRECT3DTEXTURE9		m_Texture;
 		std::wstring			m_Path;
 	};
+	REGISTER_COMPONENT(TextureUI)
 }
 
 

@@ -45,7 +45,7 @@ void GameEngine::TextureUI::Set_NativeSize()
     {
     	D3DXIMAGE_INFO imageInfo;
 		D3DXGetImageInfoFromFile(m_Path.c_str(), &imageInfo);
-		D3DXMatrixScaling(&m_TextureScaleMatrix, static_cast<float>(imageInfo.Width) / 100.f, static_cast<float>(imageInfo.Height) / 100.f, 1.f);
+		D3DXMatrixScaling(&m_TextureScaleMatrix, static_cast<float>(imageInfo.Width), static_cast<float>(imageInfo.Height), 1.f);
     }
 }
 
@@ -57,8 +57,7 @@ void GameEngine::TextureUI::Render_UI(LPDIRECT3DDEVICE9 _device)
 
     //texture 세팅
     _device->SetTexture(0, m_Texture);
-
-    _device->SetStreamSource(0, m_VertexBuffer, 0, sizeof(FVF_UITEX));
     _device->SetFVF(FVF_UITEX);
+    _device->SetStreamSource(0, m_VertexBuffer, 0, sizeof(CUSTOM_VERTEX));
     _device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);  // 두 개의 삼각형을 그림
 }

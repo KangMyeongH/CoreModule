@@ -32,7 +32,7 @@ void GameEngine::UIManager::Initialize(LPDIRECT3DDEVICE9 _device)
 		FVF_UITEX,         // 정점 형식
 		D3DPOOL_MANAGED,               // 메모리 풀
 		&m_VertexBuffer,               // 버텍스 버퍼 포인터
-		NULL                           // 반환할 물리적 메모리 포인터 없음
+		nullptr                           // 반환할 물리적 메모리 포인터 없음
 	);
 
 	// 버텍스 버퍼에 데이터 복사
@@ -47,7 +47,7 @@ void GameEngine::UIManager::Render_UI()
 	D3DXMATRIX matProj, matView;
 
 	// 1. 직교 투영 행렬 설정
-	D3DXMatrixOrthoLH(&matProj, 1920, 1080, 0.0f, 1.0f);
+	D3DXMatrixOrthoLH(&matProj, 1920, 1080, -1.0f, 1.0f);
 	m_Device->SetTransform(D3DTS_PROJECTION, &matProj);
 
 	// 2. 뷰 행렬 설정 (Identity)
