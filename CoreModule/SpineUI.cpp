@@ -503,3 +503,23 @@ std::shared_ptr<spine::SkeletonData> GameEngine::SpineUI::readSkeletonBinaryData
 
     return std::shared_ptr<spine::SkeletonData>(skeletonData);
 }
+
+bool GameEngine::SpineUI::Is_MouseHovered()
+{
+    return false;
+}
+
+bool GameEngine::SpineUI::Is_ButtonDown()
+{
+    return false;
+}
+
+bool GameEngine::SpineUI::Is_ButtonHold()
+{
+    return false;
+}
+
+bool GameEngine::SpineUI::Is_ButtonUp()
+{
+    return false;
+}

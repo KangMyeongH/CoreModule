@@ -18,6 +18,11 @@ namespace GameEngine
 		void Set_FontSize(int _size);
 		void Set_FontColor(const D3DXCOLOR _color) { m_FontColor = _color; }
 
+		bool Is_MouseHovered() override;
+		bool Is_ButtonDown() override;
+		bool Is_ButtonHold() override;
+		bool Is_ButtonUp() override;
+
 	public:
 		void to_json(nlohmann::ordered_json& _j) override;
 		void from_json(const nlohmann::ordered_json& _j) override;
