@@ -83,6 +83,8 @@ namespace GameEngine
 		Light* m_GlobalLight;
 
 
+
+
 		// 컴객체 주소를 해당하는 컴포넌트가 공유해서 사용
 		// Renderer매니저가 인덱스, 버텍스 버퍼의 주소 Map컨테이너로 들고있어야할지.......
 

@@ -101,6 +101,9 @@
     <ClCompile Include="SpineUI.cpp">
       <Filter>Component\08. UI\01. SpineUI</Filter>
     </ClCompile>
+    <ClCompile Include="Code\TextUI.cpp">
+      <Filter>Component\08. UI\02. Text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -225,6 +228,9 @@
     <ClInclude Include="Header\SpineUI.h">
       <Filter>Component\08. UI\01. SpineUI</Filter>
     </ClInclude>
+    <ClInclude Include="Header\TextUI.h">
+      <Filter>Component\08. UI\02. Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -322,6 +328,9 @@
     </Filter>
     <Filter Include="Component\08. UI\01. SpineUI">
       <UniqueIdentifier>{3be84fb3-e1d2-4831-a52e-1e23c40e36c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\08. UI\02. Text">
+      <UniqueIdentifier>{c7832419-acce-462f-8625-64a1812a1945}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
