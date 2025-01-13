@@ -25,10 +25,14 @@ namespace GameEngine
 	public:
 		RenderOption Get_RenderOption() const { return m_Option; }
 
-	private:
-		//std::wstring		m_Path;
-		//LPDIRECT3DTEXTURE9	m_Texture;
+		virtual void Ready_UI(LPDIRECT3DDEVICE9 _device) = 0;
+		virtual void Render_UI(LPDIRECT3DDEVICE9 _device) = 0;
+		void Destroy() override;
+		Component* Clone() const override = 0;
 
-		RenderOption m_Option;
+	protected:
+		RenderOption 	m_Option;
+		D3DXMATRIX 		m_TextureScaleMatrix;
+
 	};
 }

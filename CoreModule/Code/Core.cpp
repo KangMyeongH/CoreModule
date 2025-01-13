@@ -150,7 +150,6 @@ void GameEngine::Core::render(LPDIRECT3DDEVICE9 _device)
 	m_RenderManager->Render(_device);
 
 	// UI
-
 	m_UIManager->Render_UI();
 
 	// render end

@@ -177,6 +177,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\SphereCollider.h" />
     <ClInclude Include="Header\SpineLoader.h" />
     <ClInclude Include="Header\SpineRenderer.h" />
+    <ClInclude Include="Header\SpineUI.h" />
     <ClInclude Include="Header\TextureRenderer.h" />
     <ClInclude Include="Header\TextureUI.h" />
     <ClInclude Include="Header\TimeManager.h" />
@@ -218,6 +219,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\Transform.cpp" />
     <ClCompile Include="Code\UI.cpp" />
     <ClCompile Include="Code\UIManager.cpp" />
+    <ClCompile Include="SpineUI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

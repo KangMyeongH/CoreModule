@@ -98,6 +98,9 @@
     <ClCompile Include="Code\UIManager.cpp">
       <Filter>Manager\UI</Filter>
     </ClCompile>
+    <ClCompile Include="SpineUI.cpp">
+      <Filter>Component\08. UI\01. SpineUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -219,6 +222,9 @@
     <ClInclude Include="Header\UIManager.h">
       <Filter>Manager\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Header\SpineUI.h">
+      <Filter>Component\08. UI\01. SpineUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -313,6 +319,9 @@
     </Filter>
     <Filter Include="Component\08. UI\00. TextureUI">
       <UniqueIdentifier>{4f4785cf-0982-4f8e-8d78-556637a76817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\08. UI\01. SpineUI">
+      <UniqueIdentifier>{3be84fb3-e1d2-4831-a52e-1e23c40e36c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

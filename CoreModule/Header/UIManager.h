@@ -13,30 +13,33 @@ namespace GameEngine
 		//				constructor				//
 		//======================================//
 		UIManager() = default;
-		~UIManager() = default;
+		~UIManager()
+		{
+			Release();
+		}
 	public:
 		DECLARE_SINGLETON(UIManager)
 
 	public:
-		void Initialize(LPDIRECT3DDEVICE9 _device);
-		void Render_UI();
-		void Add_TextureUI(TextureUI* _textureUI);
+		IDirect3DVertexBuffer9* Get_VertexBuffer() const { return m_VertexBuffer; }
 
-		void Remove_Renderer(TextureUI* _textureUI);
-		void Register_UI();
-		void Destroy_UI();
-		void Clear_Component();
-		void Release();
+		void 	Initialize(LPDIRECT3DDEVICE9 _device);
+		void 	Render_UI();
+		void 	Add_UI(UI* _ui);
+
+		void 	Remove_Renderer(UI* _ui);
+		void 	Register_UI();
+		void 	Destroy_UI();
+		void 	Clear_Component();
+		void 	Release();
 
 	private:
-
 		LPDIRECT3DDEVICE9		m_Device;
-		IDirect3DVertexBuffer9* m_pVertexBuffer;
+		IDirect3DVertexBuffer9* m_VertexBuffer;
 		
-		std::vector<TextureUI*> 		m_TextureUI[UI::RENDER_OPTION_END];
-
-		std::list<TextureUI*>		m_RegisterQueue;
-		std::list<TextureUI*>		m_DestroyQueue;
+		std::vector<UI*> 		m_TextureUI[UI::RENDER_OPTION_END];
+		std::list<UI*>			m_RegisterQueue;
+		std::list<UI*>			m_DestroyQueue;
 	};
 }
 

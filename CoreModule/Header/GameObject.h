@@ -3,6 +3,8 @@
 #include <unordered_map>
 
 #include "BoxCollider.h"
+#include "Camera.h"
+#include "CameraManager.h"
 #include "Collision.h"
 #include "CollisionManager.h"
 #include "Component.h"
@@ -107,9 +109,15 @@ namespace GameEngine
 				return component;
 			}
 
-			if (dynamic_cast<TextureUI*>(component))
+			if (dynamic_cast<UI*>(component))
 			{
-				UIManager::GetInstance().Add_TextureUI(dynamic_cast<TextureUI*>(component));
+				UIManager::GetInstance().Add_UI(dynamic_cast<UI*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<Camera*>(component))
+			{
+				CameraManager::GetInstance().Set_CurrentCamera(dynamic_cast<Camera*>(component));
 				return component;
 			}
 

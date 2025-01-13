@@ -29,22 +29,22 @@ void GameEngine::UIManager::Initialize(LPDIRECT3DDEVICE9 _device)
 	(
 		sizeof(vertices),              // 버퍼 크기
 		D3DUSAGE_WRITEONLY,            // 쓰기 전용
-		GameEngine::FVF_UITEX,         // 정점 형식
+		FVF_UITEX,         // 정점 형식
 		D3DPOOL_MANAGED,               // 메모리 풀
-		&m_pVertexBuffer,               // 버텍스 버퍼 포인터
+		&m_VertexBuffer,               // 버텍스 버퍼 포인터
 		NULL                           // 반환할 물리적 메모리 포인터 없음
 	);
 
 	// 버텍스 버퍼에 데이터 복사
 	VOID* pVoid;
-	m_pVertexBuffer->Lock(0, 0, (void**)&pVoid, 0);
+	m_VertexBuffer->Lock(0, 0, (void**)&pVoid, 0);
 	memcpy(pVoid, vertices, sizeof(vertices));
-	m_pVertexBuffer->Unlock();
+	m_VertexBuffer->Unlock();
 }
 
 void GameEngine::UIManager::Render_UI()
 {
-	D3DXMATRIX matProj, matView, matWorld;
+	D3DXMATRIX matProj, matView;
 
 	// 1. 직교 투영 행렬 설정
 	D3DXMatrixOrthoLH(&matProj, 1920, 1080, 0.0f, 1.0f);
@@ -54,10 +54,11 @@ void GameEngine::UIManager::Render_UI()
 	D3DXMatrixIdentity(&matView);
 	m_Device->SetTransform(D3DTS_VIEW, &matView);
 
-	m_Device->SetMaterial(nullptr);
 	m_Device->SetRenderState(D3DRS_LIGHTING, false);
 
 	m_Device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+
+	m_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//불투명 객체 렌더
 	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 알파 블렌딩 활성화
@@ -70,7 +71,7 @@ void GameEngine::UIManager::Render_UI()
 	{
 		if (textureUI->Is_Enabled() && textureUI->Get_GameObject()->Is_Active())
 		{
-			textureUI->Render_Texture(m_Device);
+			textureUI->Render_UI(m_Device);
 		}
 	}
 
@@ -81,69 +82,54 @@ void GameEngine::UIManager::Render_UI()
 	m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);     // Z 버퍼 쓰기 비활성화
 
-	//std::sort(m_Renderers[1].begin(), m_Renderers[1].end(), [&_device](Renderer* dst, Renderer* src)->bool
-	//	{
-	//		D3DXMATRIX matCameraWorld;
-	//
-	//		_device->GetTransform(D3DTS_VIEW, &matCameraWorld);
-	//		D3DXMatrixInverse(&matCameraWorld, 0, &matCameraWorld);
-	//
-	//		Vector3   cameraPosition;
-	//		memcpy(&cameraPosition, &matCameraWorld.m[3][0], sizeof(Vector3));
-	//
-	//		Vector3 dstZ = cameraPosition - dst->Get_Transform().Position();
-	//		Vector3	srcZ = cameraPosition - src->Get_Transform().Position();
-	//
-	//		float dstLength = D3DXVec3Length(&dstZ);
-	//		float srcLength = D3DXVec3Length(&srcZ);
-	//
-	//		return dstLength > srcLength;
-	//	});
-
 	for (auto textureUI : m_TextureUI[UI::ALPHA_BLENDING])
 	{
 		if (textureUI->Is_Enabled() && textureUI->Get_GameObject()->Is_Active())
 		{
-			textureUI->Render_Texture(m_Device);
+			textureUI->Render_UI(m_Device);
 		}
 	}
+
+	m_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
-void GameEngine::UIManager::Add_TextureUI(TextureUI* _textureUI)
+void GameEngine::UIManager::Add_UI(UI* _ui)
 {
-	_textureUI->Ready_Buffer(m_Device, m_pVertexBuffer);
-	m_pVertexBuffer->AddRef();
-
-	_textureUI->Update_Texture();
-
-	m_RegisterQueue.push_back(_textureUI);
+	m_RegisterQueue.push_back(_ui);
 }
 
-void GameEngine::UIManager::Remove_Renderer(TextureUI* _textureUI)
+void GameEngine::UIManager::Remove_Renderer(UI* _ui)
 {
 	for (auto& texture : m_DestroyQueue)
 	{
-		if (texture == _textureUI)
+		if (texture == _ui)
 		{
 			return;
 		}
 	}
 
-	m_DestroyQueue.push_back(_textureUI);
+	m_DestroyQueue.push_back(_ui);
 }
 
 void GameEngine::UIManager::Register_UI()
 {
 	for (auto it = m_RegisterQueue.begin(); it != m_RegisterQueue.end();)
 	{
-		TextureUI* textureUI = *it;
+		UI* _ui = *it;
 
-		if (textureUI->Is_Enabled())
+		if (_ui->Is_Enabled())
 		{
-			if (textureUI->Get_RenderOption() == UI::ALPHA_RENDERING)
-				m_TextureUI[UI::ALPHA_RENDERING].push_back(textureUI);
-			else if (textureUI->Get_RenderOption() == UI::ALPHA_BLENDING)
-				m_TextureUI[UI::ALPHA_BLENDING].push_back(textureUI);
+			if (_ui->Get_RenderOption() == UI::ALPHA_RENDERING)
+			{
+				m_TextureUI[UI::ALPHA_RENDERING].push_back(_ui);
+				_ui->Ready_UI(m_Device);
+			}
+
+			else if (_ui->Get_RenderOption() == UI::ALPHA_BLENDING)
+			{
+				m_TextureUI[UI::ALPHA_BLENDING].push_back(_ui);
+				_ui->Ready_UI(m_Device);
+			}
 
 			it = m_RegisterQueue.erase(it);
 		}
@@ -199,5 +185,5 @@ void GameEngine::UIManager::Clear_Component()
 void GameEngine::UIManager::Release()
 {
 	Clear_Component();
-	m_pVertexBuffer->Release();
+	m_VertexBuffer->Release();
 }
