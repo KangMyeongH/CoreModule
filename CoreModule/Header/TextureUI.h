@@ -8,18 +8,21 @@ namespace GameEngine
 	public:
 		TextureUI()
 			: UI(nullptr),
-			  m_VertexBuffer(nullptr),
-			  m_Texture(nullptr), m_bFlipX(false), m_bFlipY(false)
-		{
-		}
+			m_VertexBuffer(nullptr),
+			m_Texture(nullptr), m_bFlipX(false), m_bFlipY(false)
+		{}
 
 		explicit TextureUI(GameObject* _owner)
 			: UI(_owner),
 			  m_VertexBuffer(nullptr),
 			  m_Texture(nullptr), m_bFlipX(false), m_bFlipY(false)
-		{
-		}
+		{}
 
+		explicit TextureUI(GameObject* _owner, const std::wstring& _path)
+			: UI(_owner),
+			m_VertexBuffer(nullptr),
+			m_Texture(nullptr), m_Path(_path),m_bFlipX(false), m_bFlipY(false)
+		{}
 		TextureUI(const TextureUI& _rhs);
 
 		~TextureUI() override;

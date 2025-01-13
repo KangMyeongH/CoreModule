@@ -39,7 +39,7 @@ namespace GameEngine
 		// Scene management
 		bool Initialize(const std::wstring& _path);
 		void Release();
-		bool Load_Scene(std::string _sceneName);
+		void Change_Scene(const std::wstring& _sceneName);
 
 		// GameObject management
 		GameObject* 		Add_GameObject();
@@ -48,6 +48,8 @@ namespace GameEngine
 		GameObject* 		Find(const std::string& _name);
 
 		std::string Get_SceneName() { return m_SceneName; }
+
+		void Register_NextScene();
 
 		void Destroy_GameObject();
 
@@ -62,6 +64,7 @@ namespace GameEngine
 	private:
 		GameObjectList			m_GameObjects;
 		std::string 			m_SceneName;
+		std::wstring			m_NextScene;
 	};
 
 }

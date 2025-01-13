@@ -219,7 +219,8 @@ void GameEngine::RenderManager::Add_Texture(const std::wstring& _path)
 {
 	if (m_TextureMap.find(_path) != m_TextureMap.end())
 		return;
-
+	if (_path.empty())
+		return;
 	LPDIRECT3DTEXTURE9 texture = nullptr;
 	if (E_FAIL != D3DXCreateTextureFromFile(m_Device, _path.c_str(), &texture))
 	{

@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "CameraManager.h"
+#include "FileManager.h"
+#include "TimeManager.h"
 
 IMPLEMENT_SINGLETON(GameEngine::Scene)
 
@@ -44,9 +46,9 @@ void GameEngine::Scene::Release()
 	m_GameObjects.clear();
 }
 
-bool GameEngine::Scene::Load_Scene(std::string _sceneName)
+void GameEngine::Scene::Change_Scene(const std::wstring& _sceneName)
 {
-	return false;
+	m_NextScene = _sceneName;
 }
 
 GameEngine::GameObject* GameEngine::Scene::Add_GameObject()
@@ -80,6 +82,30 @@ GameEngine::GameObject* GameEngine::Scene::Find(const std::string& _name)
 	}
 
 	return nullptr;
+}
+
+void GameEngine::Scene::Register_NextScene()
+{
+	if (!m_NextScene.empty())
+	{
+		const std::wstring basePath = L"..\\Client\\Assets\\Scenes\\";
+		const std::wstring fileExtension = L".json";
+		const std::wstring fullPath = basePath + m_NextScene + fileExtension;
+		// todo : fade out
+
+// 화면이 검정색으로 가득 차면.
+		Release();
+		MonoBehaviourManager::GetInstance().Release();
+		CollisionManager::GetInstance().Release();
+		PhysicsManager::GetInstance().Release();
+		RenderManager::GetInstance().Clear_Component();
+		UIManager::GetInstance().Clear_Component();
+
+		FileManager::GetInstance().LoadSceneData(fullPath);
+		TimeManager::GetInstance().Initialize();
+		m_NextScene.clear();
+		// todo : fade in
+	}
 }
 
 void GameEngine::Scene::Destroy_GameObject()

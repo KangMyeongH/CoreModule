@@ -16,6 +16,7 @@ namespace GameEngine
 		DirectoryTreeNode* 	Get_RootDirectory() const { return m_Root; }
 		DirectoryTreeNode* 	Find_DirectoryNode(DirectoryTreeNode* _root, const std::wstring& _path);
 
+		bool				LoadSceneData(const std::wstring& _path);
 		void				Load_SingleTexture(const DirectoryTreeNode* _root);
 		void				Load_MultiTexture(const DirectoryTreeNode* _root);
 		void 				Release();

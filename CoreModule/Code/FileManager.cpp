@@ -1,10 +1,12 @@
 #include "FileManager.h"
 
 #include <codecvt>
+#include <fstream>
 #include <locale>
 #include <sstream>
 
 #include "RenderManager.h"
+#include "Scene.h"
 
 IMPLEMENT_SINGLETON(GameEngine::FileManager)
 
@@ -80,6 +82,22 @@ GameEngine::DirectoryTreeNode* GameEngine::FileManager::Find_DirectoryNode(Direc
 	//}
 
 	//return nullptr;
+}
+
+bool GameEngine::FileManager::LoadSceneData(const std::wstring& _path)
+{
+	if (_path.empty()) return false;
+	std::ifstream inFile(_path);
+	if (!inFile.is_open())
+	{
+		return false;
+	}
+	nlohmann::ordered_json j;
+	inFile >> j;
+	Scene::GetInstance().From_Json(j);
+	inFile.clear();
+	inFile.close();
+	return true;
 }
 
 void GameEngine::FileManager::Load_SingleTexture(const DirectoryTreeNode* _root)

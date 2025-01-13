@@ -34,6 +34,10 @@ void GameEngine::TextureUI::Ready_UI(LPDIRECT3DDEVICE9 _device)
 bool GameEngine::TextureUI::Set_Texture(const std::wstring& _path)
 {
     //set path는 로딩에서 다 해줘야 프레임 드랍이 없을 듯
+    if (_path.empty())
+    {
+        return false;
+    }
     m_Path = _path;
     RenderManager::GetInstance().Add_Texture(_path);
     m_Texture = *(RenderManager::GetInstance().Get_Texture(_path));
