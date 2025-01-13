@@ -11,7 +11,8 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	m_FVF = FVF_TEX;
 	UINT indexSize = sizeof(INDEX16);
 
-	if (E_FAIL == _device->CreateVertexBuffer(m_VertexCnt * m_VertexSize,
+	if (E_FAIL == _device->CreateVertexBuffer(
+		m_VertexCnt * m_VertexSize,
 		0,
 		m_FVF,
 		D3DPOOL_MANAGED,
@@ -60,7 +61,6 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 	pIndex[1]._0 = 0;
 	pIndex[1]._1 = 2;
 	pIndex[1]._2 = 3;
-
 
 	m_VertexBuffer->Unlock();
 	m_IndexBuffer->Unlock();

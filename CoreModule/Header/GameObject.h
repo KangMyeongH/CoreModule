@@ -3,6 +3,8 @@
 #include <unordered_map>
 
 #include "BoxCollider.h"
+#include "Camera.h"
+#include "CameraManager.h"
 #include "Collision.h"
 #include "CollisionManager.h"
 #include "Component.h"
@@ -15,6 +17,8 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "Rigidbody.h"
+#include "TextureUI.h"
+#include "UIManager.h"
 
 
 // 게임 오브젝트의 생성을 호출 즉시 바로
@@ -102,6 +106,18 @@ namespace GameEngine
 			if (dynamic_cast<Light*>(component))
 			{
 				RenderManager::GetInstance().Add_Light(dynamic_cast<Light*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<UI*>(component))
+			{
+				UIManager::GetInstance().Add_UI(dynamic_cast<UI*>(component));
+				return component;
+			}
+
+			if (dynamic_cast<Camera*>(component))
+			{
+				CameraManager::GetInstance().Set_CurrentCamera(dynamic_cast<Camera*>(component));
 				return component;
 			}
 

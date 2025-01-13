@@ -89,7 +89,18 @@
     <ClCompile Include="Code\SpineLoader.cpp">
       <Filter>Manager\Spine</Filter>
     </ClCompile>
-    <ClCompile Include="Code\UI.cpp" />
+    <ClCompile Include="Code\UI.cpp">
+      <Filter>Component\08. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\TextureUI.cpp">
+      <Filter>Component\08. UI\00. TextureUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\UIManager.cpp">
+      <Filter>Manager\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SpineUI.cpp">
+      <Filter>Component\08. UI\01. SpineUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -100,9 +111,6 @@
     </ClInclude>
     <ClInclude Include="Header\MonoBehaviour.h">
       <Filter>Component\02. MonoBehaviour</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Renderer.h">
-      <Filter>Component\03. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Header\Rigidbody.h">
       <Filter>Component\04. Rigidbidy</Filter>
@@ -202,7 +210,21 @@
     <ClInclude Include="Header\SpineLoader.h">
       <Filter>Manager\Spine</Filter>
     </ClInclude>
-    <ClInclude Include="Header\UI.h" />
+    <ClInclude Include="Header\UI.h">
+      <Filter>Component\08. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Renderer.h">
+      <Filter>Component\03. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\TextureUI.h">
+      <Filter>Component\08. UI\00. TextureUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\UIManager.h">
+      <Filter>Manager\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\SpineUI.h">
+      <Filter>Component\08. UI\01. SpineUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -294,6 +316,12 @@
     </Filter>
     <Filter Include="Manager\UI">
       <UniqueIdentifier>{0ceaa63e-3ec7-40c1-9694-5281d9f319b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\08. UI\00. TextureUI">
+      <UniqueIdentifier>{4f4785cf-0982-4f8e-8d78-556637a76817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\08. UI\01. SpineUI">
+      <UniqueIdentifier>{3be84fb3-e1d2-4831-a52e-1e23c40e36c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

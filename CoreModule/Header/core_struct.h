@@ -4,6 +4,15 @@ namespace GameEngine
 {
 	class Collider;
 
+	// UI Vertex 구조체
+	struct CUSTOM_VERTEX
+	{
+		D3DXVECTOR3 position;   // 정점의 위치
+		Vector2		TextureUV;
+	};
+	const ULONG FVF_UITEX = D3DFVF_XYZ | D3DFVF_TEX1;
+
+
 	//Texture Vertex 구조체
 	struct VTXTEX
 	{

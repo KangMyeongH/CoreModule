@@ -25,6 +25,7 @@ namespace GameEngine
 	class TimeManager;
 	class RenderManager;
 	class MonoBehaviourManager;
+	class UIManager;
 
 	class COREMODULE_API Core
 	{
@@ -69,6 +70,7 @@ namespace GameEngine
 		MonoBehaviourManager*	m_MonoBehaviourManager;
 		TimeManager* 			m_TimeManager;
 		CameraManager* 			m_CameraManager;
+		UIManager*				m_UIManager;
 	};
 
 }
