@@ -37,7 +37,7 @@ namespace GameEngine
 		LPDIRECT3DDEVICE9		m_Device;
 		IDirect3DVertexBuffer9* m_VertexBuffer;
 		
-		std::vector<UI*> 		m_TextureUI[UI::RENDER_OPTION_END];
+		std::vector<UI*> 		mUI[UI::RENDER_OPTION_END];
 		std::list<UI*>			m_RegisterQueue;
 		std::list<UI*>			m_DestroyQueue;
 	};

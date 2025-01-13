@@ -5,6 +5,11 @@
 #include "UIManager.h"
 
 
+GameEngine::TextureUI::TextureUI(const TextureUI& _rhs)
+	: UI(_rhs), m_VertexBuffer(nullptr), m_Texture(nullptr), m_bFlipX(false), m_bFlipY(false)
+{
+}
+
 GameEngine::TextureUI::~TextureUI()
 {
     if (m_VertexBuffer)
@@ -20,6 +25,7 @@ void GameEngine::TextureUI::Ready_Buffer(LPDIRECT3DDEVICE9 _device, IDirect3DVer
 
 void GameEngine::TextureUI::Ready_UI(LPDIRECT3DDEVICE9 _device)
 {
+    Set_Texture(m_Path);
     m_VertexBuffer = UIManager::GetInstance().Get_VertexBuffer();
     m_VertexBuffer->AddRef();
 }

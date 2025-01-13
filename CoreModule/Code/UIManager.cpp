@@ -67,7 +67,7 @@ void GameEngine::UIManager::Render_UI()
 	m_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);     // Z 버퍼 쓰기 활성화
 
-	for (auto textureUI : m_TextureUI[UI::ALPHA_RENDERING])
+	for (auto textureUI : mUI[UI::ALPHA_RENDERING])
 	{
 		if (textureUI->Is_Enabled() && textureUI->Get_GameObject()->Is_Active())
 		{
@@ -82,7 +82,7 @@ void GameEngine::UIManager::Render_UI()
 	m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);     // Z 버퍼 쓰기 비활성화
 
-	for (auto textureUI : m_TextureUI[UI::ALPHA_BLENDING])
+	for (auto textureUI : mUI[UI::ALPHA_BLENDING])
 	{
 		if (textureUI->Is_Enabled() && textureUI->Get_GameObject()->Is_Active())
 		{
@@ -121,13 +121,13 @@ void GameEngine::UIManager::Register_UI()
 		{
 			if (_ui->Get_RenderOption() == UI::ALPHA_RENDERING)
 			{
-				m_TextureUI[UI::ALPHA_RENDERING].push_back(_ui);
+				mUI[UI::ALPHA_RENDERING].push_back(_ui);
 				_ui->Ready_UI(m_Device);
 			}
 
 			else if (_ui->Get_RenderOption() == UI::ALPHA_BLENDING)
 			{
-				m_TextureUI[UI::ALPHA_BLENDING].push_back(_ui);
+				mUI[UI::ALPHA_BLENDING].push_back(_ui);
 				_ui->Ready_UI(m_Device);
 			}
 
@@ -153,8 +153,8 @@ void GameEngine::UIManager::Destroy_UI()
 		}
 
 		delete textureUI;
-		m_TextureUI[UI::ALPHA_RENDERING].erase(std::remove(m_TextureUI[UI::ALPHA_RENDERING].begin(), m_TextureUI[UI::ALPHA_RENDERING].end(), textureUI), m_TextureUI[UI::ALPHA_RENDERING].end());
-		m_TextureUI[UI::ALPHA_BLENDING].erase(std::remove(m_TextureUI[UI::ALPHA_BLENDING].begin(), m_TextureUI[UI::ALPHA_BLENDING].end(), textureUI), m_TextureUI[UI::ALPHA_BLENDING].end());
+		mUI[UI::ALPHA_RENDERING].erase(std::remove(mUI[UI::ALPHA_RENDERING].begin(), mUI[UI::ALPHA_RENDERING].end(), textureUI), mUI[UI::ALPHA_RENDERING].end());
+		mUI[UI::ALPHA_BLENDING].erase(std::remove(mUI[UI::ALPHA_BLENDING].begin(), mUI[UI::ALPHA_BLENDING].end(), textureUI), mUI[UI::ALPHA_BLENDING].end());
 	}
 
 	m_DestroyQueue.clear();
@@ -162,7 +162,7 @@ void GameEngine::UIManager::Destroy_UI()
 
 void GameEngine::UIManager::Clear_Component()
 {
-	for (const auto& rendererList : m_TextureUI)
+	for (const auto& rendererList : mUI)
 	{
 		for (const auto& renderer : rendererList)
 		{
@@ -175,8 +175,8 @@ void GameEngine::UIManager::Clear_Component()
 		delete renderer;
 	}
 
-	m_TextureUI[0].clear();
-	m_TextureUI[1].clear();
+	mUI[0].clear();
+	mUI[1].clear();
 
 	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();

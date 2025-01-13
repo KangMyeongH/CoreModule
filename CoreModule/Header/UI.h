@@ -23,7 +23,8 @@ namespace GameEngine
 		~UI() override;
 
 	public:
-		RenderOption Get_RenderOption() const { return m_Option; }
+		RenderOption 	Get_RenderOption() const { return m_Option; }
+		void			Set_RenderOption(const RenderOption _option) { m_Option = _option; }
 
 		virtual void Ready_UI(LPDIRECT3DDEVICE9 _device) = 0;
 		virtual void Render_UI(LPDIRECT3DDEVICE9 _device) = 0;
