@@ -178,6 +178,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\SpineLoader.h" />
     <ClInclude Include="Header\SpineRenderer.h" />
     <ClInclude Include="Header\SpineUI.h" />
+    <ClInclude Include="Header\TextUI.h" />
     <ClInclude Include="Header\TextureRenderer.h" />
     <ClInclude Include="Header\TextureUI.h" />
     <ClInclude Include="Header\TimeManager.h" />
@@ -213,6 +214,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\SphereCollider.cpp" />
     <ClCompile Include="Code\SpineLoader.cpp" />
     <ClCompile Include="Code\SpineRenderer.cpp" />
+    <ClCompile Include="Code\TextUI.cpp" />
     <ClCompile Include="Code\TextureRenderer.cpp" />
     <ClCompile Include="Code\TextureUI.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
