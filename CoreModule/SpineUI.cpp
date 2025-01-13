@@ -23,7 +23,7 @@ GameEngine::SpineUI::SpineUI(): UI(nullptr), m_Loader(nullptr), m_Skeleton(nullp
 }
 
 GameEngine::SpineUI::SpineUI(GameObject* _owner, const std::string& _path, const std::string& _skin,
-    const std::string& _animation) : m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
+    const std::string& _animation) : UI(_owner), m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
     m_OwnsAnimationStateData(false),
     m_UsePMA(false),
     m_TimeScale(1.0f), m_Path(_path),
@@ -35,7 +35,7 @@ GameEngine::SpineUI::SpineUI(GameObject* _owner, const std::string& _path, const
     m_Option = ALPHA_BLENDING;
 }
 
-GameEngine::SpineUI::SpineUI(GameObject* _owner): m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
+GameEngine::SpineUI::SpineUI(GameObject* _owner): UI(_owner), m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
                                                   m_OwnsAnimationStateData(false), m_UsePMA(false),
                                                   m_TimeScale(1.0f),
                                                   m_FlipX(false), m_FlipY(false)
@@ -167,7 +167,7 @@ void GameEngine::SpineUI::Render_UI(LPDIRECT3DDEVICE9 _device)
 
     D3DXMATRIX scaleMat;
     D3DXMatrixIdentity(&scaleMat);
-    D3DXMatrixScaling(&scaleMat, 0.01f, 0.01f, 1.f);
+    D3DXMatrixScaling(&scaleMat, 1.f, 1.f, 1.f);
     D3DXMATRIX worldMat = scaleMat * Get_Transform().Get_WorldMatrix();
 
     _device->SetTransform(D3DTS_WORLD, &worldMat);
