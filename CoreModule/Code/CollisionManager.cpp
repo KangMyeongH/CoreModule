@@ -36,9 +36,6 @@ void GameEngine::CollisionManager::Collider_Update()
 void GameEngine::CollisionManager::Debug_Collider(LPDIRECT3DDEVICE9 _device, DWORD _color)
 {
     _device->SetTexture(0, nullptr);
-    _device->SetRenderState(D3DRS_LIGHTING, FALSE); // 조명 비활성화
-    _device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 알파 블렌딩 비활성화
-    _device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);     // Z-버퍼 쓰기 비활성화
 
     for (auto& col : m_Colliders)
     {
@@ -47,10 +44,6 @@ void GameEngine::CollisionManager::Debug_Collider(LPDIRECT3DDEVICE9 _device, DWO
             col->Debug_Draw(_device, _color);
         }
     }
-
-    _device->SetRenderState(D3DRS_LIGHTING, TRUE); // 조명 비활성화
-    _device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE); // 알파 블렌딩 비활성화
-    _device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);     // Z-버퍼 쓰기 비활성화
 }
 
 void GameEngine::CollisionManager::Add_Collider(Collider* _collider)

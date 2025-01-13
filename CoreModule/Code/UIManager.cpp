@@ -67,11 +67,11 @@ void GameEngine::UIManager::Render_UI()
 	m_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);     // Z 버퍼 쓰기 활성화
 
-	for (auto textureUI : mUI[UI::ALPHA_RENDERING])
+	for (auto ui : mUI[UI::ALPHA_RENDERING])
 	{
-		if (textureUI->Is_Enabled() && textureUI->Get_GameObject()->Is_Active())
+		if (ui->Is_Enabled() && ui->Get_GameObject()->Is_Active())
 		{
-			textureUI->Render_UI(m_Device);
+			ui->Render_UI(m_Device);
 		}
 	}
 
@@ -82,11 +82,11 @@ void GameEngine::UIManager::Render_UI()
 	m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);     // Z 버퍼 쓰기 비활성화
 
-	for (auto textureUI : mUI[UI::ALPHA_BLENDING])
+	for (auto ui : mUI[UI::ALPHA_BLENDING])
 	{
-		if (textureUI->Is_Enabled() && textureUI->Get_GameObject()->Is_Active())
+		if (ui->Is_Enabled() && ui->Get_GameObject()->Is_Active())
 		{
-			textureUI->Render_UI(m_Device);
+			ui->Render_UI(m_Device);
 		}
 	}
 

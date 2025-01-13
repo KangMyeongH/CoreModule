@@ -58,6 +58,7 @@ void GameEngine::Core::Progress()
 	render(m_Device);
 	on_Destroy();
 	destroy();
+	m_Scene->Register_NextScene();
 }
 
 void GameEngine::Core::EditorProgress()

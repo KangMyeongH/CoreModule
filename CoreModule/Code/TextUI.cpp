@@ -7,7 +7,7 @@ GameEngine::TextUI::TextUI()
 	  m_FontDesc(),
 	  m_Font(nullptr),
 	  m_Sprite(nullptr),
-	  m_FontColor(1.f, 1.f, 1.f, 1.f),
+	  m_FontColor(1.f, 1.f, 1.f, 1.f), m_ViewportWidth(0), m_ViewportHeight(0),
 	  m_FontSize(24)
 {
 }
@@ -17,7 +17,7 @@ GameEngine::TextUI::TextUI(GameObject* _owner)
 	  m_FontDesc(),
 	  m_Font(nullptr),
 	  m_Sprite(nullptr),
-	  m_FontColor(1.f, 1.f, 1.f, 1.f),
+	  m_FontColor(1.f, 1.f, 1.f, 1.f), m_ViewportWidth(0), m_ViewportHeight(0),
 	  m_FontSize(24)
 {
 }
@@ -27,7 +27,7 @@ GameEngine::TextUI::TextUI(const TextUI& _rhs)
 	  m_FontDesc(),
 	  m_Font(nullptr),
 	  m_Sprite(nullptr),
-	  m_FontColor(1.f, 1.f, 1.f, 1.f),
+	  m_FontColor(1.f, 1.f, 1.f, 1.f), m_ViewportWidth(0), m_ViewportHeight(0),
 	  m_FontSize(24)
 {
 }
@@ -48,13 +48,33 @@ GameEngine::TextUI::~TextUI()
 
 void GameEngine::TextUI::Ready_UI(LPDIRECT3DDEVICE9 _device)
 {
+	if (m_Font)
+	{
+		m_Font->Release();
+		m_Font = nullptr;
+	}
+
+	if (m_Sprite)
+	{
+		m_Sprite->Release();
+		m_Sprite = nullptr;
+	}
+
 	m_Device = _device;
+
+	D3DVIEWPORT9 viewport;
+	m_Device->GetViewport(&viewport);
+
+	m_ViewportWidth = viewport.Width;
+	m_ViewportHeight = viewport.Height;
+
+	float heightRatio = static_cast<float>(m_ViewportHeight) / 1080.0f;
 
 	ZeroMemory(&m_FontDesc, sizeof(D3DXFONT_DESC));
 
 	m_FontDesc.CharSet = HANGUL_CHARSET;
 	m_FontDesc.Width = 0;
-	m_FontDesc.Height = m_FontSize;
+	m_FontDesc.Height = static_cast<int>(static_cast<float>(m_FontSize) * heightRatio);
 	m_FontDesc.Weight = FW_NORMAL;
 	lstrcpy(m_FontDesc.FaceName, L"Noto Sans KR Regular");
 
@@ -71,13 +91,50 @@ void GameEngine::TextUI::Ready_UI(LPDIRECT3DDEVICE9 _device)
 
 void GameEngine::TextUI::Render_UI(LPDIRECT3DDEVICE9 _device)
 {
-	int x = static_cast<int>(Get_Transform().Position().x);
-	int y = static_cast<int>(Get_Transform().Position().y);
-	RECT rc{ x - 960, y - 540};
+	D3DVIEWPORT9 viewport;
+	_device->GetViewport(&viewport);
+
+	float viewportWidth = static_cast<float>(viewport.Width);
+	float viewportHeight = static_cast<float>(viewport.Height);
+
+	D3DXMATRIX worldMat;
+	D3DXMatrixIdentity(&worldMat);
+	_device->SetTransform(D3DTS_WORLD, &worldMat);
+
+	float x = Get_Transform().Position().x;
+	float y = Get_Transform().Position().y;
+
+	float widthRatio = viewportWidth / 1920.0f;   // 기준 해상도: 1920x1080
+	float heightRatio = viewportHeight / 1080.0f;
+
+	if (viewport.Width != m_ViewportWidth || viewport.Height != m_ViewportHeight)
+	{
+		if (m_Font)
+		{
+			m_Font->Release();
+			m_Font = nullptr;
+		}
+
+		m_ViewportWidth = viewport.Width;
+		m_ViewportHeight = viewport.Height;
+
+		m_FontDesc.Height = static_cast<int>(static_cast<float>(m_FontSize) * heightRatio);
+		D3DXCreateFontIndirect(_device, &m_FontDesc, &m_Font);
+	}
+
+	RECT rc{
+	static_cast<LONG>((x + 960) * widthRatio),                              // 왼쪽
+	static_cast<LONG>((y + 540) * heightRatio),                             // 위쪽
+	static_cast<LONG>((x + 1920.f) * widthRatio),                     // 오른쪽
+	static_cast<LONG>((y + 1080.f) * heightRatio)                     // 아래쪽
+	};
 
 	m_Sprite->Begin(D3DXSPRITE_ALPHABLEND);
 
-	m_Font->DrawTextW(m_Sprite, m_Buffer.c_str(), lstrlen(m_Buffer.c_str()), &rc, DT_NOCLIP, m_FontColor);
+	if (!m_Buffer.empty())
+	{
+		m_Font->DrawTextW(m_Sprite, m_Buffer.c_str(), -1, &rc, DT_NOCLIP, m_FontColor);
+	}
 
 	m_Sprite->End();
 }
@@ -90,8 +147,9 @@ void GameEngine::TextUI::Set_FontSize(int _size)
 		m_Font = nullptr;
 	}
 
-	m_FontDesc.Height = _size;
-
+	float heightRatio = static_cast<float>(m_ViewportHeight) / 1080.0f;
+	m_FontSize = _size;
+	m_FontDesc.Height = static_cast<int>(static_cast<float>(m_FontSize) * heightRatio);
 	if (FAILED(D3DXCreateFontIndirect(m_Device, &m_FontDesc, &m_Font)))
 	{
 		return;

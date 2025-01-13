@@ -55,6 +55,9 @@ namespace GameEngine
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
+		void Set_BackBufferColor(const D3DXCOLOR _color) { m_BackBufferColor = _color; }
+		void Set_DefaultBackBufferColor() { m_BackBufferColor = { 0.2f, 0.2f, 0.2f, 1.f }; };
+
 		//임시
 		void Add_Light(Light* _light) {  _light->Ready_Light(m_Device); m_GlobalLight = _light;}
 
@@ -78,6 +81,8 @@ namespace GameEngine
 		D3DXMATRIX 				m_ViewMat;
 		D3DXMATRIX 				m_ProjMat;
 		D3DLIGHT9 				m_DirLight;
+
+		D3DXCOLOR				m_BackBufferColor;
 
 		//임시
 		Light* m_GlobalLight;

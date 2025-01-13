@@ -85,13 +85,14 @@ namespace GameEngine
 		// 사각형 인덱스(RegionAttachment)용
 		spine::Vector<unsigned short> 		m_quadIndices;
 
-		std::string m_Path;
-		std::vector<std::string> m_Skins;
-		std::vector<std::string> m_Animations;
-		spine::String	m_CurrentSkin;
-		spine::String	m_CurrentAnimation;
-		bool	m_FlipX;
-		bool	m_FlipY;
+		std::string 				m_Path;
+		std::vector<std::string> 	m_Skins;
+		std::vector<std::string> 	m_Animations;
+		spine::String				m_CurrentSkin;
+		spine::String				m_CurrentAnimation;
+		bool						m_FlipX;
+		bool						m_FlipY;
+		bool						m_bBillboard;
 	};
 	REGISTER_COMPONENT(SpineRenderer)
 }

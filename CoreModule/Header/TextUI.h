@@ -43,6 +43,8 @@ namespace GameEngine
 		LPD3DXSPRITE		m_Sprite;
 		D3DXCOLOR			m_FontColor;
 		std::wstring 		m_Buffer;
+		DWORD				m_ViewportWidth;
+		DWORD				m_ViewportHeight;
 		INT					m_FontSize;
 	};
 

@@ -167,6 +167,7 @@ namespace GameEngine
 		//Shader*					m_Shader;
 		bool						m_FlipX;
 		bool						m_FlipY;
+		bool						m_bBillboard;
 	};
 
 	REGISTER_COMPONENT(TextureRenderer)

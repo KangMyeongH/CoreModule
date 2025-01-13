@@ -11,6 +11,7 @@ IMPLEMENT_SINGLETON(GameEngine::RenderManager)
 
 void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 {
+	m_BackBufferColor = { 0.2f, 0.2f, 0.2f, 1.f };
 	m_Device = _device;
 	_device->AddRef();
 }
@@ -73,11 +74,10 @@ GameEngine::RenderManager::~RenderManager()
 
 void GameEngine::RenderManager::Render_Begin(LPDIRECT3DDEVICE9 _device)
 {
-	D3DXCOLOR backColor = { 0.2f, 0.2f, 0.2f, 1.f };
 	_device->Clear(0,
 		NULL,
 		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
-		backColor,
+		m_BackBufferColor,
 		1.f,
 		0);
 

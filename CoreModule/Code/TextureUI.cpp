@@ -50,6 +50,27 @@ bool GameEngine::TextureUI::Set_Texture(const std::wstring& _path)
     return false;
 }
 
+RECT GameEngine::TextureUI::Get_Rect() const
+{
+    // UI의 크기 구하기
+    D3DXMATRIX mat = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
+    Vector2 scale;
+    scale.x = sqrtf(mat._11 * mat._11 + mat._12 * mat._12); // X축 스케일
+    scale.y = sqrtf(mat._21 * mat._21 + mat._22 * mat._22); // Y축 스케일
+
+    Vector3 position = Get_Transform().Position();
+
+    RECT rect =
+    {
+        static_cast<LONG>((position.x + 960.f) - scale.x * 0.5f),
+        -static_cast<LONG>(position.y - 540.f + scale.y * 0.5f),
+        static_cast<LONG>(position.x + 960.f + scale.x * 0.5f),
+        -static_cast<LONG>(position.y - 540.f - scale.y * 0.5f)
+    };
+
+    return rect;
+}
+
 void GameEngine::TextureUI::Set_NativeSize()
 {
     if (m_Texture)
@@ -78,22 +99,23 @@ bool GameEngine::TextureUI::Is_MouseHovered()
     // 마우스 좌표
     const Vector3 mousePos = InputManager::GetInstance().Get_MousePos();
     POINT winMousePos;
-    winMousePos.x = static_cast<long>(mousePos.x - 960.f);
-    winMousePos.y = static_cast<long>(mousePos.y - 540.f);
+
+    winMousePos.x = static_cast<long>(mousePos.x);
+    winMousePos.y = static_cast<long>(mousePos.y);
 
     // UI의 크기 구하기
     D3DXMATRIX mat = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
     Vector2 scale;
-    scale.x = sqrtf(mat._11 * mat._11 + mat._12 * mat._12 + mat._13 * mat._13);
-    scale.y = sqrtf(mat._21 * mat._21 + mat._22 * mat._22 + mat._23 * mat._23);
+    scale.x = sqrtf(mat._11 * mat._11 + mat._12 * mat._12); // X축 스케일
+    scale.y = sqrtf(mat._21 * mat._21 + mat._22 * mat._22); // Y축 스케일
     Vector3 position = Get_Transform().Position();
 
     RECT rect =
     {
-        static_cast<LONG>(position.x - scale.x * 0.5f),
-        static_cast<LONG>(position.y - scale.y * 0.5f),
-        static_cast<LONG>(position.x + scale.x * 0.5f),
-        static_cast<LONG>(position.y + scale.y * 0.5f)
+        static_cast<LONG>((position.x + 960.f) - scale.x * 0.5f),
+        -static_cast<LONG>(position.y - 540.f + scale.y * 0.5f),
+        static_cast<LONG>(position.x + 960.f + scale.x * 0.5f),
+        -static_cast<LONG>(position.y - 540.f - scale.y * 0.5f)
     };
 
     return PtInRect(&rect, winMousePos);

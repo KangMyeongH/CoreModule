@@ -38,6 +38,8 @@ namespace GameEngine
 		void			Set_FlipY(bool _isFlip) { m_bFlipY = _isFlip; }
 		bool			Get_FlipY() const { return m_bFlipY; }
 
+		RECT			Get_Rect() const;
+
 		void			Set_NativeSize();
 		void 			Render_UI(LPDIRECT3DDEVICE9 _device) override;
 
