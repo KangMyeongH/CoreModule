@@ -74,8 +74,8 @@ bool GameEngine::TextureUI::Is_MouseHovered()
     // 마우스 좌표
     const Vector3 mousePos = InputManager::GetInstance().Get_MousePos();
     POINT winMousePos;
-    winMousePos.x = static_cast<long>(mousePos.x + 960.f);
-    winMousePos.y = static_cast<long>(mousePos.y + 540.f);
+    winMousePos.x = static_cast<long>(mousePos.x - 960.f);
+    winMousePos.y = static_cast<long>(mousePos.y - 540.f);
 
     // UI의 크기 구하기
     D3DXMATRIX mat = m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
