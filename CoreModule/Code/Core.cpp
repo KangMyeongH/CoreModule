@@ -68,7 +68,6 @@ void GameEngine::Core::EditorProgress()
 	m_CollisionManager->Register_Collider();
 	m_RenderManager->Register_Renderer();
 	m_UIManager->Register_UI();
-
 	m_MonoBehaviourManager->Register_MonoBehaviour();
 
 	start();
@@ -152,6 +151,9 @@ void GameEngine::Core::render(LPDIRECT3DDEVICE9 _device)
 
 	// UI
 	m_UIManager->Render_UI();
+
+	// Debug Col
+	m_CollisionManager->Debug_Collider(m_Device, 0xFF00FF00);
 
 	// render end
 	m_RenderManager->Render_End(_device);

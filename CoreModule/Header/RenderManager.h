@@ -51,6 +51,10 @@ namespace GameEngine
 		void Clear_Component();
 		void Release();
 
+
+		D3DXMATRIX Get_ViewMat() const { return m_ViewMat; }
+		D3DXMATRIX Get_ProjMat() const { return m_ProjMat; }
+
 		void Set_ViewMat(const D3DXMATRIX& _viewMat)	{ m_ViewMat = _viewMat; }
 		void Set_ProjMat(const D3DXMATRIX& _projMat) 	{ m_ProjMat = _projMat; }
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }

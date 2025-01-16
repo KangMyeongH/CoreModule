@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_set>
 
+#include "Collision.h"
 #include "core_define.h"
 
 class Physics;
@@ -66,7 +67,7 @@ namespace GameEngine
 		void Destroy_Collider();
 		void Release();
 
-		bool RayCast(const Ray& _ray, RayHit& _outHit, float _maxDistance = FLT_MAX, int _layerMask = ~0);
+		bool RayCast(const Ray& _ray, RayHit& _outHit, float _maxDistance = FLT_MAX, const std::string& _tag = "");
 
 	private:
 		// 1) BroadPhase: SAP
@@ -76,22 +77,22 @@ namespace GameEngine
 		void narrowPhase_OBB(const std::vector<std::pair<BoxCollider*, BoxCollider*>>& _potentialPairs);
 
 		float 	get_OBBRadiusOnAxis(const BoxCollider* _box, const Vector3& _axis);
-		bool 	is_AxisSeparating(const BoxCollider* _a, const BoxCollider* _b, const Vector3& _axis);
-		bool 	check_OBBCollision(const BoxCollider* _a, const BoxCollider* _b);
+		bool 	is_AxisSeparating(const BoxCollider* _a, const BoxCollider* _b, const Vector3& _axis, float& _outOverlap, Vector3& _outAxis);
+		bool 	check_OBBCollision(const BoxCollider* _a, const BoxCollider* _b, Vector3& _normal, float& _penetration);
 
 		// 面倒 惯积 矫 贸府
-		void process_CollisionResults(const std::unordered_set<std::pair<BoxCollider*, BoxCollider*>, ColliderPairHash, ColliderPairEq>& newCollisions);;
+		void process_CollisionResults(const std::unordered_map<std::pair<BoxCollider*, BoxCollider*>, CollisionData, ColliderPairHash, ColliderPairEq>& _newCollisions);
 
-		void invoke_CollisionEnter(BoxCollider* _a, BoxCollider* _b);
-		void invoke_CollisionStay(BoxCollider* _a, BoxCollider* _b);
-		void invoke_CollisionExit(BoxCollider* _a, BoxCollider* _b);
+		void invoke_CollisionEnter(BoxCollider* _a, BoxCollider* _b, const Vector3& _normal, const float& _penetration);
+		void invoke_CollisionStay(BoxCollider* _a, BoxCollider* _b, const Vector3& _normal, const float& _penetration);
+		void invoke_CollisionExit(BoxCollider* _a, BoxCollider* _b, const Vector3& _normal, const float& _penetration);
 
 		// Ray Cast
 		bool rayIntersectsOBB(const Ray& _ray, const OBB& _obb, float& _outT, Vector3& outNormal);
 
 	private:
 		std::vector<Collider*> 		m_Colliders;
-		std::unordered_set<std::pair<BoxCollider*, BoxCollider*>, ColliderPairHash, ColliderPairEq> m_CollisionPairs;
+		std::unordered_map<std::pair<BoxCollider*, BoxCollider*>, CollisionData, ColliderPairHash, ColliderPairEq> m_CollisionMap;
 		std::list<Collider*>		m_RegisterQueue;
 		std::list<Collider*>		m_DestroyQueue;
 	};
