@@ -226,6 +226,13 @@ namespace GameEngine
 			update_MatrixIfNeeded();
 			return m_WorldMatrix;
 		}
+
+		const Vector3& Forward() const
+		{
+			update_MatrixIfNeeded();
+			return Vector3(m_WorldMatrix._31, m_WorldMatrix._32, m_WorldMatrix._33).Normalized();
+		}
+
 		const std::vector<Transform*>& Get_Children() const { return m_Children; }
 
 		//======================================//
