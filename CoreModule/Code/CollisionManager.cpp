@@ -35,6 +35,20 @@ void GameEngine::CollisionManager::Collider_Update()
 
 void GameEngine::CollisionManager::Debug_Collider(LPDIRECT3DDEVICE9 _device, DWORD _color)
 {
+    D3DXMATRIX identity;
+    D3DXMATRIX viewMat = RenderManager::GetInstance().Get_ViewMat();
+    D3DXMATRIX projMat = RenderManager::GetInstance().Get_ProjMat();
+    D3DXMatrixIdentity(&identity);
+    _device->SetTransform(D3DTS_WORLD, &identity);
+    _device->SetTransform(D3DTS_VIEW, &viewMat);
+    _device->SetTransform(D3DTS_PROJECTION, &projMat);
+    _device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+    _device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 알파 블렌딩 활성화
+    _device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);   // 알파 테스트 활성화
+    _device->SetRenderState(D3DRS_ALPHAREF, 128);          // 알파값 128 기준
+    _device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    _device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);     // Z 버퍼 쓰기 활성화
+
     _device->SetTexture(0, nullptr);
 
     for (auto& col : m_Colliders)
@@ -91,15 +105,15 @@ void GameEngine::CollisionManager::Destroy_Collider()
 		delete col;
 		m_Colliders.erase(std::remove(m_Colliders.begin(), m_Colliders.end(), col), m_Colliders.end());
 
-        for (auto pairIt = m_CollisionPairs.begin(); pairIt != m_CollisionPairs.end();)
+        for (auto pairIt = m_CollisionMap.begin(); pairIt != m_CollisionMap.end();)
         {
-            auto& p = *pairIt;
+            auto& p = pairIt->first;
             BoxCollider* a = p.first;
             BoxCollider* b = p.second;
 
             if (a == col || b == col)
             {
-                pairIt = m_CollisionPairs.erase(pairIt);
+                pairIt = m_CollisionMap.erase(pairIt);
             }
 
             else
@@ -125,12 +139,12 @@ void GameEngine::CollisionManager::Release()
 	}
 
 	m_Colliders.clear();
-    m_CollisionPairs.clear();
+    m_CollisionMap.clear();
 	m_RegisterQueue.clear();
 	m_DestroyQueue.clear();
 }
 
-bool GameEngine::CollisionManager::RayCast(const Ray& _ray, RayHit& _outHit, const float _maxDistance, int _layerMask)
+bool GameEngine::CollisionManager::RayCast(const Ray& _ray, RayHit& _outHit, const float _maxDistance, const std::string& _tag)
 {
     {
         _outHit.Distance = 0.f;
@@ -146,9 +160,8 @@ bool GameEngine::CollisionManager::RayCast(const Ray& _ray, RayHit& _outHit, con
                 continue;
 
             // 레이어 체크
-            // TODO : 지금은 미구현, 최적화가 필요하거나 기능이 필요할 때 구현할 것
-            // if (!CheckLayerMask(col->Get_Layer(), layerMask))
-            //		continue;
+            if (!_tag.empty() && col->Get_GameObject()->Get_Tag() != _tag)
+                continue;
 
             // 트리거 체크
             // TODO : 지금은 Collider가 Trigger의 기능을 하는중 Trigger 따로 구현 시 구현할 것.
@@ -156,6 +169,7 @@ bool GameEngine::CollisionManager::RayCast(const Ray& _ray, RayHit& _outHit, con
             //		continue;
 
             BoxCollider* boxCol = dynamic_cast<BoxCollider*>(col);
+
             if (!boxCol)
             {
 	            continue;
@@ -209,6 +223,8 @@ void GameEngine::CollisionManager::broadPhase_Sap(std::vector<std::pair<BoxColli
 
     for (auto& col : m_Colliders)
     {
+        if (!col->Is_Enabled() || !col->Get_GameObject()->Is_Active())
+            continue;
         BoxCollider* boxCol = dynamic_cast<BoxCollider*>(col);
 
         Edge eMin;
@@ -284,8 +300,11 @@ void GameEngine::CollisionManager::narrowPhase_OBB(
 	const std::vector<std::pair<BoxCollider*, BoxCollider*>>& _potentialPairs)
 {
     // 이번 프레임에 충돌한 쌍
-    std::unordered_set<std::pair<BoxCollider*, BoxCollider*>, ColliderPairHash, ColliderPairEq> newCollisions;
-    newCollisions.reserve(_potentialPairs.size());
+    std::unordered_map<std::pair<BoxCollider*, BoxCollider*>, CollisionData, ColliderPairHash, ColliderPairEq> newCollisionMap;
+    newCollisionMap.reserve(_potentialPairs.size());
+
+    //std::unordered_set<std::pair<BoxCollider*, BoxCollider*>, ColliderPairHash, ColliderPairEq> newCollisions;
+    //newCollisions.reserve(_potentialPairs.size());
 
     for (auto& pair : _potentialPairs)
     {
@@ -304,17 +323,24 @@ void GameEngine::CollisionManager::narrowPhase_OBB(
         if (!(overlapX && overlapY && overlapZ))
             continue;
 
-        // 2) OBB 충돌 검사 (회전 고려, 여기선 생략/스텁)
-        if (check_OBBCollision(a, b))
+        Vector3 normal;
+        float 	penetration;
+
+        // 2) OBB 충돌 검사
+        if (check_OBBCollision(a, b, normal, penetration))
         {
+            std::pair<BoxCollider*, BoxCollider*> key(a, b);
+            const CollisionData data(a, b, normal, penetration);
+
             // 충돌 발생
-            newCollisions.insert({ a,b });
+            newCollisionMap[key] = data;
         }
     }
 
-    process_CollisionResults(newCollisions);
+    process_CollisionResults(newCollisionMap);
 
-    m_CollisionPairs = std::move(newCollisions);
+    m_CollisionMap = std::move(newCollisionMap);
+    //m_CollisionPairs = std::move(newCollisions);
 }
 
 float GameEngine::CollisionManager::get_OBBRadiusOnAxis(const BoxCollider* _box, const Vector3& _axis)
@@ -342,7 +368,7 @@ float GameEngine::CollisionManager::get_OBBRadiusOnAxis(const BoxCollider* _box,
     return r;
 }
 
-bool GameEngine::CollisionManager::is_AxisSeparating(const BoxCollider* _a, const BoxCollider* _b, const Vector3& _axis)
+bool GameEngine::CollisionManager::is_AxisSeparating(const BoxCollider* _a, const BoxCollider* _b, const Vector3& _axis, float& _outOverlap, Vector3& _outAxis)
 {
     // 축 벡터의 길이 제곱을 계산.
     // EPSILON보다 작은 경우, 축의 유효성이 없다고 판단.
@@ -363,14 +389,29 @@ bool GameEngine::CollisionManager::is_AxisSeparating(const BoxCollider* _a, cons
     Vector3 T = _b->Get_OBB().Center - _a->Get_OBB().Center; // OBB B와 OBB A 중심 간의 벡터
     float dist = fabs(D3DXVec3Dot(&T, &normAxis)); // 중심 거리의 축 투영 절대값
 
-    //
-    return dist > rSum;
+    // 중심 거리(dist)가 반경 합(rSum)보다 크면 두 OBB는 분리되어 있습니다.
+    if (dist > rSum)
+    {
+        return true;
+    }
+
+    float overlap = rSum - dist;
+
+    if (overlap < _outOverlap)
+    {
+	    _outOverlap = overlap;
+
+	    float sign = D3DXVec3Dot(&T, &normAxis) < 0.0f ? -1.0f : 1.0f;
+	    _outAxis = normAxis * sign;
+    }
+
+    return false;
 }
 
-bool GameEngine::CollisionManager::check_OBBCollision(const BoxCollider* _a, const BoxCollider* _b)
+bool GameEngine::CollisionManager::check_OBBCollision(const BoxCollider* _a, const BoxCollider* _b, Vector3& _normal, float& _penetration)
 {
-    Vector3 outNormal = Vector3::Zero();
-    float   outPenetration = 0.0f;
+    _normal = Vector3::Zero();
+    _penetration = FLT_MAX;
 
     Vector3 aAxes[3] = 
     {
@@ -389,14 +430,14 @@ bool GameEngine::CollisionManager::check_OBBCollision(const BoxCollider* _a, con
     // A축 3개
     for (auto aAxe : aAxes)
     {
-        if (is_AxisSeparating(_a, _b, aAxe))
+        if (is_AxisSeparating(_a, _b, aAxe, _penetration, _normal))
             return false; // 분리
     }
 
     // B축 3개
     for (auto bAxe : bAxes)
     {
-        if (is_AxisSeparating(_a, _b, bAxe))
+        if (is_AxisSeparating(_a, _b, bAxe, _penetration, _normal))
             return false;
     }
 
@@ -409,7 +450,7 @@ bool GameEngine::CollisionManager::check_OBBCollision(const BoxCollider* _a, con
             Vector3 axis;
             D3DXVec3Cross(&axis, &aAxe, &bAxe);
 
-            if (is_AxisSeparating(_a, _b, axis))
+            if (is_AxisSeparating(_a, _b, axis, _penetration, _normal))
                 return false;
         }
     }
@@ -419,31 +460,56 @@ bool GameEngine::CollisionManager::check_OBBCollision(const BoxCollider* _a, con
 }
 
 void GameEngine::CollisionManager::process_CollisionResults(
-	const std::unordered_set<std::pair<BoxCollider*, BoxCollider*>, ColliderPairHash, ColliderPairEq>& newCollisions)
+	const std::unordered_map<std::pair<BoxCollider*, BoxCollider*>, CollisionData, ColliderPairHash, ColliderPairEq>& _newCollisions)
 {
-    for (auto& c : newCollisions)
+    for (auto& c : _newCollisions)
     {
-	    if (m_CollisionPairs.find(c) == m_CollisionPairs.end())
+        GameObject* objA = c.first.first->Get_GameObject();
+        GameObject* objB = c.first.second->Get_GameObject();
+
+        Rigidbody* rigidA = objA->Get_Component<Rigidbody>();
+        Rigidbody* rigidB = objB->Get_Component<Rigidbody>();
+
+        if (rigidA && rigidB)
+        {
+            if (rigidA->Get_IsKinematic() != rigidB->Get_IsKinematic())
+            {
+                if (rigidA->Get_IsKinematic())
+                {
+                    objB->Get_Transform().Set_Position(objB->Get_Transform().Position() - (-c.second.Normal * c.second.Penetration));
+                }
+
+                else if (rigidB->Get_IsKinematic())
+                {
+                    objA->Get_Transform().Set_Position(objA->Get_Transform().Position() - (c.second.Normal * c.second.Penetration));
+                }
+            }
+        }
+
+        if (m_CollisionMap.find(c.first) == m_CollisionMap.end())
 	    {
 		    // enter
-            invoke_CollisionEnter(c.first, c.second);
+            invoke_CollisionEnter(c.first.first, c.first.second, c.second.Normal, c.second.Penetration);
 	    }
+
         else
         {
-            invoke_CollisionStay(c.first, c.second);
+            // stay
+            invoke_CollisionStay(c.first.first, c.first.second, c.second.Normal, c.second.Penetration);
         }
     }
 
-    for (auto& c : m_CollisionPairs)
+    for (auto& c : m_CollisionMap)
     {
-	    if (newCollisions.find(c) == newCollisions.end())
+	    if (_newCollisions.find(c.first) == _newCollisions.end())
 	    {
-            invoke_CollisionExit(c.first, c.second);
+            // exit
+            invoke_CollisionExit(c.first.first, c.first.second, c.second.Normal, c.second.Penetration);
 	    }
     }
 }
 
-void GameEngine::CollisionManager::invoke_CollisionEnter(BoxCollider* _a, BoxCollider* _b)
+void GameEngine::CollisionManager::invoke_CollisionEnter(BoxCollider* _a, BoxCollider* _b, const Vector3& _normal, const float& _penetration)
 {
     GameObject* objA = _a->Get_GameObject();
     GameObject* objB = _b->Get_GameObject();
@@ -452,7 +518,7 @@ void GameEngine::CollisionManager::invoke_CollisionEnter(BoxCollider* _a, BoxCol
     objB->On_CollisionEnter(Collision(objA, _a));
 }
 
-void GameEngine::CollisionManager::invoke_CollisionStay(BoxCollider* _a, BoxCollider* _b)
+void GameEngine::CollisionManager::invoke_CollisionStay(BoxCollider* _a, BoxCollider* _b, const Vector3& _normal, const float& _penetration)
 {
     GameObject* objA = _a->Get_GameObject();
     GameObject* objB = _b->Get_GameObject();
@@ -461,7 +527,7 @@ void GameEngine::CollisionManager::invoke_CollisionStay(BoxCollider* _a, BoxColl
     objB->On_CollisionStay(Collision(objA, _a));
 }
 
-void GameEngine::CollisionManager::invoke_CollisionExit(BoxCollider* _a, BoxCollider* _b)
+void GameEngine::CollisionManager::invoke_CollisionExit(BoxCollider* _a, BoxCollider* _b, const Vector3& _normal, const float& _penetration)
 {
     GameObject* objA = _a->Get_GameObject();
     GameObject* objB = _b->Get_GameObject();

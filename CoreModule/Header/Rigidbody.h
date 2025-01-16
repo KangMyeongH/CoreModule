@@ -9,9 +9,17 @@ namespace GameEngine
 		//				constructor				//
 		//======================================//
 
-		Rigidbody() : Component(nullptr),m_Velocity(0.f,0.f,0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f), m_UseGravity(false) {}
-		explicit Rigidbody(GameObject* _owner) : Component(_owner), m_Velocity(0.f, 0.f, 0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f),
-		                                         m_UseGravity(false) {}
+		Rigidbody() : Component(nullptr), m_Velocity(0.f, 0.f, 0.f), m_Mass(1.f), m_Drag(0.f), m_AngularDrag(0.05f),
+		              m_UseGravity(false), m_IsKinematic(false)
+		{
+		}
+
+		explicit Rigidbody(GameObject* _owner) : Component(_owner), m_Velocity(0.f, 0.f, 0.f), m_Mass(1.f), m_Drag(0.f),
+		                                         m_AngularDrag(0.05f),
+		                                         m_UseGravity(false), m_IsKinematic(false)
+		{
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -19,9 +27,13 @@ namespace GameEngine
 		/// <param name="_drag">공기 저항(float)</param>
 		/// <param name="_angularDrag">공기 각 저항(float)</param>
 		/// <param name="_useGravity">중력 사용 여부(bool)</param>
-		explicit Rigidbody(GameObject* _owner, const float _mass, const float _drag, const float _angularDrag, const bool _useGravity) :
-		Component(_owner), m_Velocity(0.f,0.f,0.f),
-		m_Mass(_mass), m_Drag(_drag), m_AngularDrag(_angularDrag), m_UseGravity(_useGravity) {}
+		/// <param name="_isKinematic">충돌 관련 물리 적용 여부(bool)</param>
+		explicit Rigidbody(GameObject* _owner, const float _mass, const float _drag, const float _angularDrag, const bool _useGravity, const bool _isKinematic) :
+			Component(_owner), m_Velocity(0.f, 0.f, 0.f),
+			m_Mass(_mass), m_Drag(_drag), m_AngularDrag(_angularDrag), m_UseGravity(_useGravity), m_IsKinematic(_isKinematic)
+		{
+		}
+
 		~Rigidbody() override = default;
 		Rigidbody(const Rigidbody& _rhs) = default;
 		Rigidbody& operator=(const Rigidbody& _rhs) = default;
@@ -45,6 +57,9 @@ namespace GameEngine
 
 		void		Set_UseGravity(const bool _useGravity) { m_UseGravity = _useGravity; }
 		bool		Get_UseGravity() const { return  m_UseGravity; }
+
+		void		Set_IsKinematic(const bool _isKinematic) { m_IsKinematic = _isKinematic; }
+		bool		Get_IsKinematic() const { return m_IsKinematic; }
 
 		//======================================//
 		//				 method					//
@@ -74,16 +89,23 @@ namespace GameEngine
 				{"mass", Get_Mass()},
 				{"drag", Get_Drag()},
 				{"angularDrag", Get_AngularDrag()},
-				{"useGravity", Get_UseGravity()}
+				{"useGravity", Get_UseGravity()},
+				{"isKinematic", Get_IsKinematic()}
 			};
 		}
 
 		void from_json(const nlohmann::ordered_json& _j) override
 		{
-			Set_Mass(_j.at("mass").get<float>());
-			Set_Drag(_j.at("drag").get<float>());
-			Set_AngularDrag(_j.at("angularDrag").get<float>());
-			Set_UseGravity(_j.at("useGravity").get<bool>());
+			if (_j.contains("mass"))
+				Set_Mass(_j.at("mass").get<float>());
+			if (_j.contains("drag"))
+				Set_Drag(_j.at("drag").get<float>());
+			if (_j.contains("angularDrag"))
+				Set_AngularDrag(_j.at("angularDrag").get<float>());
+			if (_j.contains("useGravity"))
+				Set_UseGravity(_j.at("useGravity").get<bool>());
+			if (_j.contains("isKinematic"))
+				Set_IsKinematic(_j.at("isKinematic").get<bool>());
 		}
 
 	private:
@@ -92,6 +114,7 @@ namespace GameEngine
 		float		m_Drag;
 		float		m_AngularDrag;
 		bool		m_UseGravity;
+		bool		m_IsKinematic;
 	};
 
 	REGISTER_COMPONENT(Rigidbody)
