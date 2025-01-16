@@ -344,10 +344,13 @@ float GameEngine::CollisionManager::get_OBBRadiusOnAxis(const BoxCollider* _box,
 
 bool GameEngine::CollisionManager::is_AxisSeparating(const BoxCollider* _a, const BoxCollider* _b, const Vector3& _axis)
 {
+    // 축 벡터의 길이 제곱을 계산.
+    // EPSILON보다 작은 경우, 축의 유효성이 없다고 판단.
     float len2 = D3DXVec3LengthSq(&_axis);
     if (len2 < EPSILON)
         return false;
 
+    // 축 벡터를 정규화 하여 방향 벡터로 변환
     Vector3 normAxis;
     D3DXVec3Normalize(&normAxis, &_axis);
 
@@ -356,14 +359,19 @@ bool GameEngine::CollisionManager::is_AxisSeparating(const BoxCollider* _a, cons
     float rB = get_OBBRadiusOnAxis(_b, normAxis);
     float rSum = rA + rB;
 
-    Vector3 T = _b->Get_OBB().Center - _a->Get_OBB().Center;
-    float dist = fabs(D3DXVec3Dot(&T, &normAxis));
+    // 두 OBB의 중심간의 벡터를 구한 뒤, 축에 두영된 거리를 계산.
+    Vector3 T = _b->Get_OBB().Center - _a->Get_OBB().Center; // OBB B와 OBB A 중심 간의 벡터
+    float dist = fabs(D3DXVec3Dot(&T, &normAxis)); // 중심 거리의 축 투영 절대값
 
+    //
     return dist > rSum;
 }
 
 bool GameEngine::CollisionManager::check_OBBCollision(const BoxCollider* _a, const BoxCollider* _b)
 {
+    Vector3 outNormal = Vector3::Zero();
+    float   outPenetration = 0.0f;
+
     Vector3 aAxes[3] = 
     {
     	_a->Get_OBB().AxisX,
