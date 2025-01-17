@@ -110,12 +110,16 @@ void GameEngine::Scene::Register_NextScene()
 
 void GameEngine::Scene::Destroy_GameObject()
 {
-	for (auto& gameObject : m_GameObjects)
+	for (auto it = m_GameObjects.begin(); it != m_GameObjects.end();)
 	{
-		if (gameObject->Is_Destroyed())
+		if ((*it)->Is_Destroyed())
 		{
-			delete gameObject;
-			m_GameObjects.erase(std::remove(m_GameObjects.begin(), m_GameObjects.end(), gameObject), m_GameObjects.end());
+			delete* it;
+			it = m_GameObjects.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
 }

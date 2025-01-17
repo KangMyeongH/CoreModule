@@ -69,7 +69,6 @@ void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 {
 	//Render State ¼³Á¤
-
 	D3DXMATRIX flipMat;
 	Compute_FlipMat(flipMat);
 
