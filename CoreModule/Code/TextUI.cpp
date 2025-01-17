@@ -124,9 +124,9 @@ void GameEngine::TextUI::Render_UI(LPDIRECT3DDEVICE9 _device)
 
 	RECT rc{
 	static_cast<LONG>((x + 960) * widthRatio),                              // 왼쪽
-	static_cast<LONG>((y + 540) * heightRatio),                             // 위쪽
+	static_cast<LONG>((-y + 540) * heightRatio),                             // 위쪽
 	static_cast<LONG>((x + 1920.f) * widthRatio),                     // 오른쪽
-	static_cast<LONG>((y + 1080.f) * heightRatio)                     // 아래쪽
+	static_cast<LONG>((-y + 1080.f) * heightRatio)                     // 아래쪽
 	};
 
 	m_Sprite->Begin(D3DXSPRITE_ALPHABLEND);
