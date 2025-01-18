@@ -161,6 +161,8 @@ namespace GameEngine
 		}
 
 	private:
+		
+
 		std::wstring				m_Path;
 		LPDIRECT3DTEXTURE9			m_Texture;
 		D3DXMATRIX					m_TextureScaleMatrix;
