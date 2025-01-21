@@ -1,6 +1,7 @@
-#include "Material.h"
+#include "SpineMaterial.h"
 
-GameEngine::Material::Material(LPDIRECT3DDEVICE9 _device, const std::string& _effectPath) : m_Device(_device), m_Effect(nullptr), m_EffectPath(_effectPath)
+GameEngine::SpineMaterial::SpineMaterial(LPDIRECT3DDEVICE9 _device, const std::string& _effectPath): m_Device(_device),
+	m_Effect(nullptr)
 {
 	if (m_Device)
 	{
@@ -10,13 +11,13 @@ GameEngine::Material::Material(LPDIRECT3DDEVICE9 _device, const std::string& _ef
 	Load_EffectFromFile(_effectPath);
 }
 
-GameEngine::Material::~Material()
+GameEngine::SpineMaterial::~SpineMaterial()
 {
 	if (m_Effect) m_Effect->Release();
 	if (m_Device) m_Device->Release();
 }
 
-void GameEngine::Material::Set_WorldMat(const D3DXMATRIX& _worldMat)
+void GameEngine::SpineMaterial::Set_WorldMat(const D3DXMATRIX& _worldMat)
 {
 	if (m_Effect)
 	{
@@ -24,7 +25,7 @@ void GameEngine::Material::Set_WorldMat(const D3DXMATRIX& _worldMat)
 	}
 }
 
-void GameEngine::Material::Set_ViewProjMat(const D3DXMATRIX& _view, const D3DXMATRIX& _proj)
+void GameEngine::SpineMaterial::Set_ViewProjMat(const D3DXMATRIX& _view, const D3DXMATRIX& _proj)
 {
 	if (m_Effect)
 	{
@@ -33,7 +34,7 @@ void GameEngine::Material::Set_ViewProjMat(const D3DXMATRIX& _view, const D3DXMA
 	}
 }
 
-void GameEngine::Material::Set_Texture(const std::string& _paramName, LPDIRECT3DTEXTURE9 _texture)
+void GameEngine::SpineMaterial::Set_Texture(const std::string& _paramName, LPDIRECT3DTEXTURE9 _texture)
 {
 	if (m_Effect)
 	{
@@ -41,7 +42,7 @@ void GameEngine::Material::Set_Texture(const std::string& _paramName, LPDIRECT3D
 	}
 }
 
-void GameEngine::Material::Set_Light(const D3DLIGHT9* _light)
+void GameEngine::SpineMaterial::Set_Light(const D3DLIGHT9* _light)
 {
 	if (m_Effect)
 	{
@@ -54,7 +55,7 @@ void GameEngine::Material::Set_Light(const D3DLIGHT9* _light)
 	}
 }
 
-void GameEngine::Material::Set_Color(const std::string& _paramName, const D3DXVECTOR4& _color)
+void GameEngine::SpineMaterial::Set_Color(const std::string& _paramName, const D3DXVECTOR4& _color)
 {
 	if (m_Effect)
 	{
@@ -62,17 +63,9 @@ void GameEngine::Material::Set_Color(const std::string& _paramName, const D3DXVE
 	}
 }
 
-void GameEngine::Material::Set_Billboard(bool _isBillboard)
+bool GameEngine::SpineMaterial::Load_EffectFromFile(const std::string& _filePath)
 {
-	if (m_Effect)
-	{
-		m_Effect->SetBool("gEnableBillboard", _isBillboard);
-	}
-}
-
-bool GameEngine::Material::Load_EffectFromFile(const std::string& _filePath)
-{
-	ID3DXBuffer* pErr = nullptr;
+	ID3DXBuffer* err = nullptr;
 	HRESULT hr = D3DXCreateEffectFromFileA(
 		m_Device,
 		_filePath.c_str(),
@@ -80,31 +73,30 @@ bool GameEngine::Material::Load_EffectFromFile(const std::string& _filePath)
 		D3DXSHADER_DEBUG,
 		nullptr,
 		&m_Effect,
-		&pErr
-	);
+		&err);
 
 	if (FAILED(hr))
 	{
-		if (pErr)
+		if (err)
 		{
-			const char* errMsg = (const char*)pErr->GetBufferPointer();
+			const char* errMsg = (const char*)err->GetBufferPointer();
 			MessageBoxA(nullptr, errMsg, "Effect Error", MB_OK);
-			pErr->Release();
+			err->Release();
 		}
 		return false;
 	}
 	return true;
 }
 
-void GameEngine::Material::Begin()
+void GameEngine::SpineMaterial::Begin()
 {
 	if (!m_Effect) return;
-	m_Effect->SetTechnique("DirLightOnly");
+	m_Effect->SetTechnique("SpineTech");
 	UINT passCount = 0;
 	m_Effect->Begin(&passCount, 0);
 }
 
-void GameEngine::Material::Begin_Pass(UINT _pass)
+void GameEngine::SpineMaterial::Begin_Pass(UINT _pass)
 {
 	if (m_Effect)
 	{
@@ -112,7 +104,7 @@ void GameEngine::Material::Begin_Pass(UINT _pass)
 	}
 }
 
-void GameEngine::Material::End_Pass()
+void GameEngine::SpineMaterial::End_Pass()
 {
 	if (m_Effect)
 	{
@@ -120,7 +112,7 @@ void GameEngine::Material::End_Pass()
 	}
 }
 
-void GameEngine::Material::End()
+void GameEngine::SpineMaterial::End()
 {
 	if (m_Effect)
 	{

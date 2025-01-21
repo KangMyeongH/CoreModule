@@ -72,6 +72,8 @@ namespace GameEngine
 		void Set_Emissive(D3DXCOLOR _emissive) { m_Material.Emissive = _emissive; }
 		void Set_RenderOption(RenderOption _option) { m_Option = _option; }
 
+		virtual D3DXMATRIX Make_BillboardMatrix(const D3DXMATRIX& _worldMat, const D3DXMATRIX& _viewMat);
+
 		RenderOption Get_RenderOption() const { return m_Option; }
 
 		virtual void Ready_Buffer(LPDIRECT3DDEVICE9 _device) = 0;

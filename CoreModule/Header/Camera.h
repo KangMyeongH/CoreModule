@@ -37,6 +37,9 @@ namespace GameEngine
 		void	Set_FarPlane(const float _far) { m_FarPlane = _far; }
 		float	Get_FatPlane() const { return m_FarPlane; }
 
+		D3DXMATRIX Get_ViewMat() const { return m_ViewMat; }
+		D3DXMATRIX Get_ProjMat() const { return m_ProjMat; }
+
 		Ray		ScreenPointToRay(const Vector3& _position);
 
 		void 	Destroy() override;

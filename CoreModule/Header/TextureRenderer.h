@@ -11,6 +11,8 @@ class Shader;
 
 namespace GameEngine
 {
+	class Material;
+
 	class COREMODULE_API TextureRenderer : public Renderer
 	{
 	public:
@@ -19,7 +21,8 @@ namespace GameEngine
 		//======================================//
 
 		TextureRenderer() : Renderer(nullptr),
-			m_Texture(nullptr), m_FlipX(false), m_FlipY(false)
+		                    m_Texture(nullptr), m_pMaterial(nullptr), m_FlipX(false), m_FlipY(false),
+		                    m_bBillboard(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -28,8 +31,11 @@ namespace GameEngine
 
 			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
+
 		explicit TextureRenderer(GameObject* _owner) : Renderer(_owner),
-			m_Texture(nullptr), m_FlipX(false), m_FlipY(false)
+		                                               m_Texture(nullptr), m_pMaterial(nullptr), m_FlipX(false),
+		                                               m_FlipY(false),
+		                                               m_bBillboard(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -38,9 +44,10 @@ namespace GameEngine
 
 			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
+
 		explicit TextureRenderer(GameObject* _owner, const std::wstring& _path) : Renderer(_owner),
-		m_Path(_path),
-			m_Texture(nullptr), m_FlipX(false), m_FlipY(false)
+			m_Path(_path),
+			m_Texture(nullptr), m_pMaterial(nullptr), m_FlipX(false), m_FlipY(false), m_bBillboard(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -49,8 +56,11 @@ namespace GameEngine
 
 			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
+
 		TextureRenderer(const TextureRenderer& _rhs) : Renderer(_rhs),
-			m_Texture(_rhs.m_Texture), m_FlipX(_rhs.m_FlipX), m_FlipY(_rhs.m_FlipY)
+		                                               m_Texture(_rhs.m_Texture), m_pMaterial(nullptr),
+		                                               m_FlipX(_rhs.m_FlipX),
+		                                               m_FlipY(_rhs.m_FlipY), m_bBillboard(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -59,6 +69,7 @@ namespace GameEngine
 
 			D3DXMatrixIdentity(&m_TextureScaleMatrix);
 		}
+
 		~TextureRenderer() override = default;
 
 		//======================================//
@@ -117,9 +128,12 @@ namespace GameEngine
 		bool Get_FlipX() const { return m_FlipX; }
 		bool Get_FlipY() const { return m_FlipY; }
 
-
 		std::wstring Get_Path() const { return m_Path; }
 		void Set_Path(const std::wstring& _path) { m_Path = _path; }
+
+		void Set_Material(Material* _material);
+
+		void Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
 
 		Component* Clone() const override
 		{
@@ -161,12 +175,10 @@ namespace GameEngine
 		}
 
 	private:
-		
-
 		std::wstring				m_Path;
 		LPDIRECT3DTEXTURE9			m_Texture;
 		D3DXMATRIX					m_TextureScaleMatrix;
-		//Shader*					m_Shader;
+		Material* 					m_pMaterial;
 		bool						m_FlipX;
 		bool						m_FlipY;
 		bool						m_bBillboard;
