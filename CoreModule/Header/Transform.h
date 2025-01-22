@@ -30,7 +30,8 @@ namespace GameEngine
 		//				constructor				//
 		//======================================//
 
-		Transform() : Component(nullptr), m_Parent(nullptr), m_DirtyFlags(None), m_bDirty(false) {}
+		Transform() : Component(nullptr), m_Parent(nullptr), m_LocalPosition(0.0f, 0.0f, 0.0f), m_LocalRotation(0.0f, 0.0f, 0.0f),
+			m_LocalScale(1.f, 1.f, 1.f), m_DirtyFlags(WorldDirty), m_bDirty(true) {}
 
 		explicit Transform(GameObject* _owner) :
 			Component(_owner), m_Parent(nullptr), m_LocalPosition(0.0f, 0.0f, 0.0f),

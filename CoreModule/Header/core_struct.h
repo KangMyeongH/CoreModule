@@ -4,6 +4,15 @@ namespace GameEngine
 {
 	class Collider;
 
+	// Fade Effect Vertex 구조체
+	struct FADE_VERTEX
+	{
+		D3DXVECTOR3 position;
+		DWORD color;
+	};
+
+#define D3DFVF_FADEVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+
 	// UI Vertex 구조체
 	struct CUSTOM_VERTEX
 	{
@@ -11,6 +20,14 @@ namespace GameEngine
 		Vector2		TextureUV;
 	};
 	const ULONG FVF_UITEX = D3DFVF_XYZ | D3DFVF_TEX1;
+
+	struct VTXCOLORUI
+	{
+		D3DXVECTOR3 position;
+		D3DCOLOR color;
+		D3DXVECTOR2 TextureUV;
+	};
+	const ULONG FVF_COLORUITEX = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
 
 	//Texture Vertex 구조체

@@ -88,23 +88,57 @@ void GameEngine::Scene::Register_NextScene()
 {
 	if (!m_NextScene.empty())
 	{
-		const std::wstring basePath = L"..\\Client\\Assets\\Scenes\\";
-		const std::wstring fileExtension = L".json";
-		const std::wstring fullPath = basePath + m_NextScene + fileExtension;
-		// todo : fade out
+		if (!UIManager::GetInstance().Is_FadeOut())
+		{
+			UIManager::GetInstance().Set_FadeEffect(1.f);
+			UIManager::GetInstance().Enable_FadeOut();
+		}
 
-// 화면이 검정색으로 가득 차면.
-		Release();
-		MonoBehaviourManager::GetInstance().Release();
-		CollisionManager::GetInstance().Release();
-		PhysicsManager::GetInstance().Release();
-		RenderManager::GetInstance().Clear_Component();
-		UIManager::GetInstance().Clear_Component();
+		if (UIManager::GetInstance().Is_FadeOutFinish())
+		{
+			if (!m_LoadingThread.joinable())
+			{
+				// 교체할 씬의 Path 조합
+				const std::wstring basePath = L"..\\Client\\Assets\\Scenes\\";
+				const std::wstring fileExtension = L".json";
+				const std::wstring fullPath = basePath + m_NextScene + fileExtension;
 
-		FileManager::GetInstance().LoadSceneData(fullPath);
-		TimeManager::GetInstance().Initialize();
-		m_NextScene.clear();
-		// todo : fade in
+				m_bSceneLoaded = false;
+				m_LoadingThread = std::thread(&GameEngine::Scene::Load_SceneInBackGround, this, fullPath);
+			}
+
+			while (true)
+			{
+				MSG msg;
+				while (PeekMessage(&msg, nullptr, 0,0, PM_REMOVE))
+				{
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+				}
+
+				UIManager::GetInstance().Render_LoadingScreen();
+
+				{
+					std::unique_lock<std::mutex> lock(m_LoadingMutex);
+					if (m_bSceneLoaded)
+					{
+						break;
+					}
+				}
+
+				Sleep(16);
+			}
+			TimeManager::GetInstance().Initialize();
+					// 다 불러왔으니 NextScene의 path 삭제
+			m_NextScene.clear();
+					// 로딩이 끝났으니 페이드 인
+			UIManager::GetInstance().Enable_FadeIn();
+
+			if (m_LoadingThread.joinable())
+			{
+				m_LoadingThread.join();
+			}
+		}
 	}
 }
 
@@ -206,6 +240,31 @@ void GameEngine::Scene::From_Json(const nlohmann::ordered_json& _j)
 		m_GameObjects.push_back(obj);
 	}
 	Register_Component();
+}
+
+void GameEngine::Scene::Load_SceneInBackGround(const std::wstring& _nextScenePath)
+{
+	Release();
+	MonoBehaviourManager::GetInstance().Release();
+	CollisionManager::GetInstance().Release();
+	PhysicsManager::GetInstance().Release();
+	RenderManager::GetInstance().Clear_Component();
+	UIManager::GetInstance().Clear_Component();
+
+	FileManager::GetInstance().LoadSceneData(_nextScenePath);
+
+	PhysicsManager::GetInstance().Register_Rigidbody();
+	CollisionManager::GetInstance().Register_Collider();
+	RenderManager::GetInstance().Register_Renderer();
+	UIManager::GetInstance().Register_UI();
+	MonoBehaviourManager::GetInstance().Register_MonoBehaviour();
+
+	{
+		std::lock_guard<std::mutex> lock(m_LoadingMutex);
+		m_bSceneLoaded = true;
+	}
+
+	m_CV.notify_one();
 }
 
 void GameEngine::to_json(nlohmann::ordered_json& _j, const Scene& _scene)
