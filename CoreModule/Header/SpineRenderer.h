@@ -1,6 +1,11 @@
 #pragma once
 #include "Renderer.h"
 
+namespace GameEngine
+{
+	class SpineMaterial;
+}
+
 namespace spine
 {
 	class SpineLoader;
@@ -32,29 +37,18 @@ namespace GameEngine
 		bool Get_FlipX() const { return m_FlipX; }
 		bool Get_FlipY() const { return m_FlipY; }
 
-
-
 		std::string Get_Path() const { return m_Path; }
 		void Set_Path(const std::string& _path) { m_Path = _path; }
+
+		void Set_Material(SpineMaterial* _material);
+
+		void Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
 
 		void Change_Skin(const std::string& _skin);
 		void Change_Animation(const std::string& _animation, bool _isLoop);
 		void Change_Animation(const std::string& _track1, const std::string& _track2, bool _isLoop);
 		bool Is_Finished(int _track);
 
-		void onSpineEvent(spine::AnimationState* state, spine::EventType type, spine::TrackEntry* entry, spine::Event* event) {
-			if (type == spine::EventType_Event && event) {
-				// 이벤트가 발생했을 때 처리
-				std::string eventName = event->getData().getName().buffer();
-				int intValue = event->getIntValue();
-				float floatValue = event->getFloatValue();
-				std::string stringValue = event->getStringValue().buffer();
-
-				// 디버그 출력 예시
-				printf("Event received: %s, Int: %d, Float: %.2f, String: %s\n",
-					eventName.c_str(), intValue, floatValue, stringValue.c_str());
-			}
-		}
 		void Update_Animation(float _deltaTime);
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
 		void Render(LPDIRECT3DDEVICE9 _device) override;
@@ -90,6 +84,11 @@ namespace GameEngine
 		std::vector<std::string> 	m_Animations;
 		spine::String				m_CurrentSkin;
 		spine::String				m_CurrentAnimation;
+
+		SpineMaterial*				m_SpineMaterial;
+		LPDIRECT3DTEXTURE9			m_EmissionMap;
+		std::string					m_EmissionMapPath;
+
 		bool						m_FlipX;
 		bool						m_FlipY;
 		bool						m_bBillboard;

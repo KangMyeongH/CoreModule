@@ -1,5 +1,6 @@
 #include "SpineRenderer.h"
 
+#include "RenderManager.h"
 #include "TimeManager.h"
 #include "Transform.h"
 #include "SpineLoader.h"
@@ -21,25 +22,25 @@ GameEngine::SpineRenderer::SpineRenderer()
 	  m_UsePMA(false),
 	  m_TimeScale(1.0f),
 	  m_worldVertices(),
-	  m_clipper(), m_FlipX(false), m_FlipY(false)
+	  m_clipper(), m_FlipX(false), m_FlipY(false), m_bBillboard(true)
 {
 	m_Option = ALPHA_BLENDING;
 }
 
 GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner, 
-    const std::string& _path,
-    const std::string& _skin,
-	const std::string& _animation)
-    : Renderer(_owner), m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
-	m_OwnsAnimationStateData(false),
-	m_UsePMA(false), m_TimeScale(1.0f),
-	m_Path(_path),
-	m_CurrentSkin(_skin.c_str()),
-	m_CurrentAnimation(_animation.c_str()),
-	m_FlipX(false),
-	m_FlipY(false)
+                                         const std::string& _path,
+                                         const std::string& _skin,
+                                         const std::string& _animation)
+	: Renderer(_owner), m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
+	  m_OwnsAnimationStateData(false),
+	  m_UsePMA(false), m_TimeScale(1.0f),
+	  m_Path(_path),
+	  m_CurrentSkin(_skin.c_str()),
+	  m_CurrentAnimation(_animation.c_str()),
+	  m_FlipX(false),
+	  m_FlipY(false), m_bBillboard(true)
 {
-    m_Option = ALPHA_BLENDING;
+	m_Option = ALPHA_BLENDING;
 }
 
 GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
@@ -48,7 +49,7 @@ GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
 	  m_State(nullptr),
 	  m_OwnsAnimationStateData(false),
 	  m_UsePMA(false),
-	  m_TimeScale(1.0f), m_FlipX(false), m_FlipY(false)
+	  m_TimeScale(1.0f), m_FlipX(false), m_FlipY(false), m_bBillboard(true)
 {
 	m_Option = ALPHA_BLENDING;
 }
@@ -59,7 +60,7 @@ GameEngine::SpineRenderer::SpineRenderer(const SpineRenderer& _rhs)
 	  m_OwnsAnimationStateData(false),
 	  m_UsePMA(false),
 	  m_TimeScale(1.0f), m_FlipX(false),
-	  m_FlipY(false)
+	  m_FlipY(false), m_bBillboard(true)
 {
 	m_Option = ALPHA_BLENDING;
 }
@@ -76,6 +77,11 @@ GameEngine::SpineRenderer::~SpineRenderer()
 
     m_Atlas.reset();
     delete m_Loader;
+}
+
+void GameEngine::SpineRenderer::Set_Material(SpineMaterial* _material)
+{
+    m_SpineMaterial = _material;
 }
 
 void GameEngine::SpineRenderer::Change_Skin(const std::string& _skin)
@@ -212,8 +218,18 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
     D3DXMatrixIdentity(&scaleMat);
     D3DXMatrixScaling(&scaleMat, 0.01f, 0.01f, 1.f);
     D3DXMATRIX worldMat = scaleMat * Get_Transform().Get_WorldMatrix();
+    D3DXMATRIX viewMat = RenderManager::GetInstance().Get_ViewMat();
+    D3DXMATRIX projMat = RenderManager::GetInstance().Get_ProjMat();
 
-    _device->SetTransform(D3DTS_WORLD, &worldMat);
+
+    D3DXMATRIX finalWorld = worldMat;
+
+    if (m_bBillboard)
+    {
+        finalWorld = Make_BillboardMatrix(worldMat, viewMat);
+    }
+
+    _device->SetTransform(D3DTS_WORLD, &finalWorld);
     _device->SetMaterial(&m_Material);
 
 	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -311,7 +327,8 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
             m_clipper.clipStart(slot, clip);
             continue;
         }
-        else {
+        else 
+        {
             // 그 외 (BoundingBoxAttachment 등) - 여기서는 스킵
             m_clipper.clipEnd(slot);
             continue;
@@ -323,7 +340,8 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
             * attachmentColor->a;
 
         // 만약 클리핑 중이면 삼각형을 자르기
-        if (m_clipper.isClipping()) {
+        if (m_clipper.isClipping()) 
+        {
             m_clipper.clipTriangles(*vertices, *indices, *uvs, 2);
             vertices = &m_clipper.getClippedVertices();
             verticesCount = m_clipper.getClippedVertices().size() >> 1;
@@ -334,7 +352,8 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
 
         // 실제 DirectX9로 그리기 위해 사용할 임시 정점 배열
         // (x, y, z=0, rhw=1, diffuse color, u, v)
-        struct SpineVertex {
+        struct SpineVertex
+    	{
             float x, y, z;
             float nx, ny, nz;
             D3DCOLOR color;
@@ -357,7 +376,8 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
             * slot.getColor().b
             * attachmentColor->b;
 
-        if (m_UsePMA) {
+        if (m_UsePMA) 
+        {
             r *= alpha; g *= alpha; b *= alpha;
         }
 

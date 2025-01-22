@@ -164,6 +164,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\GameObject.h" />
     <ClInclude Include="Header\InputManager.h" />
     <ClInclude Include="Header\Light.h" />
+    <ClInclude Include="Header\Material.h" />
     <ClInclude Include="Header\MonoBehaviour.h" />
     <ClInclude Include="Header\MonoBehaviourManager.h" />
     <ClInclude Include="Header\MultiTextureRenderer.h" />
@@ -176,6 +177,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\Shader.h" />
     <ClInclude Include="Header\SphereCollider.h" />
     <ClInclude Include="Header\SpineLoader.h" />
+    <ClInclude Include="Header\SpineMaterial.h" />
     <ClInclude Include="Header\SpineRenderer.h" />
     <ClInclude Include="Header\SpineUI.h" />
     <ClInclude Include="Header\TextUI.h" />
@@ -201,6 +203,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\GameObject.cpp" />
     <ClCompile Include="Code\InputManager.cpp" />
     <ClCompile Include="Code\Light.cpp" />
+    <ClCompile Include="Code\Material.cpp" />
     <ClCompile Include="Code\MonoBehaviour.cpp" />
     <ClCompile Include="Code\MonoBehaviourManager.cpp" />
     <ClCompile Include="Code\MultiTextureRenderer.cpp" />
@@ -213,6 +216,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\Shader.cpp" />
     <ClCompile Include="Code\SphereCollider.cpp" />
     <ClCompile Include="Code\SpineLoader.cpp" />
+    <ClCompile Include="Code\SpineMaterial.cpp" />
     <ClCompile Include="Code\SpineRenderer.cpp" />
     <ClCompile Include="Code\TextUI.cpp" />
     <ClCompile Include="Code\TextureRenderer.cpp" />

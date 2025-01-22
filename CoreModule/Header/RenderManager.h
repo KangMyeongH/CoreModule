@@ -7,6 +7,8 @@ namespace GameEngine
 {
 	class Renderer;
 	class Light;
+	class Material;
+	class SpineMaterial;
 
 	enum Buffer
 	{
@@ -60,10 +62,12 @@ namespace GameEngine
 		void Set_DirLight(const D3DLIGHT9& _dirLight) 	{ m_DirLight = _dirLight; }
 
 		void Set_BackBufferColor(const D3DXCOLOR _color) { m_BackBufferColor = _color; }
-		void Set_DefaultBackBufferColor() { m_BackBufferColor = { 0.2f, 0.2f, 0.2f, 1.f }; };
+		void Set_DefaultBackBufferColor() { m_BackBufferColor = { 0.2f, 0.2f, 0.2f, 1.f }; }
 
 		//임시
 		void Add_Light(Light* _light) {  _light->Ready_Light(m_Device); m_GlobalLight = _light;}
+		Light* Get_Light() const { return m_GlobalLight; }
+
 
 		LPDIRECT3DDEVICE9	Get_Device() const { return m_Device; }
 		LPDIRECT3DTEXTURE9* Get_Texture(const std::wstring& _path);
@@ -89,7 +93,11 @@ namespace GameEngine
 		D3DXCOLOR				m_BackBufferColor;
 
 		//임시
-		Light* m_GlobalLight;
+		Light* 			m_GlobalLight;
+		Material* 		m_DefaultMaterial;
+		SpineMaterial* 	m_SpineMaterial;
+
+
 
 
 

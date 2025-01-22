@@ -1,6 +1,7 @@
 #include "TextureRenderer.h"
 
 #include "GameObject.h"
+#include "Material.h"
 #include "Transform.h"
 
 void GameEngine::TextureRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
@@ -71,20 +72,51 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 	//Render State 설정
 	D3DXMATRIX flipMat;
 	Compute_FlipMat(flipMat);
-
 	D3DXMATRIX  world = flipMat * m_TextureScaleMatrix * Get_Transform().Get_WorldMatrix();
-	_device->SetTransform(D3DTS_WORLD, &world);
 
-	//cullmode 변경을 매 renderer마다 껐다 키면 부하가 심함. 같은 애들끼리 묶어서 출력하게 변경해야 함
-	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	if (m_pMaterial)
+	{
+		D3DXMATRIX viewMat = RenderManager::GetInstance().Get_ViewMat();
+		D3DXMATRIX projMat = RenderManager::GetInstance().Get_ProjMat();
+
+		D3DXMATRIX finalWorld = world;
+
+		if (m_bBillboard)
+		{
+			finalWorld = Make_BillboardMatrix(world, viewMat);
+		}
+
+		m_pMaterial->Set_Light(RenderManager::GetInstance().Get_Light()->Get_LightInfo());
+		m_pMaterial->Set_Color("gMaterialColor", D3DXVECTOR4(1.f, 1.f, 1.f, 1.f));
+
+		m_pMaterial->Set_WorldMat(finalWorld);
+		m_pMaterial->Set_ViewProjMat(viewMat, projMat);
+		m_pMaterial->Set_Texture("gDiffuseMap", m_Texture);
+		m_pMaterial->Set_Billboard(m_bBillboard);
+
+		m_pMaterial->Begin();
+
+		m_pMaterial->Begin_Pass(0);
+
+		//Buffer 출력
+		_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
+		_device->SetFVF(m_FVF);
+
+		_device->SetIndices(m_IndexBuffer);
+		_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
+
+		m_pMaterial->End_Pass();
+		m_pMaterial->End();
+
+		return;
+	}
+
+	_device->SetTransform(D3DTS_WORLD, &world);
 
 	//texture 세팅
 	_device->SetTexture(0, m_Texture);
 
 	Render_Buffer(_device);
-
-	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
 }
 
 void GameEngine::TextureRenderer::Compute_FlipMat(D3DXMATRIX& _mat) const
@@ -111,6 +143,11 @@ void GameEngine::TextureRenderer::Set_NativeSize()
 void GameEngine::TextureRenderer::Set_NormalSize()
 {
 	D3DXMatrixScaling(&m_TextureScaleMatrix, 1.f, 1.f, 1.f);
+}
+
+void GameEngine::TextureRenderer::Set_Material(Material* _material)
+{
+	m_pMaterial = _material;
 }
 
 //

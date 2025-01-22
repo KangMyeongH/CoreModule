@@ -5,6 +5,8 @@
 #include "Scene.h"
 #include "TextureRenderer.h"
 #include "Light.h"
+#include "Material.h"
+#include "SpineMaterial.h"
 #include "SpineRenderer.h"
 
 IMPLEMENT_SINGLETON(GameEngine::RenderManager)
@@ -14,6 +16,16 @@ void GameEngine::RenderManager::Initialize(LPDIRECT3DDEVICE9 _device)
 	m_BackBufferColor = { 0.2f, 0.2f, 0.2f, 1.f };
 	m_Device = _device;
 	_device->AddRef();
+
+	if (!m_DefaultMaterial)
+	{
+		m_DefaultMaterial = new Material(m_Device, R"(..\Client\Assets\Resource\Shader\DefaultShader.hlsl)");
+	}
+
+	if (!m_SpineMaterial)
+	{
+		m_SpineMaterial = new SpineMaterial(m_Device, R"(..\Client\Assets\Resource\Shader\DefaultSpineShader.hlsl)");
+	}
 }
 
 void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
@@ -62,10 +74,9 @@ void GameEngine::RenderManager::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 		else if (dynamic_cast<SpineRenderer*>(renderer))
 		{
 			renderer->Ready_Buffer(_device);
+			dynamic_cast<SpineRenderer*>(renderer)->Set_Material(m_SpineMaterial);
 		}
-
 	}
-
 }
 
 GameEngine::RenderManager::~RenderManager()
@@ -108,6 +119,7 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 	}
 
 	m_Device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//불투명 객체 렌더
 	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 알파 블렌딩 활성화
@@ -158,6 +170,8 @@ void GameEngine::RenderManager::Render(LPDIRECT3DDEVICE9 _device)
 			renderer->Render(_device);
 		}
 	}
+
+	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
 void GameEngine::RenderManager::Render_End(LPDIRECT3DDEVICE9 _device)
@@ -205,6 +219,7 @@ void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 			_renderer->Set_Buffer(buffer.first, buffer.second);
 		}
 		dynamic_cast<TextureRenderer*>(_renderer)->Ready_Texture();
+		dynamic_cast<TextureRenderer*>(_renderer)->Set_Material(m_DefaultMaterial);
 	}
 
 	else if (dynamic_cast<SpineRenderer*>(_renderer))
@@ -343,7 +358,6 @@ void GameEngine::RenderManager::Destroy_Renderer()
 		delete renderer;
 		m_Renderers[0].erase(std::remove(m_Renderers[0].begin(), m_Renderers[0].end(), renderer), m_Renderers[0].end());
 		m_Renderers[1].erase(std::remove(m_Renderers[1].begin(), m_Renderers[1].end(), renderer), m_Renderers[1].end());
-
 	}
 
 	m_DestroyQueue.clear();
@@ -394,6 +408,10 @@ void GameEngine::RenderManager::Release()
 	m_BufferMap.clear();
 	m_TextureMap.clear();
 	m_PixelShaderMap.clear();
+
+	if (m_Device) m_Device->Release();
+
+	delete m_DefaultMaterial;
 }
 
 LPDIRECT3DTEXTURE9* GameEngine::RenderManager::Get_Texture(const std::wstring& _path)

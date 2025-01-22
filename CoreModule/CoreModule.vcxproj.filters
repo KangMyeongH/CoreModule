@@ -104,6 +104,8 @@
     <ClCompile Include="Code\TextUI.cpp">
       <Filter>Component\08. UI\02. Text</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Material.cpp" />
+    <ClCompile Include="Code\SpineMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Transform.h">
@@ -231,6 +233,8 @@
     <ClInclude Include="Header\TextUI.h">
       <Filter>Component\08. UI\02. Text</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Material.h" />
+    <ClInclude Include="Header\SpineMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
