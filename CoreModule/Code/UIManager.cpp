@@ -2,6 +2,7 @@
 #include "TextureUI.h"
 #include "GameObject.h"
 #include "Scene.h"
+#include "TimeManager.h"
 #include "UI.h"
 
 IMPLEMENT_SINGLETON(GameEngine::UIManager)
@@ -40,6 +41,23 @@ void GameEngine::UIManager::Initialize(LPDIRECT3DDEVICE9 _device)
 	m_VertexBuffer->Lock(0, 0, (void**)&pVoid, 0);
 	memcpy(pVoid, vertices, sizeof(vertices));
 	m_VertexBuffer->Unlock();
+
+	m_FadeVertex[0] = { D3DXVECTOR3(-960.0f,540.0f,0.0f), D3DCOLOR_ARGB(255, 0,0,0) };
+	m_FadeVertex[1] = { D3DXVECTOR3(960.f, 540.0f, 0.0f), D3DCOLOR_ARGB(255, 0, 0, 0) };
+	m_FadeVertex[2] = { D3DXVECTOR3(-960.f, -540.f, 0.0f), D3DCOLOR_ARGB(255, 0, 0, 0) };
+	m_FadeVertex[3] = { D3DXVECTOR3(960.f, -540.f, 0.0f), D3DCOLOR_ARGB(255, 0, 0, 0) };
+
+	RenderManager::GetInstance().Add_Texture(L"..\\Client\\Assets\\Resource\\Texture\\Loading\\LoadingIcon.png");
+	D3DXIMAGE_INFO iconInfo;
+	D3DXGetImageInfoFromFile(L"..\\Client\\Assets\\Resource\\Texture\\Loading\\LoadingIcon.png", &iconInfo);
+	D3DXMatrixScaling(&m_IconScale, static_cast<float>(iconInfo.Width), static_cast<float>(iconInfo.Height), 1.f);
+
+	RenderManager::GetInstance().Add_Texture(L"..\\Client\\Assets\\Resource\\Texture\\Loading\\Pentagram-Star_1.png");
+	D3DXIMAGE_INFO starInfo;
+	D3DXGetImageInfoFromFile(L"..\\Client\\Assets\\Resource\\Texture\\Loading\\Pentagram-Star_1.png", &starInfo);
+	D3DXMatrixScaling(&m_StarScale, static_cast<float>(starInfo.Width), static_cast<float>(starInfo.Height), 1.f);
+
+	m_IconTransform.Set_Position(Vector3(-840.f, -440.f, 0.f));
 }
 
 void GameEngine::UIManager::Render_UI()
@@ -88,6 +106,16 @@ void GameEngine::UIManager::Render_UI()
 		{
 			ui->Render_UI(m_Device);
 		}
+	}
+
+	if (m_bFadeIn || m_bFadeOut)
+	{
+		m_Device->SetRenderState(D3DRS_ZENABLE, FALSE);
+
+		update_FadeEffect();
+		render_FadeEffect();
+
+		m_Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 	}
 
 	m_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -186,4 +214,104 @@ void GameEngine::UIManager::Release()
 {
 	Clear_Component();
 	m_VertexBuffer->Release();
+}
+
+void GameEngine::UIManager::Render_LoadingScreen()
+{
+	LPDIRECT3DTEXTURE9 icon = *RenderManager::GetInstance().Get_Texture(L"..\\Client\\Assets\\Resource\\Texture\\Loading\\LoadingIcon.png");
+	LPDIRECT3DTEXTURE9 star = *RenderManager::GetInstance().Get_Texture(L"..\\Client\\Assets\\Resource\\Texture\\Loading\\Pentagram-Star_1.png");
+
+	float rotate = 360.f * 0.01667f;
+	 
+	Vector3 rotation = m_IconTransform.Get_LocalRotation() + Vector3(0.f, 0.f, rotate);
+	m_IconTransform.Set_LocalRotation(rotation);
+
+	D3DXMATRIX iconMat = m_IconScale * m_IconTransform.Get_WorldMatrix();
+	D3DXMATRIX starMat = m_StarScale * m_StarTransform.Get_WorldMatrix();
+
+	m_Device->Clear(0,
+		NULL,
+		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
+		D3DCOLOR_XRGB(0,0,0),
+		1.f,
+		0);
+
+	m_Device->BeginScene();
+
+	D3DXMATRIX matProj, matView;
+
+	// 1. 직교 투영 행렬 설정
+	D3DXMatrixOrthoLH(&matProj, 1920, 1080, -1.0f, 1.0f);
+	m_Device->SetTransform(D3DTS_PROJECTION, &matProj);
+
+	// 2. 뷰 행렬 설정 (Identity)
+	D3DXMatrixIdentity(&matView);
+	m_Device->SetTransform(D3DTS_VIEW, &matView);
+	m_Device->SetRenderState(D3DRS_LIGHTING, false);
+	m_Device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+	m_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	//반투명 객체 렌더
+	m_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);  // 알파 테스트 비활성화
+	m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE); // 알파 블렌딩 활성화
+	m_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	m_Device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);     // Z 버퍼 쓰기 비활성화
+
+	m_Device->SetTransform(D3DTS_WORLD, &iconMat);
+	m_Device->SetTexture(0, icon);
+	m_Device->SetFVF(FVF_UITEX);
+	m_Device->SetStreamSource(0, m_VertexBuffer, 0, sizeof(CUSTOM_VERTEX));
+	m_Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
+
+	m_Device->SetTransform(D3DTS_WORLD, &starMat);
+	m_Device->SetTexture(0, star);
+	m_Device->SetFVF(FVF_UITEX);
+	m_Device->SetStreamSource(0, m_VertexBuffer, 0, sizeof(CUSTOM_VERTEX));
+	m_Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
+
+	m_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	m_Device->EndScene();
+	m_Device->Present(nullptr, nullptr, nullptr, nullptr);
+}
+
+void GameEngine::UIManager::update_FadeEffect()
+{
+	if (m_bFadeIn)
+	{
+		m_FadeAlpha -= m_FadeSpeed * TimeManager::GetInstance().Get_DeltaTime(); // 투명도를 줄임
+		if (m_FadeAlpha <= 0.0f) 
+		{
+			m_FadeAlpha = 0.0f; // 완전 투명
+			m_bFadeIn = false; // 페이드 완료
+			m_bFadeInFinish = true;
+		}
+	}
+
+	else if (m_bFadeOut)
+	{
+		m_FadeAlpha += m_FadeSpeed * TimeManager::GetInstance().Get_DeltaTime(); // 투명도를 높임
+		if (m_FadeAlpha >= 1.0f) 
+		{
+			m_FadeAlpha = 1.0f; // 완전 불투명
+			m_bFadeOutFinish = true;
+		}
+	}
+}
+
+void GameEngine::UIManager::render_FadeEffect()
+{
+	D3DXMATRIX mat;
+	D3DXMatrixIdentity(&mat);
+	m_Device->SetTransform(D3DTS_WORLD, &mat);
+	m_Device->SetTexture(0, nullptr);
+	DWORD alpha = (DWORD)(m_FadeAlpha * 255.f);
+	for (int i = 0; i < 4; ++i)
+	{
+		m_FadeVertex[i].color = D3DCOLOR_ARGB(alpha, 0, 0, 0);
+	}
+
+	m_Device->SetFVF(D3DFVF_FADEVERTEX);
+	m_Device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, m_FadeVertex, sizeof(FADE_VERTEX));
 }

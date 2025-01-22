@@ -1,4 +1,5 @@
 #pragma once
+#include <condition_variable>
 #include <list>
 #include <memory>
 #include <string>
@@ -48,6 +49,9 @@ namespace GameEngine
 		GameObject* 		Find(const std::string& _name);
 
 		std::string Get_SceneName() { return m_SceneName; }
+		
+		bool	Is_LoadStart() const { return m_NextScene.empty(); }
+		bool	Is_LoadFinish() const { return m_bSceneLoaded; }
 
 		void Register_NextScene();
 
@@ -60,11 +64,20 @@ namespace GameEngine
 
 		friend void to_json(nlohmann::ordered_json& _j, const Scene& _scene);
 		friend void from_json(const nlohmann::ordered_json& _j, Scene& _scene);
-		
+
+	private:
+		void Load_SceneInBackGround(const std::wstring& _nextScenePath);
+
 	private:
 		GameObjectList			m_GameObjects;
 		std::string 			m_SceneName;
 		std::wstring			m_NextScene;
+
+		std::atomic<bool>		m_bSceneLoaded{false};
+		std::condition_variable	m_CV;
+		std::mutex 				m_LoadingMutex;
+		std::thread				m_LoadingThread;
+
 	};
 
 }

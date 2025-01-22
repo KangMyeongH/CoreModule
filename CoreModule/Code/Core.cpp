@@ -38,13 +38,11 @@ void GameEngine::Core::Initialize(LPDIRECT3DDEVICE9 _device, HWND _hwnd)
 
 void GameEngine::Core::Progress()
 {
-	//m_RenderManager->RegisterForUpdate();
 	m_TimeManager->TimeUpdate();
 	m_PhysicsManager->Register_Rigidbody();
 	m_CollisionManager->Register_Collider();
 	m_RenderManager->Register_Renderer();
 	m_UIManager->Register_UI();
-
 	m_MonoBehaviourManager->Register_MonoBehaviour();
 
 	start();
