@@ -21,8 +21,9 @@ namespace GameEngine
 		//======================================//
 
 		TextureRenderer() : Renderer(nullptr),
-		                    m_Texture(nullptr), m_pMaterial(nullptr), m_FlipX(false), m_FlipY(false),
-		                    m_bBillboard(false)
+		                    m_Texture(nullptr), m_pMaterial(nullptr), m_BlinkAlpha(0), m_DitherFactor(0),
+		                    m_FlipX(false), m_FlipY(false),
+		                    m_bBillboard(false), m_bDither(false), m_bOutline(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -33,9 +34,11 @@ namespace GameEngine
 		}
 
 		explicit TextureRenderer(GameObject* _owner) : Renderer(_owner),
-		                                               m_Texture(nullptr), m_pMaterial(nullptr), m_FlipX(false),
+		                                               m_Texture(nullptr), m_pMaterial(nullptr), m_BlinkAlpha(0),
+		                                               m_DitherFactor(0),
+		                                               m_FlipX(false),
 		                                               m_FlipY(false),
-		                                               m_bBillboard(false)
+		                                               m_bBillboard(false), m_bDither(false), m_bOutline(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -47,7 +50,9 @@ namespace GameEngine
 
 		explicit TextureRenderer(GameObject* _owner, const std::wstring& _path) : Renderer(_owner),
 			m_Path(_path),
-			m_Texture(nullptr), m_pMaterial(nullptr), m_FlipX(false), m_FlipY(false), m_bBillboard(false)
+			m_Texture(nullptr), m_pMaterial(nullptr), m_BlinkAlpha(0), m_DitherFactor(0), m_FlipX(false),
+			m_FlipY(false),
+			m_bBillboard(false), m_bDither(false), m_bOutline(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -58,9 +63,11 @@ namespace GameEngine
 		}
 
 		TextureRenderer(const TextureRenderer& _rhs) : Renderer(_rhs),
-		                                               m_Texture(_rhs.m_Texture), m_pMaterial(nullptr),
+		                                               m_Texture(_rhs.m_Texture), m_pMaterial(nullptr), m_BlinkAlpha(0),
+		                                               m_DitherFactor(0),
 		                                               m_FlipX(_rhs.m_FlipX),
-		                                               m_FlipY(_rhs.m_FlipY), m_bBillboard(false)
+		                                               m_FlipY(_rhs.m_FlipY), m_bBillboard(false), m_bDither(false),
+		                                               m_bOutline(false)
 		{
 			m_VertexSize = sizeof(VTXTEX);
 			m_VertexCnt = 4;
@@ -96,7 +103,6 @@ namespace GameEngine
 			m_Path = _path;
 			RenderManager::GetInstance().Add_Texture(_path);
 			m_Texture = *(RenderManager::GetInstance().Get_Texture(_path));
-
 			Set_NativeSize();
 
 			if (m_Texture) return true;
@@ -128,12 +134,23 @@ namespace GameEngine
 		bool Get_FlipX() const { return m_FlipX; }
 		bool Get_FlipY() const { return m_FlipY; }
 
-		std::wstring Get_Path() const { return m_Path; }
-		void Set_Path(const std::wstring& _path) { m_Path = _path; }
+		std::wstring 	Get_Path() const { return m_Path; }
+		void 			Set_Path(const std::wstring& _path) { m_Path = _path; }
 
-		void Set_Material(Material* _material);
+		Material* 		Get_Material() const { return m_pMaterial; }
+		void 			Set_Material(Material* _material);
 
-		void Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
+		bool 			Is_Billboard() const { return m_bBillboard; }
+		void 			Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
+
+		bool 			Is_Dither() const { return m_bDither; }
+		void 			Enable_Dither(const bool _enable) { m_bDither = _enable; }
+
+		bool			Is_Outline() const { return m_bOutline; }
+		void			Enable_Outline(const bool _enable) { m_bOutline = _enable; }
+
+		void 			Set_DitherFactor(const float& _factor) { m_DitherFactor = _factor; }
+		float 			Get_DitherFactor() const { return m_DitherFactor; }
 
 		Component* Clone() const override
 		{
@@ -151,7 +168,9 @@ namespace GameEngine
 				{"enable", m_bEnabled},
 				{"path", m_Path},
 				{"flipX", m_FlipX},
-				{"flipY", m_FlipY}
+				{"flipY", m_FlipY},
+				{"billboard", m_bBillboard},
+				{"dither", m_bDither}
 			};
 		}
 		void from_json(const nlohmann::ordered_json& _j) override
@@ -172,6 +191,14 @@ namespace GameEngine
 			{
 				_j.at("flipY").get_to(m_FlipY);
 			}
+			if (_j.contains("billboard"))
+			{
+				_j.at("billboard").get_to(m_bBillboard);
+			}
+			if (_j.contains("dither"))
+			{
+				_j.at("dither").get_to(m_bDither);
+			}
 		}
 
 	private:
@@ -179,9 +206,14 @@ namespace GameEngine
 		LPDIRECT3DTEXTURE9			m_Texture;
 		D3DXMATRIX					m_TextureScaleMatrix;
 		Material* 					m_pMaterial;
+
+		float						m_BlinkAlpha;
+		float						m_DitherFactor;
 		bool						m_FlipX;
 		bool						m_FlipY;
 		bool						m_bBillboard;
+		bool						m_bDither;
+		bool						m_bOutline;
 	};
 
 	REGISTER_COMPONENT(TextureRenderer)

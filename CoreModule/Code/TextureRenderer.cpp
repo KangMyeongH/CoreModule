@@ -87,14 +87,70 @@ void GameEngine::TextureRenderer::Render(LPDIRECT3DDEVICE9 _device)
 		}
 
 		m_pMaterial->Set_Light(RenderManager::GetInstance().Get_Light()->Get_LightInfo());
-		m_pMaterial->Set_Color("gMaterialColor", D3DXVECTOR4(1.f, 1.f, 1.f, 1.f));
-
+		m_pMaterial->Set_Color("gAmbientColor", D3DXVECTOR4(m_Material.Ambient.r, m_Material.Ambient.g, m_Material.Ambient.b, m_Material.Ambient.a));
+		m_pMaterial->Set_Color("gMaterialColor", D3DXVECTOR4(m_Material.Diffuse.r, m_Material.Diffuse.g, m_Material.Diffuse.b, m_Material.Diffuse.a));
 		m_pMaterial->Set_WorldMat(finalWorld);
 		m_pMaterial->Set_ViewProjMat(viewMat, projMat);
+		m_pMaterial->Set_Float("gBlinkAlpha", m_BlinkAlpha);
 		m_pMaterial->Set_Texture("gDiffuseMap", m_Texture);
-		m_pMaterial->Set_Billboard(m_bBillboard);
+		m_pMaterial->Set_Color("gBlinkColor", D3DXVECTOR4(1.f, 1.f, 1.f, 1.f));
 
-		m_pMaterial->Begin();
+		if (m_bDither)
+		{
+			if (GameObject* target = GameObject::Find("Player"))
+			{
+				auto playerPos = target->Get_Transform().Position();
+				auto myPos = Get_Transform().Position();
+
+				// 우선 z축 비교
+				if (playerPos.z < myPos.z)
+				{
+					// 플레이어가 오브젝트 '앞쪽'에 있음
+					m_DitherFactor = 0.0f;
+				}
+				else
+				{
+					// 그렇지 않을 때는 거리 기반 보간 로직
+					float dist = (playerPos - myPos).Magnitude();  // 플레이어와의 거리
+					float nearDist = 5.0f;
+					float farDist = 10.0f;
+
+					// dist가 1 이하 -> factor=1, dist가 5 이상 -> factor=0, 그 사이 보간
+					float factor = (farDist - dist) / (farDist - nearDist);
+					if (factor < 0.f) factor = 0.f;
+					if (factor > 1.f) factor = 1.f;
+
+					m_DitherFactor = factor;
+				}
+			}
+			m_pMaterial->Set_Float("gDitherFactor", m_DitherFactor);
+
+			m_pMaterial->Get_Effect()->SetTechnique("DirLightDither");
+			UINT passCount = 0;
+			m_pMaterial->Get_Effect()->Begin(&passCount, 0);
+		}
+
+		else
+		{
+			if (m_bOutline)
+			{
+				m_pMaterial->Get_Effect()->SetTechnique("OutlineTech");
+				UINT passCount = 0;
+				m_pMaterial->Get_Effect()->Begin(&passCount, 0);
+				m_pMaterial->Begin_Pass(0);
+
+				_device->SetStreamSource(0, m_VertexBuffer, 0, m_VertexSize);
+				_device->SetFVF(m_FVF);
+
+				_device->SetIndices(m_IndexBuffer);
+				_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_VertexCnt, 0, m_TriangleCnt);
+
+				m_pMaterial->End_Pass();
+				m_pMaterial->End();
+			}
+
+			m_pMaterial->Begin();
+		}
 
 		m_pMaterial->Begin_Pass(0);
 

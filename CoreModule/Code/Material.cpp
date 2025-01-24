@@ -62,11 +62,11 @@ void GameEngine::Material::Set_Color(const std::string& _paramName, const D3DXVE
 	}
 }
 
-void GameEngine::Material::Set_Billboard(bool _isBillboard)
+void GameEngine::Material::Set_Float(const std::string& _paramName, const float& _float)
 {
 	if (m_Effect)
 	{
-		m_Effect->SetBool("gEnableBillboard", _isBillboard);
+		m_Effect->SetFloat(_paramName.c_str(), _float);
 	}
 }
 
@@ -99,7 +99,7 @@ bool GameEngine::Material::Load_EffectFromFile(const std::string& _filePath)
 void GameEngine::Material::Begin()
 {
 	if (!m_Effect) return;
-	m_Effect->SetTechnique("DirLightOnly");
+	m_Effect->SetTechnique("DirLightOnlys");
 	UINT passCount = 0;
 	m_Effect->Begin(&passCount, 0);
 }

@@ -4,6 +4,7 @@
 #include "TimeManager.h"
 #include "Transform.h"
 #include "SpineLoader.h"
+#include "SpineMaterial.h"
 
 #ifndef SPINE_MESH_VERTEX_COUNT_MAX
 #define SPINE_MESH_VERTEX_COUNT_MAX 1000
@@ -19,10 +20,10 @@ GameEngine::SpineRenderer::SpineRenderer()
 	  m_Skeleton(nullptr),
 	  m_State(nullptr),
 	  m_OwnsAnimationStateData(false),
-	  m_UsePMA(false),
-	  m_TimeScale(1.0f),
+	  m_UsePMA(false), m_bOutline(false),
+	  m_TimeScale(1.0f), m_BlinkAlpha(0),
 	  m_worldVertices(),
-	  m_clipper(), m_FlipX(false), m_FlipY(false), m_bBillboard(true)
+	  m_clipper(), m_SpineMaterial(nullptr), m_EmissionMap(nullptr), m_FlipX(false), m_FlipY(false), m_bBillboard(true)
 {
 	m_Option = ALPHA_BLENDING;
 }
@@ -33,10 +34,10 @@ GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner,
                                          const std::string& _animation)
 	: Renderer(_owner), m_Loader(nullptr), m_Skeleton(nullptr), m_State(nullptr),
 	  m_OwnsAnimationStateData(false),
-	  m_UsePMA(false), m_TimeScale(1.0f),
+	  m_UsePMA(false), m_bOutline(false), m_TimeScale(1.0f), m_BlinkAlpha(0),
 	  m_Path(_path),
 	  m_CurrentSkin(_skin.c_str()),
-	  m_CurrentAnimation(_animation.c_str()),
+	  m_CurrentAnimation(_animation.c_str()), m_SpineMaterial(nullptr), m_EmissionMap(nullptr),
 	  m_FlipX(false),
 	  m_FlipY(false), m_bBillboard(true)
 {
@@ -48,8 +49,10 @@ GameEngine::SpineRenderer::SpineRenderer(GameObject* _owner)
 	  m_Skeleton(nullptr),
 	  m_State(nullptr),
 	  m_OwnsAnimationStateData(false),
-	  m_UsePMA(false),
-	  m_TimeScale(1.0f), m_FlipX(false), m_FlipY(false), m_bBillboard(true)
+	  m_UsePMA(false), m_bOutline(false),
+	  m_TimeScale(1.0f), m_BlinkAlpha(0), m_SpineMaterial(nullptr), m_EmissionMap(nullptr), m_FlipX(false),
+	  m_FlipY(false),
+	  m_bBillboard(true)
 {
 	m_Option = ALPHA_BLENDING;
 }
@@ -58,8 +61,8 @@ GameEngine::SpineRenderer::SpineRenderer(const SpineRenderer& _rhs)
 	: Renderer(_rhs), m_Loader(nullptr),
 	  m_Skeleton(nullptr), m_State(nullptr),
 	  m_OwnsAnimationStateData(false),
-	  m_UsePMA(false),
-	  m_TimeScale(1.0f), m_FlipX(false),
+	  m_UsePMA(false), m_bOutline(false),
+	  m_TimeScale(1.0f), m_BlinkAlpha(0), m_SpineMaterial(nullptr), m_EmissionMap(nullptr), m_FlipX(false),
 	  m_FlipY(false), m_bBillboard(true)
 {
 	m_Option = ALPHA_BLENDING;
@@ -77,6 +80,19 @@ GameEngine::SpineRenderer::~SpineRenderer()
 
     m_Atlas.reset();
     delete m_Loader;
+}
+
+void GameEngine::SpineRenderer::Set_EmissionPath(const std::wstring& _path)
+{
+    if (_path.empty())
+    {
+        return;
+    }
+
+    m_EmissionMapPath = _path;
+    RenderManager::GetInstance().Add_Texture(_path);
+    m_EmissionMap = *RenderManager::GetInstance().Get_Texture(_path);
+
 }
 
 void GameEngine::SpineRenderer::Set_Material(SpineMaterial* _material)
@@ -221,7 +237,6 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
     D3DXMATRIX viewMat = RenderManager::GetInstance().Get_ViewMat();
     D3DXMATRIX projMat = RenderManager::GetInstance().Get_ProjMat();
 
-
     D3DXMATRIX finalWorld = worldMat;
 
     if (m_bBillboard)
@@ -229,262 +244,741 @@ void GameEngine::SpineRenderer::Render(LPDIRECT3DDEVICE9 _device)
         finalWorld = Make_BillboardMatrix(worldMat, viewMat);
     }
 
-    _device->SetTransform(D3DTS_WORLD, &finalWorld);
-    _device->SetMaterial(&m_Material);
+    if (m_SpineMaterial)
+    {
+        m_SpineMaterial->Set_Light(RenderManager::GetInstance().Get_Light()->Get_LightInfo());
+        //m_SpineMaterial->Set_Color("gMaterialColor", D3DXVECTOR4(1.f, 1.f, 1.f, 1.f));
 
-	_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-    if (!_device || !m_Skeleton) return;
-
-    // 전체 알파가 0이면 그릴 필요 없음
-    if (m_Skeleton->getColor().a == 0) return;
-
-    // 클리퍼 초기화
-    m_clipper.clipEnd();
-
-    // 디바이스에서 Render State 설정(예: ZWriteDisable, AlphaBlendEnable 등)
-    _device->SetRenderState(D3DRS_ZWRITEENABLE, false);
-   // _device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-    // 필요에 따라 블렌드 모드(Normal, Additive 등) → D3DRS_SRCBLEND, D3DRS_DESTBLEND 설정
-
-    // 슬롯 순회
-    for (unsigned i = 0; i < m_Skeleton->getSlots().size(); ++i) {
-	    spine::Slot& slot = *m_Skeleton->getDrawOrder()[i];
-	    spine::Attachment* attachment = slot.getAttachment();
-        if (!attachment) {
-            m_clipper.clipEnd(slot);
-            continue;
+        m_SpineMaterial->Set_WorldMat(finalWorld);
+        m_SpineMaterial->Set_ViewProjMat(viewMat, projMat);
+        m_SpineMaterial->Set_Color("gBlinkColor", D3DXVECTOR4(1.f, 1.f, 1.f, 1.f));
+        if (m_EmissionMap)
+        {
+            m_SpineMaterial->Set_Texture("gEmissionMap", m_EmissionMap);
+            m_SpineMaterial->Set_Bool("gUseEmission", true);
+            m_SpineMaterial->Set_Color("gEmissionColor", D3DXVECTOR4(m_EmissionColor));
         }
 
-        // 슬롯 색상 알파가 0이거나 본이 비활성화면 스킵
-        if (slot.getColor().a == 0 || !slot.getBone().isActive()) {
-            m_clipper.clipEnd(slot);
-            continue;
+        else
+        {
+            m_SpineMaterial->Set_Texture("gEmissionMap", nullptr);
+        }
+        m_SpineMaterial->Set_Color("gAmbientColor", D3DXVECTOR4(m_Material.Ambient.r, m_Material.Ambient.g, m_Material.Ambient.b, m_Material.Ambient.a));
+        m_SpineMaterial->Set_Color("gMaterialColor", D3DXVECTOR4(m_Material.Diffuse.r, m_Material.Diffuse.g, m_Material.Diffuse.b, m_Material.Diffuse.a));
+        m_SpineMaterial->Set_Float("gBlinkAlpha", m_BlinkAlpha);
+        m_SpineMaterial->Set_Color("gBlinkColor", D3DXVECTOR4(1.f, 1.f, 1.f, 1.f));
+
+        if (m_bOutline)
+        {
+            m_SpineMaterial->Get_Effect()->SetTechnique("SpineOutlineTech");
+            UINT passCount = 0;
+            m_SpineMaterial->Get_Effect()->Begin(&passCount, 0);
+            m_SpineMaterial->Begin_Pass(0);
+
+            for (unsigned i = 0; i < m_Skeleton->getSlots().size(); ++i)
+            {
+                spine::Slot& slot = *m_Skeleton->getDrawOrder()[i];
+                spine::Attachment* attachment = slot.getAttachment();
+                if (!attachment) {
+                    m_clipper.clipEnd(slot);
+                    continue;
+                }
+
+                // 정점, UV, 인덱스
+                spine::Vector<float>* vertices = &m_worldVertices;
+                int verticesCount = 0;
+                spine::Vector<float>* uvs = nullptr;
+                spine::Vector<unsigned short>* indices = nullptr;
+                int indicesCount = 0;
+
+                // Attachment 별색상
+                spine::Color* attachmentColor = nullptr;
+
+                // 텍스처 (DirectX9)
+                IDirect3DTexture9* currentTexture = nullptr;
+
+                // RegionAttachment 처리
+                if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti)) {
+                    spine::RegionAttachment* region = (spine::RegionAttachment*)attachment;
+                    attachmentColor = &region->getColor();
+
+                    if (attachmentColor->a == 0) {
+                        m_clipper.clipEnd(slot);
+                        continue;
+                    }
+
+                    // 4개 정점
+                    m_worldVertices.setSize(8, 0);
+                    region->computeWorldVertices(slot.getBone(), m_worldVertices, 0, 2);
+                    verticesCount = 4;
+                    uvs = &region->getUVs();
+                    indices = &m_quadIndices;
+                    indicesCount = 6;
+
+                    // DX9 텍스처 가져오기
+                    spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)region->getRendererObject();
+                    currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+
+                    float regionPivotX = region->getWidth() * 0.5f;
+                    float regionPivotY = region->getHeight() * 0.5f;
+                    m_SpineMaterial->Set_Float("gPivotX", regionPivotX);
+                    m_SpineMaterial->Set_Float("gPivotY", regionPivotY);
+                }
+                else if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti)) {
+                    // MeshAttachment
+                    spine::MeshAttachment* mesh = (spine::MeshAttachment*)attachment;
+                    attachmentColor = &mesh->getColor();
+
+                    if (attachmentColor->a == 0) {
+                        m_clipper.clipEnd(slot);
+                        continue;
+                    }
+
+                    // 메시 정점
+                    m_worldVertices.setSize(mesh->getWorldVerticesLength(), 0);
+                    mesh->computeWorldVertices(slot, 0, mesh->getWorldVerticesLength(), m_worldVertices, 0, 2);
+                    verticesCount = mesh->getWorldVerticesLength() >> 1;
+                    uvs = &mesh->getUVs();
+                    indices = &mesh->getTriangles();
+                    indicesCount = mesh->getTriangles().size();
+
+                    // DX9 텍스처
+                    spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)mesh->getRendererObject();
+                    currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+
+                    int count = mesh->getWorldVerticesLength();
+
+                    float sumX = 0.0f, sumY = 0.0f;
+                    int vertexCount = count / 2;
+                    for (int v = 0; v < count; v += 2)
+                    {
+                        sumX += m_worldVertices[v];
+                        sumY += m_worldVertices[v + 1];
+                    }
+                    float pivotX = sumX / vertexCount;
+                    float pivotY = sumY / vertexCount;
+
+                    m_SpineMaterial->Set_Float("gPivotX", pivotX);
+                    m_SpineMaterial->Set_Float("gPivotY", pivotY);
+                }
+                else if (attachment->getRTTI().isExactly(spine::ClippingAttachment::rtti)) {
+                    // ClippingAttachment
+                    spine::ClippingAttachment* clip = (spine::ClippingAttachment*)attachment;
+                    m_clipper.clipStart(slot, clip);
+                    continue;
+                }
+                else
+                {
+                    // 그 외 (BoundingBoxAttachment 등) - 여기서는 스킵
+                    m_clipper.clipEnd(slot);
+                    continue;
+                }
+
+                // Skeleton/Slot/Attachment 색상 곱
+                float alpha = m_Skeleton->getColor().a
+                    * slot.getColor().a
+                    * attachmentColor->a;
+
+                // 만약 클리핑 중이면 삼각형을 자르기
+                if (m_clipper.isClipping())
+                {
+                    m_clipper.clipTriangles(*vertices, *indices, *uvs, 2);
+                    vertices = &m_clipper.getClippedVertices();
+                    verticesCount = m_clipper.getClippedVertices().size() >> 1;
+                    uvs = &m_clipper.getClippedUVs();
+                    indices = &m_clipper.getClippedTriangles();
+                    indicesCount = m_clipper.getClippedTriangles().size();
+                }
+
+                // 실제 DirectX9로 그리기 위해 사용할 임시 정점 배열
+                // (x, y, z=0, rhw=1, diffuse color, u, v)
+                struct SpineVertex
+                {
+                    float x, y, z;
+                    float nx, ny, nz;
+                    D3DCOLOR color;
+                    float u, v;
+                };
+
+                // 삼각형 개수 * 3개의 정점
+                // → indicesCount가 실제 인덱스 개수
+                std::vector<SpineVertex> drawVerts;
+                drawVerts.reserve(indicesCount);
+
+                // 컬러 계산 (premultiplied alpha라면 r,g,b *= alpha)
+                float r = m_Skeleton->getColor().r
+                    * slot.getColor().r
+                    * attachmentColor->r;
+                float g = m_Skeleton->getColor().g
+                    * slot.getColor().g
+                    * attachmentColor->g;
+                float b = m_Skeleton->getColor().b
+                    * slot.getColor().b
+                    * attachmentColor->b;
+
+                if (m_UsePMA)
+                {
+                    r *= alpha; g *= alpha; b *= alpha;
+                }
+
+                // 0~1 범위를 0xFF로 변환
+                auto toByte = [](float c) {
+                    int val = (int)(c * 255.0f);
+                    if (val < 0) val = 0;
+                    if (val > 255) val = 255;
+                    return (BYTE)val;
+                    };
+
+                DWORD diffuseColor = D3DCOLOR_ARGB(
+                    toByte(alpha),
+                    toByte(r),
+                    toByte(g),
+                    toByte(b)
+                );
+
+                // 인덱스 순서대로 정점을 삼각형 목록에 추가
+                for (int ii = 0; ii < indicesCount; ++ii) {
+                    int idx = (*indices)[ii] << 1;
+                    float vx = (*vertices)[idx + 0];
+                    float vy = (*vertices)[idx + 1];
+                    float tu = (*uvs)[idx + 0];
+                    float tv = (*uvs)[idx + 1];
+
+                    // Spine 좌표계 기준으로 변환
+                    // (DirectX9 뷰포트와 y축 반전, 오프셋 등 필요하다면 여기서 처리)
+                    SpineVertex sv;
+                    sv.x = vx;
+                    sv.y = vy;
+                    sv.z = 0.0f;
+                    sv.nx = 0.0f;
+                    sv.ny = 0.0f;
+                    sv.nz = 1.f;
+                    sv.color = diffuseColor;
+                    sv.u = tu;
+                    sv.v = tv;
+
+                    drawVerts.push_back(sv);
+                }
+
+                m_SpineMaterial->Set_Texture("gDiffuseMap", currentTexture);
+                m_SpineMaterial->Get_Effect()->CommitChanges();
+
+                // 정점 그리기(실루엣)
+                _device->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+                _device->DrawPrimitiveUP(
+                    D3DPT_TRIANGLELIST,
+                    drawVerts.size() / 3,
+                    drawVerts.data(),
+                    sizeof(SpineVertex)
+                );
+                m_clipper.clipEnd(slot);
+            }
+            m_clipper.clipEnd();
+
+            m_SpineMaterial->End_Pass();
+            m_SpineMaterial->End();
         }
 
-        // 정점, UV, 인덱스
-        spine::Vector<float>* vertices = &m_worldVertices;
-        int verticesCount = 0;
-        spine::Vector<float>* uvs = nullptr;
-        spine::Vector<unsigned short>* indices = nullptr;
-        int indicesCount = 0;
+        m_SpineMaterial->Begin();
+        m_SpineMaterial->Begin_Pass(0);
 
-        // Attachment 별색상
-	    spine::Color* attachmentColor = nullptr;
-
-        // 텍스처 (DirectX9)
-        IDirect3DTexture9* currentTexture = nullptr;
-
-        // RegionAttachment 처리
-        if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti)) {
-	        spine::RegionAttachment* region = (spine::RegionAttachment*)attachment;
-            attachmentColor = &region->getColor();
-
-            if (attachmentColor->a == 0) {
+        // Spine slot 순회   
+        for (unsigned i = 0; i < m_Skeleton->getSlots().size(); ++i) {
+            spine::Slot& slot = *m_Skeleton->getDrawOrder()[i];
+            spine::Attachment* attachment = slot.getAttachment();
+            if (!attachment) {
                 m_clipper.clipEnd(slot);
                 continue;
             }
 
-            // 4개 정점
-            m_worldVertices.setSize(8, 0);
-            region->computeWorldVertices(slot.getBone(), m_worldVertices, 0, 2);
-            verticesCount = 4;
-            uvs = &region->getUVs();
-            indices = &m_quadIndices;
-            indicesCount = 6;
-
-            // DX9 텍스처 가져오기
-	        spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)region->getRendererObject();
-            currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
-
-        }
-        else if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti)) {
-            // MeshAttachment
-            spine::MeshAttachment* mesh = (spine::MeshAttachment*)attachment;
-            attachmentColor = &mesh->getColor();
-
-            if (attachmentColor->a == 0) {
+            // 슬롯 색상 알파가 0이거나 본이 비활성화면 스킵
+            if (slot.getColor().a == 0 || !slot.getBone().isActive()) {
                 m_clipper.clipEnd(slot);
                 continue;
             }
 
-            // 메시 정점
-            m_worldVertices.setSize(mesh->getWorldVerticesLength(), 0);
-            mesh->computeWorldVertices(slot, 0, mesh->getWorldVerticesLength(), m_worldVertices, 0, 2);
-            verticesCount = mesh->getWorldVerticesLength() >> 1;
-            uvs = &mesh->getUVs();
-            indices = &mesh->getTriangles();
-            indicesCount = mesh->getTriangles().size();
+            // 정점, UV, 인덱스
+            spine::Vector<float>* vertices = &m_worldVertices;
+            int verticesCount = 0;
+            spine::Vector<float>* uvs = nullptr;
+            spine::Vector<unsigned short>* indices = nullptr;
+            int indicesCount = 0;
 
-            // DX9 텍스처
-            spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)mesh->getRendererObject();
-            currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+            // Attachment 별색상
+            spine::Color* attachmentColor = nullptr;
 
-        }
-        else if (attachment->getRTTI().isExactly(spine::ClippingAttachment::rtti)) {
-            // ClippingAttachment
-            spine::ClippingAttachment* clip = (spine::ClippingAttachment*)attachment;
-            m_clipper.clipStart(slot, clip);
-            continue;
-        }
-        else 
-        {
-            // 그 외 (BoundingBoxAttachment 등) - 여기서는 스킵
-            m_clipper.clipEnd(slot);
-            continue;
-        }
+            // 텍스처 (DirectX9)
+            IDirect3DTexture9* currentTexture = nullptr;
 
-        // Skeleton/Slot/Attachment 색상 곱
-        float alpha = m_Skeleton->getColor().a
-            * slot.getColor().a
-            * attachmentColor->a;
+            // RegionAttachment 처리
+            if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti)) {
+                spine::RegionAttachment* region = (spine::RegionAttachment*)attachment;
+                attachmentColor = &region->getColor();
 
-        // 만약 클리핑 중이면 삼각형을 자르기
-        if (m_clipper.isClipping()) 
-        {
-            m_clipper.clipTriangles(*vertices, *indices, *uvs, 2);
-            vertices = &m_clipper.getClippedVertices();
-            verticesCount = m_clipper.getClippedVertices().size() >> 1;
-            uvs = &m_clipper.getClippedUVs();
-            indices = &m_clipper.getClippedTriangles();
-            indicesCount = m_clipper.getClippedTriangles().size();
-        }
+                if (attachmentColor->a == 0) {
+                    m_clipper.clipEnd(slot);
+                    continue;
+                }
 
-        // 실제 DirectX9로 그리기 위해 사용할 임시 정점 배열
-        // (x, y, z=0, rhw=1, diffuse color, u, v)
-        struct SpineVertex
-    	{
-            float x, y, z;
-            float nx, ny, nz;
-            D3DCOLOR color;
-            float u, v;
-        };
+                // 4개 정점
+                m_worldVertices.setSize(8, 0);
+                region->computeWorldVertices(slot.getBone(), m_worldVertices, 0, 2);
+                verticesCount = 4;
+                uvs = &region->getUVs();
+                indices = &m_quadIndices;
+                indicesCount = 6;
 
-        // 삼각형 개수 * 3개의 정점
-        // → indicesCount가 실제 인덱스 개수
-        std::vector<SpineVertex> drawVerts;
-        drawVerts.reserve(indicesCount);
+                // DX9 텍스처 가져오기
+                spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)region->getRendererObject();
+                currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+            }
+            else if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti)) {
+                // MeshAttachment
+                spine::MeshAttachment* mesh = (spine::MeshAttachment*)attachment;
+                attachmentColor = &mesh->getColor();
 
-        // 컬러 계산 (premultiplied alpha라면 r,g,b *= alpha)
-        float r = m_Skeleton->getColor().r
-            * slot.getColor().r
-            * attachmentColor->r;
-        float g = m_Skeleton->getColor().g
-            * slot.getColor().g
-            * attachmentColor->g;
-        float b = m_Skeleton->getColor().b
-            * slot.getColor().b
-            * attachmentColor->b;
+                if (attachmentColor->a == 0) {
+                    m_clipper.clipEnd(slot);
+                    continue;
+                }
 
-        if (m_UsePMA) 
-        {
-            r *= alpha; g *= alpha; b *= alpha;
-        }
+                // 메시 정점
+                m_worldVertices.setSize(mesh->getWorldVerticesLength(), 0);
+                mesh->computeWorldVertices(slot, 0, mesh->getWorldVerticesLength(), m_worldVertices, 0, 2);
+                verticesCount = mesh->getWorldVerticesLength() >> 1;
+                uvs = &mesh->getUVs();
+                indices = &mesh->getTriangles();
+                indicesCount = mesh->getTriangles().size();
 
-        // 0~1 범위를 0xFF로 변환
-        auto toByte = [](float c) {
-            int val = (int)(c * 255.0f);
-            if (val < 0) val = 0;
-            if (val > 255) val = 255;
-            return (BYTE)val;
+                // DX9 텍스처
+                spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)mesh->getRendererObject();
+                currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+
+            }
+            else if (attachment->getRTTI().isExactly(spine::ClippingAttachment::rtti)) {
+                // ClippingAttachment
+                spine::ClippingAttachment* clip = (spine::ClippingAttachment*)attachment;
+                m_clipper.clipStart(slot, clip);
+                continue;
+            }
+            else
+            {
+                // 그 외 (BoundingBoxAttachment 등) - 여기서는 스킵
+                m_clipper.clipEnd(slot);
+                continue;
+            }
+
+            // Skeleton/Slot/Attachment 색상 곱
+            float alpha = m_Skeleton->getColor().a
+                * slot.getColor().a
+                * attachmentColor->a;
+
+            // 만약 클리핑 중이면 삼각형을 자르기
+            if (m_clipper.isClipping())
+            {
+                m_clipper.clipTriangles(*vertices, *indices, *uvs, 2);
+                vertices = &m_clipper.getClippedVertices();
+                verticesCount = m_clipper.getClippedVertices().size() >> 1;
+                uvs = &m_clipper.getClippedUVs();
+                indices = &m_clipper.getClippedTriangles();
+                indicesCount = m_clipper.getClippedTriangles().size();
+            }
+
+            // 실제 DirectX9로 그리기 위해 사용할 임시 정점 배열
+            // (x, y, z=0, rhw=1, diffuse color, u, v)
+            struct SpineVertex
+            {
+                float x, y, z;
+                float nx, ny, nz;
+                D3DCOLOR color;
+                float u, v;
             };
 
-        DWORD diffuseColor = D3DCOLOR_ARGB(
-            toByte(alpha),
-            toByte(r),
-            toByte(g),
-            toByte(b)
-        );
+            // 삼각형 개수 * 3개의 정점
+            // → indicesCount가 실제 인덱스 개수
+            std::vector<SpineVertex> drawVerts;
+            drawVerts.reserve(indicesCount);
 
-        // 슬롯의 BlendMode 읽어오기
-	    spine::BlendMode spineBlend = slot.getData().getBlendMode();
+            // 컬러 계산 (premultiplied alpha라면 r,g,b *= alpha)
+            float r = m_Skeleton->getColor().r
+                * slot.getColor().r
+                * attachmentColor->r;
+            float g = m_Skeleton->getColor().g
+                * slot.getColor().g
+                * attachmentColor->g;
+            float b = m_Skeleton->getColor().b
+                * slot.getColor().b
+                * attachmentColor->b;
 
-        // 1) DirectX9 블렌드 설정 (슬롯마다 변경 가능)
-        switch (spineBlend) {
-        case spine::BlendMode_Normal:
-            // Normal: SrcAlpha, InvSrcAlpha
-            _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
-        case spine::BlendMode_Additive:
-            // Additive: SrcAlpha, One
-            _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-        case spine::BlendMode_Multiply:
-            // Multiply(일반적인 D3D9 트릭)
-            //   - 하나의 방법: D3DBLEND_DESTCOLOR, D3DBLEND_INVSRCALPHA
-            _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
-            _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
-        case spine::BlendMode_Screen:
-            // Screen(1 - (1 - srcColor)*(1 - dstColor))
-            //   - Screen을 정확히 구현하기 어렵지만, 근사치: D3DBLEND_ONE, D3DBLEND_INVSRCCOLOR
-            //   - 실제로 여러 기법이 있으니 프로젝트별로 조정
-            _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-            break;
-        default:
-            // 그 외에는 Normal과 동일하게
-            _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
+            if (m_UsePMA)
+            {
+                r *= alpha; g *= alpha; b *= alpha;
+            }
+
+            // 0~1 범위를 0xFF로 변환
+            auto toByte = [](float c) {
+                int val = (int)(c * 255.0f);
+                if (val < 0) val = 0;
+                if (val > 255) val = 255;
+                return (BYTE)val;
+                };
+
+            DWORD diffuseColor = D3DCOLOR_ARGB(
+                toByte(alpha),
+                toByte(r),
+                toByte(g),
+                toByte(b)
+            );
+
+            // 슬롯의 BlendMode 읽어오기
+            spine::BlendMode spineBlend = slot.getData().getBlendMode();
+
+            // 1) DirectX9 블렌드 설정 (슬롯마다 변경 가능)
+            switch (spineBlend) {
+            case spine::BlendMode_Normal:
+                // Normal: SrcAlpha, InvSrcAlpha
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                break;
+            case spine::BlendMode_Additive:
+                // Additive: SrcAlpha, One
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+                break;
+            case spine::BlendMode_Multiply:
+                // Multiply(일반적인 D3D9 트릭)
+                //   - 하나의 방법: D3DBLEND_DESTCOLOR, D3DBLEND_INVSRCALPHA
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                break;
+            case spine::BlendMode_Screen:
+                // Screen(1 - (1 - srcColor)*(1 - dstColor))
+                //   - Screen을 정확히 구현하기 어렵지만, 근사치: D3DBLEND_ONE, D3DBLEND_INVSRCCOLOR
+                //   - 실제로 여러 기법이 있으니 프로젝트별로 조정
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+                break;
+            default:
+                // 그 외에는 Normal과 동일하게
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                break;
+            }
+
+            // 인덱스 순서대로 정점을 삼각형 목록에 추가
+            for (int ii = 0; ii < indicesCount; ++ii) {
+                int idx = (*indices)[ii] << 1;
+                float vx = (*vertices)[idx + 0];
+                float vy = (*vertices)[idx + 1];
+                float tu = (*uvs)[idx + 0];
+                float tv = (*uvs)[idx + 1];
+
+                // Spine 좌표계 기준으로 변환
+                // (DirectX9 뷰포트와 y축 반전, 오프셋 등 필요하다면 여기서 처리)
+                SpineVertex sv;
+                sv.x = vx;
+                sv.y = vy;
+                sv.z = 0.0f;
+                sv.nx = 0.0f;
+                sv.ny = 0.0f;
+                sv.nz = 1.f;
+                sv.color = diffuseColor;
+                sv.u = tu;
+                sv.v = tv;
+
+                drawVerts.push_back(sv);
+            }
+
+            // 텍스처 설정
+            //_device->SetTexture(0, currentTexture);
+            m_SpineMaterial->Set_Texture("gDiffuseMap", currentTexture);
+            m_SpineMaterial->Get_Effect()->CommitChanges();
+
+            // 블렌드 모드 매핑 예시 (slot.getData().getBlendMode())
+            //  - Normal: (SRCALPHA, INVSRCALPHA)
+            //  - Additive: (SRCALPHA, ONE)
+            //  - Multiply, Screen 등은 다양하게 설정 가능
+            // 실제 프로젝트 상황에 맞춰 setRenderState로 처리하세요.
+
+            // 정점 포맷(FVF)
+            _device->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+
+            // DrawPrimitiveUP을 사용해 간단히 그리기 (삼각형 리스트)
+            _device->DrawPrimitiveUP(
+                D3DPT_TRIANGLELIST,
+                drawVerts.size() / 3, // 삼각형 개수
+                drawVerts.data(),
+                sizeof(SpineVertex)
+            );
+
+            // 클리핑 종료
+            m_clipper.clipEnd(slot);
         }
+        m_clipper.clipEnd();
 
-        // 인덱스 순서대로 정점을 삼각형 목록에 추가
-        for (int ii = 0; ii < indicesCount; ++ii) {
-            int idx = (*indices)[ii] << 1;
-            float vx = (*vertices)[idx + 0];
-            float vy = (*vertices)[idx + 1];
-            float tu = (*uvs)[idx + 0];
-            float tv = (*uvs)[idx + 1];
+        m_SpineMaterial->End_Pass();
+        m_SpineMaterial->End();
 
-            // Spine 좌표계 기준으로 변환
-            // (DirectX9 뷰포트와 y축 반전, 오프셋 등 필요하다면 여기서 처리)
-            SpineVertex sv;
-            sv.x = vx;
-            sv.y = vy;
-            sv.z = 0.0f;
-            sv.nx = 0.0f;
-            sv.ny = 0.0f;
-            sv.nz = 1.f;
-            sv.color = diffuseColor;
-            sv.u = tu;
-            sv.v = tv;
-
-            drawVerts.push_back(sv);
-        }
-
-        // 텍스처 설정
-        _device->SetTexture(0, currentTexture);
-
-        // 블렌드 모드 매핑 예시 (slot.getData().getBlendMode())
-        //  - Normal: (SRCALPHA, INVSRCALPHA)
-        //  - Additive: (SRCALPHA, ONE)
-        //  - Multiply, Screen 등은 다양하게 설정 가능
-        // 실제 프로젝트 상황에 맞춰 setRenderState로 처리하세요.
-
-        // 정점 포맷(FVF)
-        _device->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-
-        // DrawPrimitiveUP을 사용해 간단히 그리기 (삼각형 리스트)
-        _device->DrawPrimitiveUP(
-            D3DPT_TRIANGLELIST,
-            drawVerts.size() / 3, // 삼각형 개수
-            drawVerts.data(),
-            sizeof(SpineVertex)
-        );
-
-        // 클리핑 종료
-        m_clipper.clipEnd(slot);
     }
 
-    // 그리기 끝, 필요하면 RenderState 원복
-    //_device->SetRenderState(D3DRS_ZWRITEENABLE, true);
-    //_device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+    else
+    {
+        _device->SetTransform(D3DTS_WORLD, &finalWorld);
+        _device->SetMaterial(&m_Material);
 
-    // 클리퍼 완전 종료
-    m_clipper.clipEnd();
+        _device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+        if (!_device || !m_Skeleton) return;
+
+        // 전체 알파가 0이면 그릴 필요 없음
+        if (m_Skeleton->getColor().a == 0) return;
+
+        // 클리퍼 초기화
+        m_clipper.clipEnd();
+
+        // 디바이스에서 Render State 설정(예: ZWriteDisable, AlphaBlendEnable 등)
+        _device->SetRenderState(D3DRS_ZWRITEENABLE, false);
+        // _device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+         // 필요에 따라 블렌드 모드(Normal, Additive 등) → D3DRS_SRCBLEND, D3DRS_DESTBLEND 설정
+
+         // 슬롯 순회
+        for (unsigned i = 0; i < m_Skeleton->getSlots().size(); ++i) {
+            spine::Slot& slot = *m_Skeleton->getDrawOrder()[i];
+            spine::Attachment* attachment = slot.getAttachment();
+            if (!attachment) {
+                m_clipper.clipEnd(slot);
+                continue;
+            }
+
+            // 슬롯 색상 알파가 0이거나 본이 비활성화면 스킵
+            if (slot.getColor().a == 0 || !slot.getBone().isActive()) {
+                m_clipper.clipEnd(slot);
+                continue;
+            }
+
+            // 정점, UV, 인덱스
+            spine::Vector<float>* vertices = &m_worldVertices;
+            int verticesCount = 0;
+            spine::Vector<float>* uvs = nullptr;
+            spine::Vector<unsigned short>* indices = nullptr;
+            int indicesCount = 0;
+
+            // Attachment 별색상
+            spine::Color* attachmentColor = nullptr;
+
+            // 텍스처 (DirectX9)
+            IDirect3DTexture9* currentTexture = nullptr;
+
+            // RegionAttachment 처리
+            if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti)) {
+                spine::RegionAttachment* region = (spine::RegionAttachment*)attachment;
+                attachmentColor = &region->getColor();
+
+                if (attachmentColor->a == 0) {
+                    m_clipper.clipEnd(slot);
+                    continue;
+                }
+
+                // 4개 정점
+                m_worldVertices.setSize(8, 0);
+                region->computeWorldVertices(slot.getBone(), m_worldVertices, 0, 2);
+                verticesCount = 4;
+                uvs = &region->getUVs();
+                indices = &m_quadIndices;
+                indicesCount = 6;
+
+                // DX9 텍스처 가져오기
+                spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)region->getRendererObject();
+                currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+            }
+            else if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti)) {
+                // MeshAttachment
+                spine::MeshAttachment* mesh = (spine::MeshAttachment*)attachment;
+                attachmentColor = &mesh->getColor();
+
+                if (attachmentColor->a == 0) {
+                    m_clipper.clipEnd(slot);
+                    continue;
+                }
+
+                // 메시 정점
+                m_worldVertices.setSize(mesh->getWorldVerticesLength(), 0);
+                mesh->computeWorldVertices(slot, 0, mesh->getWorldVerticesLength(), m_worldVertices, 0, 2);
+                verticesCount = mesh->getWorldVerticesLength() >> 1;
+                uvs = &mesh->getUVs();
+                indices = &mesh->getTriangles();
+                indicesCount = mesh->getTriangles().size();
+
+                // DX9 텍스처
+                spine::AtlasRegion* atlasRegion = (spine::AtlasRegion*)mesh->getRendererObject();
+                currentTexture = (IDirect3DTexture9*)atlasRegion->page->getRendererObject();
+
+            }
+            else if (attachment->getRTTI().isExactly(spine::ClippingAttachment::rtti)) {
+                // ClippingAttachment
+                spine::ClippingAttachment* clip = (spine::ClippingAttachment*)attachment;
+                m_clipper.clipStart(slot, clip);
+                continue;
+            }
+            else
+            {
+                // 그 외 (BoundingBoxAttachment 등) - 여기서는 스킵
+                m_clipper.clipEnd(slot);
+                continue;
+            }
+
+            // Skeleton/Slot/Attachment 색상 곱
+            float alpha = m_Skeleton->getColor().a
+                * slot.getColor().a
+                * attachmentColor->a;
+
+            // 만약 클리핑 중이면 삼각형을 자르기
+            if (m_clipper.isClipping())
+            {
+                m_clipper.clipTriangles(*vertices, *indices, *uvs, 2);
+                vertices = &m_clipper.getClippedVertices();
+                verticesCount = m_clipper.getClippedVertices().size() >> 1;
+                uvs = &m_clipper.getClippedUVs();
+                indices = &m_clipper.getClippedTriangles();
+                indicesCount = m_clipper.getClippedTriangles().size();
+            }
+
+            // 실제 DirectX9로 그리기 위해 사용할 임시 정점 배열
+            // (x, y, z=0, rhw=1, diffuse color, u, v)
+            struct SpineVertex
+            {
+                float x, y, z;
+                float nx, ny, nz;
+                D3DCOLOR color;
+                float u, v;
+            };
+
+            // 삼각형 개수 * 3개의 정점
+            // → indicesCount가 실제 인덱스 개수
+            std::vector<SpineVertex> drawVerts;
+            drawVerts.reserve(indicesCount);
+
+            // 컬러 계산 (premultiplied alpha라면 r,g,b *= alpha)
+            float r = m_Skeleton->getColor().r
+                * slot.getColor().r
+                * attachmentColor->r;
+            float g = m_Skeleton->getColor().g
+                * slot.getColor().g
+                * attachmentColor->g;
+            float b = m_Skeleton->getColor().b
+                * slot.getColor().b
+                * attachmentColor->b;
+
+            if (m_UsePMA)
+            {
+                r *= alpha; g *= alpha; b *= alpha;
+            }
+
+            // 0~1 범위를 0xFF로 변환
+            auto toByte = [](float c) {
+                int val = (int)(c * 255.0f);
+                if (val < 0) val = 0;
+                if (val > 255) val = 255;
+                return (BYTE)val;
+                };
+
+            DWORD diffuseColor = D3DCOLOR_ARGB(
+                toByte(alpha),
+                toByte(r),
+                toByte(g),
+                toByte(b)
+            );
+
+            // 슬롯의 BlendMode 읽어오기
+            spine::BlendMode spineBlend = slot.getData().getBlendMode();
+
+            // 1) DirectX9 블렌드 설정 (슬롯마다 변경 가능)
+            switch (spineBlend) {
+            case spine::BlendMode_Normal:
+                // Normal: SrcAlpha, InvSrcAlpha
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                break;
+            case spine::BlendMode_Additive:
+                // Additive: SrcAlpha, One
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+                break;
+            case spine::BlendMode_Multiply:
+                // Multiply(일반적인 D3D9 트릭)
+                //   - 하나의 방법: D3DBLEND_DESTCOLOR, D3DBLEND_INVSRCALPHA
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_DESTCOLOR);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                break;
+            case spine::BlendMode_Screen:
+                // Screen(1 - (1 - srcColor)*(1 - dstColor))
+                //   - Screen을 정확히 구현하기 어렵지만, 근사치: D3DBLEND_ONE, D3DBLEND_INVSRCCOLOR
+                //   - 실제로 여러 기법이 있으니 프로젝트별로 조정
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+                break;
+            default:
+                // 그 외에는 Normal과 동일하게
+                _device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                _device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                break;
+            }
+
+            // 인덱스 순서대로 정점을 삼각형 목록에 추가
+            for (int ii = 0; ii < indicesCount; ++ii) {
+                int idx = (*indices)[ii] << 1;
+                float vx = (*vertices)[idx + 0];
+                float vy = (*vertices)[idx + 1];
+                float tu = (*uvs)[idx + 0];
+                float tv = (*uvs)[idx + 1];
+
+                // Spine 좌표계 기준으로 변환
+                // (DirectX9 뷰포트와 y축 반전, 오프셋 등 필요하다면 여기서 처리)
+                SpineVertex sv;
+                sv.x = vx;
+                sv.y = vy;
+                sv.z = 0.0f;
+                sv.nx = 0.0f;
+                sv.ny = 0.0f;
+                sv.nz = 1.f;
+                sv.color = diffuseColor;
+                sv.u = tu;
+                sv.v = tv;
+
+                drawVerts.push_back(sv);
+            }
+
+            // 텍스처 설정
+            _device->SetTexture(0, currentTexture);
+
+            // 블렌드 모드 매핑 예시 (slot.getData().getBlendMode())
+            //  - Normal: (SRCALPHA, INVSRCALPHA)
+            //  - Additive: (SRCALPHA, ONE)
+            //  - Multiply, Screen 등은 다양하게 설정 가능
+            // 실제 프로젝트 상황에 맞춰 setRenderState로 처리하세요.
+
+            // 정점 포맷(FVF)
+            _device->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+
+            // DrawPrimitiveUP을 사용해 간단히 그리기 (삼각형 리스트)
+            _device->DrawPrimitiveUP(
+                D3DPT_TRIANGLELIST,
+                drawVerts.size() / 3, // 삼각형 개수
+                drawVerts.data(),
+                sizeof(SpineVertex)
+            );
+
+            // 클리핑 종료
+            m_clipper.clipEnd(slot);
+        }
+
+        // 그리기 끝, 필요하면 RenderState 원복
+        //_device->SetRenderState(D3DRS_ZWRITEENABLE, true);
+        //_device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+
+        // 클리퍼 완전 종료
+        m_clipper.clipEnd();
+    }
 }
 
 GameEngine::Component* GameEngine::SpineRenderer::Clone() const

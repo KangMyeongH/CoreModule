@@ -40,9 +40,18 @@ namespace GameEngine
 		std::string Get_Path() const { return m_Path; }
 		void Set_Path(const std::string& _path) { m_Path = _path; }
 
+		std::wstring Get_EmissionPath() const { return m_EmissionMapPath; }
+		void Set_EmissionPath(const std::wstring& _path);
+
+		D3DXCOLOR Get_EmissionColor() const { return m_EmissionColor; }
+		void Set_EmissionColor(const D3DXCOLOR& _color) { m_EmissionColor = _color; }
+
 		void Set_Material(SpineMaterial* _material);
 
 		void Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
+
+		bool Is_Outline() const { return m_bOutline; }
+		void Enable_Outline(const bool _enable) { m_bOutline = _enable; }
 
 		void Change_Skin(const std::string& _skin);
 		void Change_Animation(const std::string& _animation, bool _isLoop);
@@ -56,7 +65,6 @@ namespace GameEngine
 		void to_json(nlohmann::ordered_json& _j) override;
 		void from_json(const nlohmann::ordered_json& _j) override;
 
-
 	private:
 		std::shared_ptr<spine::SkeletonData> readSkeletonBinaryData(const std::string& _path, spine::Atlas* _atlas);
 
@@ -68,7 +76,9 @@ namespace GameEngine
 		spine::AnimationState*					m_State;
 		bool            						m_OwnsAnimationStateData;
 		bool            						m_UsePMA;
+		bool									m_bOutline;
 		float           						m_TimeScale;
+		float									m_BlinkAlpha;
 
 		// 정점/UV 보관용 버퍼
 		mutable spine::Vector<float> 		m_worldVertices;
@@ -87,7 +97,8 @@ namespace GameEngine
 
 		SpineMaterial*				m_SpineMaterial;
 		LPDIRECT3DTEXTURE9			m_EmissionMap;
-		std::string					m_EmissionMapPath;
+		std::wstring				m_EmissionMapPath;
+		D3DXCOLOR					m_EmissionColor;
 
 		bool						m_FlipX;
 		bool						m_FlipY;

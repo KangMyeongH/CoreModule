@@ -151,7 +151,7 @@ void GameEngine::Core::render(LPDIRECT3DDEVICE9 _device)
 	m_UIManager->Render_UI();
 
 	// Debug Col
-	m_CollisionManager->Debug_Collider(m_Device, 0xFF00FF00);
+	//m_CollisionManager->Debug_Collider(m_Device, 0xFF00FF00);
 
 	// render end
 	m_RenderManager->Render_End(_device);

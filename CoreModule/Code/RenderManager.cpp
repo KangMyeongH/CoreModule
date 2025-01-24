@@ -225,6 +225,7 @@ void GameEngine::RenderManager::Add_Renderer(Renderer* _renderer)
 	else if (dynamic_cast<SpineRenderer*>(_renderer))
 	{
 		_renderer->Ready_Buffer(m_Device);
+		dynamic_cast<SpineRenderer*>(_renderer)->Set_Material(m_SpineMaterial);
 	}
 
 	m_RegisterQueue.push_back(_renderer);

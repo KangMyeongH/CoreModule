@@ -63,6 +63,22 @@ void GameEngine::SpineMaterial::Set_Color(const std::string& _paramName, const D
 	}
 }
 
+void GameEngine::SpineMaterial::Set_Bool(const std::string& _paramName, const bool _bool)
+{
+	if (m_Effect)
+	{
+		m_Effect->SetBool(_paramName.c_str(), _bool);
+	}
+}
+
+void GameEngine::SpineMaterial::Set_Float(const std::string& _paramName, const float _float)
+{
+	if (m_Effect)
+	{
+		m_Effect->SetFloat(_paramName.c_str(), _float);
+	}
+}
+
 bool GameEngine::SpineMaterial::Load_EffectFromFile(const std::string& _filePath)
 {
 	ID3DXBuffer* err = nullptr;

@@ -17,7 +17,9 @@ namespace GameEngine
 		void Set_Texture(const std::string& _paramName, LPDIRECT3DTEXTURE9 _texture);
 		void Set_Light(const D3DLIGHT9* _light);
 		void Set_Color(const std::string& _paramName, const D3DXVECTOR4& _color);
-		void Set_Billboard(bool _isBillboard);
+		void Set_Float(const std::string& _paramName, const float& _float);
+
+		ID3DXEffect* Get_Effect() const { return m_Effect; }
 
 		bool Load_EffectFromFile(const std::string& _filePath);
 		void Begin();
