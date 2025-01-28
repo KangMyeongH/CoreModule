@@ -47,6 +47,7 @@ namespace GameEngine
 		void Set_EmissionColor(const D3DXCOLOR& _color) { m_EmissionColor = _color; }
 
 		void Set_Material(SpineMaterial* _material);
+		SpineMaterial* Get_Material() const { return m_SpineMaterial; }
 
 		void Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
 
