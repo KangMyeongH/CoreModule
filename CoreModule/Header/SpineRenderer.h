@@ -49,6 +49,9 @@ namespace GameEngine
 		void Set_Material(SpineMaterial* _material);
 		SpineMaterial* Get_Material() const { return m_SpineMaterial; }
 
+		void Set_BlinkAlpha(const float _alpha) { m_BlinkAlpha = _alpha; }
+		float Get_BlinkAlpha() const { return m_BlinkAlpha; }
+
 		void Enable_Billboard(const bool _enable) { m_bBillboard = _enable; }
 
 		bool Is_Outline() const { return m_bOutline; }

@@ -3,7 +3,7 @@
 
 namespace GameEngine
 {
-	class SpineMaterial : public Object
+	class COREMODULE_API SpineMaterial : public Object
 	{
 	public:
 		SpineMaterial(LPDIRECT3DDEVICE9 _device, const std::string& _effectPath);

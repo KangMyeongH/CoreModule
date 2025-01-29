@@ -4,6 +4,14 @@ namespace GameEngine
 {
 	class Collider;
 
+	struct RibbonVertex
+	{
+		D3DXVECTOR3 Position;
+		DWORD		Color;
+	};
+
+	const ULONG FVF_RIBBON = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+
 	// Fade Effect Vertex ±¸Á¶Ã¼
 	struct FADE_VERTEX
 	{

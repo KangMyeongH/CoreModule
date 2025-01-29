@@ -184,6 +184,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClInclude Include="Header\TextureRenderer.h" />
     <ClInclude Include="Header\TextureUI.h" />
     <ClInclude Include="Header\TimeManager.h" />
+    <ClInclude Include="Header\TrailRenderer.h" />
     <ClInclude Include="Header\Transform.h" />
     <ClInclude Include="Header\UI.h" />
     <ClInclude Include="Header\UIManager.h" />
@@ -222,6 +223,7 @@ xcopy "$(OutDir)*.pdb" "$(SolutionDir)CoreModule\Header\"  /Y</Command>
     <ClCompile Include="Code\TextureRenderer.cpp" />
     <ClCompile Include="Code\TextureUI.cpp" />
     <ClCompile Include="Code\TimeManager.cpp" />
+    <ClCompile Include="Code\TrailRenderer.cpp" />
     <ClCompile Include="Code\Transform.cpp" />
     <ClCompile Include="Code\UI.cpp" />
     <ClCompile Include="Code\UIManager.cpp" />
