@@ -130,6 +130,11 @@ void GameEngine::TrailRenderer::Build_Trail(LPDIRECT3DDEVICE9 _device)
 	m_VertexBuffer->Unlock();
 }
 
+void GameEngine::TrailRenderer::Clear_Trail()
+{
+	m_Points.clear();
+}
+
 void GameEngine::TrailRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
 }

@@ -48,6 +48,8 @@ namespace GameEngine
 		void Update_Trail();
 		void Build_Trail(LPDIRECT3DDEVICE9 _device);
 
+		void Clear_Trail();
+
 		void Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
 		void Render(LPDIRECT3DDEVICE9 _device) override;
 		Component* Clone() const override
