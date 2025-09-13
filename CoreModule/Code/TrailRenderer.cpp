@@ -133,6 +133,7 @@ void GameEngine::TrailRenderer::Build_Trail(LPDIRECT3DDEVICE9 _device)
 void GameEngine::TrailRenderer::Clear_Trail()
 {
 	m_Points.clear();
+	m_VertexCount = 0;
 }
 
 void GameEngine::TrailRenderer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)

@@ -242,6 +242,7 @@ namespace GameEngine
 		{
 			return !(*this == rhs);
 		}
+
 		Vector3 	operator-() const
 		{
 			return Vector3(-x, -y, -z);

@@ -6,16 +6,8 @@
 namespace GameEngine
 {
 	class CollisionManager;
-}
-
-namespace GameEngine
-{
 	class InputManager;
 	class Scene;
-}
-
-namespace GameEngine
-{
 	class CameraManager;
 }
 

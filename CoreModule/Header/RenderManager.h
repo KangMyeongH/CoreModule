@@ -17,7 +17,7 @@ namespace GameEngine
 		BUFFER_END
 	};
 
-	using Buffer_Map = std::unordered_map<GameEngine::Buffer, std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9>>;
+	using Buffer_Map = std::unordered_map<Buffer, std::pair<LPDIRECT3DVERTEXBUFFER9, LPDIRECT3DINDEXBUFFER9>>;
 	using Texture_Map = std::unordered_map<std::wstring, LPDIRECT3DTEXTURE9>;
 	using MultiTexture_Map = std::unordered_map<std::wstring, std::vector<LPDIRECT3DTEXTURE9>>;
 	using PixelShader_Map = std::unordered_map<std::wstring, LPDIRECT3DPIXELSHADER9>;

@@ -124,48 +124,6 @@ void GameEngine::BoxCollider::Calc_WorldAABB()
 
 	m_WorldMin = minVec;
 	m_WorldMax = maxVec;
-
-	/*
-	D3DXMATRIX worldMat = Get_Transform().Get_WorldMatrix();
-
-	Vector3 extents = m_Size * 0.5f;
-
-	Vector3 corners[8] = {
-		Vector3(-extents.x, -extents.y, -extents.z),
-		Vector3( extents.x, -extents.y, -extents.z),
-		Vector3(-extents.x,  extents.y, -extents.z),
-		Vector3( extents.x,  extents.y, -extents.z),
-		Vector3(-extents.x, -extents.y,  extents.z),
-		Vector3( extents.x, -extents.y,  extents.z),
-		Vector3(-extents.x,  extents.y,  extents.z),
-		Vector3( extents.x,  extents.y,  extents.z),
-	};
-
-	for (auto& corner : corners)
-	{
-		corner += m_Center;
-	}
-
-	Vector3 minVec( FLT_MAX,  FLT_MAX,  FLT_MAX);
-	Vector3 maxVec(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-	for (auto& corner : corners)
-	{
-		Vector3 worldPos;
-		D3DXVec3TransformCoord(&worldPos, &corner, &worldMat);
-
-		// Min / Max °»½Å
-		minVec.x = min(minVec.x, worldPos.x);
-		minVec.y = min(minVec.y, worldPos.y);
-		minVec.z = min(minVec.z, worldPos.z);
-
-		maxVec.x = max(maxVec.x, worldPos.x);
-		maxVec.y = max(maxVec.y, worldPos.y);
-		maxVec.z = max(maxVec.z, worldPos.z);
-	}
-
-	m_WorldMin = minVec;
-	m_WorldMax = maxVec;*/
 }
 
 bool GameEngine::BoxCollider::Check_OBBCollision(BoxCollider* _other, Vector3& _contactPoint)
